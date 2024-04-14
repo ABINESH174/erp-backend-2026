@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+
 
 @Getter
 @Setter
@@ -25,15 +25,17 @@ public class StudentDto {
     private String Caste;
     private String Fathers_Name;
     private String Fathers_Occupation;
+    private String Fathers_Mobile_Number;
     private String Mothers_Name;
     private String Mothers_Occupation;
+    private String Mothers_Mobile_Number;
     private String Community;
     private String Guardians_Name;
     private String Guardians_Occupation;
+    private String Guardians_Mobile_Number;
     private String Parents_Status;
     private String Income;
     private String Marital_Status;
-    // private byte[] Profile_Photo;
     private String mobile_Number;
     private String Email_Id;
     private String Residential_Address;
