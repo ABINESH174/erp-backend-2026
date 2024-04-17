@@ -1,13 +1,11 @@
 package erp.javaguides.erpbackend.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Transient;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
-
-
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +34,7 @@ public class StudentDto {
     private String Parents_Status;
     private String Income;
     private String Marital_Status;
+    private String Profile_Photo_Path;
     private String mobile_Number;
     private String Email_Id;
     private String Residential_Address;
@@ -50,6 +49,10 @@ public class StudentDto {
     private String HSC_1_Year;
     private String HSC_2_Year;
     private String Diploma;
+    private String SSLC_File_Path;
+    private String HSC_1_Year_File_Path;
+    private String HSC_2_Year_File_Path;
+    private String Diploma_File_Path;
     private String Emis_Number;
     private String First_Graduate;
     private String Special_Category;
