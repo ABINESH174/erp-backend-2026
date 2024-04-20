@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000/personal-form")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/student")
@@ -19,7 +19,7 @@ public class StudentController {
     private StudentService studentService;
     //Build Add Student REST API
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestParam("first_Name") String firstName,
+    public ResponseEntity<?> createStudent(@RequestParam(value = "first_Name",required = false) String firstName,
                                            @RequestParam("last_Name") String lastName,
                                            @RequestParam("date_Of_Birth") String dateOfBirth,
                                            @RequestParam("gender") String gender,

@@ -113,12 +113,26 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + id));
 
         Student updatedStudentObj=studentRepository.save(student);
+        return StudentMapper.mapToStudentDto(updatedStudentObj);
+    }
+*/
+    @Override
+    public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
+
+        // Update student fields with the data from updatedStudent
+        student.setFirst_Name(updatedStudent.getFirst_Name());
+        // Repeat this process for other fields...
+
+        // Save the updated student
+        Student updatedStudentObj = studentRepository.save(student);
         return StudentMapper.mapToStudentDto(updatedStudentObj);
     }
 

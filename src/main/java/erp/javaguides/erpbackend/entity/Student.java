@@ -22,7 +22,7 @@ public class Student {
     @Column(name="Last_Name",nullable = false)
     private String Last_Name;
     @Column(name="Date_Of_Birth",nullable = false)
-    @JsonFormat(pattern="yyyy-mm-dd")
+    //@JsonFormat(pattern="yyyy-mm-dd")
     private String Date_Of_Birth;
     @Column(name="Gender",nullable=false)
     private String Gender;
