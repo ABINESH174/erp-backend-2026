@@ -16,6 +16,6 @@ public class Authentication {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    private String Email_Id;
-    private String Password;
+    private String emailid;
+    private String password;
 }

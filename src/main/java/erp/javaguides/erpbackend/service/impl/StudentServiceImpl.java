@@ -19,32 +19,36 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
-    private StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:/Users/m.uvasri/Desktop/FileSystem/";
+    private final StudentRepository studentRepository;
+    private static final String FOLDER_PATH = "C:" + File.separator + "Users" + File.separator + "m.uvasri" + File.separator + "Desktop" + File.separator + "FileSystem";
+
     @Override
     public String createStudent(String firstName, String lastName, String dateOfBirth,
-                                    String gender, String aadharNumber, String nationality, String religion,
-                                    String caste, String fathersName, String fathersOccupation,
-                                    String fathersMobileNumber, String mothersName, String mothersOccupation,
-                                    String mothersMobileNumber, String community, String guardiansName,
-                                    String guardiansOccupation, String guardiansMobileNumber, String parentsStatus,
-                                    String income, String maritalStatus, MultipartFile profilePhoto,
-                                    String mobileNumber, String emailId, String residentialAddress,
-                                    String communicationAddress, String hosteller, String hostelType,
-                                    String bankName, String ifscCode, String branchName, String accountNumber,
-                                    String sslc, String hsc1Year, String hsc2Year, String diploma,
-                                    MultipartFile sslcFile, MultipartFile hsc1YearFile, MultipartFile hsc2YearFile,
-                                    MultipartFile diplomaFile, String emisNumber, String firstGraduate,
-                                    String specialCategory) throws IOException {
+                                String gender, String aadharNumber, String nationality, String religion,
+                                String caste, String fathersName, String fathersOccupation,
+                                String fathersMobileNumber, String mothersName, String mothersOccupation,
+                                String mothersMobileNumber, String community, String guardiansName,
+                                String guardiansOccupation, String guardiansMobileNumber, String parentsStatus,
+                                String income, String maritalStatus, MultipartFile profilePhoto,
+                                String mobileNumber, String emailId, String residentialAddress,
+                                String communicationAddress, String hosteller, String hostelType,
+                                String bankName, String ifscCode, String branchName, String accountNumber,
+                                String sslc, String hsc1Year, String hsc2Year, String diploma,
+                                MultipartFile sslcFile, MultipartFile hsc1YearFile, MultipartFile hsc2YearFile,
+                                MultipartFile diplomaFile, String emisNumber, String firstGraduate,
+                                String specialCategory) throws IOException {
 
-        String profilePhotoPath = Paths.get(FOLDER_PATH, profilePhoto.getOriginalFilename()).toString();
-        String sslcFilePath = Paths.get(FOLDER_PATH, sslcFile.getOriginalFilename()).toString();
-        String hsc1YearFilePath = Paths.get(FOLDER_PATH, hsc1YearFile.getOriginalFilename()).toString();
-        String hsc2YearFilePath = Paths.get(FOLDER_PATH, hsc2YearFile.getOriginalFilename()).toString();
-        String diplomaFilePath = Paths.get(FOLDER_PATH, diplomaFile.getOriginalFilename()).toString();
+        String userFolderPath = Paths.get(FOLDER_PATH, emailId).toString();
+        createFolderIfNotExist(userFolderPath);
+
+        String profilePhotoPath = saveFile(firstName, userFolderPath, "profilephoto", profilePhoto);
+        String sslcFilePath = saveFile(firstName, userFolderPath, "sslcfile", sslcFile);
+        String hsc1YearFilePath = saveFile(firstName, userFolderPath, "hsc1file", hsc1YearFile);
+        String hsc2YearFilePath = saveFile(firstName, userFolderPath, "hsc2file", hsc2YearFile);
+        String diplomaFilePath = saveFile(firstName, userFolderPath, "diplomafile", diplomaFile);
 
         Student student = studentRepository.save(Student.builder()
-                .First_Name(firstName) // Assuming 'name' corresponds to the student's first name
+                .First_Name(firstName)
                 .Last_Name(lastName)
                 .Date_Of_Birth(dateOfBirth)
                 .Gender(gender)
@@ -88,40 +92,41 @@ public class StudentServiceImpl implements StudentService {
                 .First_Graduate(firstGraduate)
                 .Special_Category(specialCategory)
                 .build());
-        profilePhoto.transferTo(new File(profilePhotoPath));
-        sslcFile.transferTo(new File(sslcFilePath));
-        hsc1YearFile.transferTo(new File(hsc1YearFilePath));
-        hsc2YearFile.transferTo(new File(hsc2YearFilePath));
-        diplomaFile.transferTo(new File(diplomaFilePath));
-        if (student != null) {
-            return "Student created successfully with ID: " + student.getId();
+
+        return student != null ? "Student created successfully with ID: " + student.getId() : null;
+    }
+    @Override
+    public void createFolderIfNotExist(String folderPath) {
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
-        return null;
+    }
+    @Override
+    public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
+        String fileName = firstName + "_" + fileType + "." + getFileExtension(file.getOriginalFilename());
+        String filePath = Paths.get(userFolderPath, fileName).toString();
+        file.transferTo(new File(filePath));
+        return filePath;
+    }
+    @Override
+    public String getFileExtension(String filename) {
+        return filename.substring(filename.lastIndexOf(".") + 1);
     }
 
     @Override
     public StudentDto getStudentById(Long Id) {
         Student student = studentRepository.findById(Id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Id));
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Id));
         return StudentMapper.mapToStudentDto(student);
     }
 
     @Override
     public List<StudentDto> getAllStudents() {
-        List<Student> student=studentRepository.findAll();
-        return  student.stream().map((students) -> StudentMapper.mapToStudentDto(students))
-                .collect(Collectors.toList());
+        List<Student> students = studentRepository.findAll();
+        return students.stream().map(StudentMapper::mapToStudentDto).collect(Collectors.toList());
     }
 
-    /*@Override
-    public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + id));
-
-        Student updatedStudentObj=studentRepository.save(student);
-        return StudentMapper.mapToStudentDto(updatedStudentObj);
-    }
-*/
     @Override
     public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
         Student student = studentRepository.findById(id)
@@ -139,7 +144,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudent(Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
         studentRepository.deleteById(id);
     }
 }
