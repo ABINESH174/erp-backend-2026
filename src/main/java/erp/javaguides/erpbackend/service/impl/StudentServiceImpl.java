@@ -36,12 +36,26 @@ public class StudentServiceImpl implements StudentService {
                                     MultipartFile sslcFile, MultipartFile hsc1YearFile, MultipartFile hsc2YearFile,
                                     MultipartFile diplomaFile, String emisNumber, String firstGraduate,
                                     String specialCategory) throws IOException {
+        // Create folder path with the firstName
+        String userFolderPath = Paths.get(FOLDER_PATH, emailId).toString();
+        File folder = new File(userFolderPath);
 
-        String profilePhotoPath = Paths.get(FOLDER_PATH, profilePhoto.getOriginalFilename()).toString();
-        String sslcFilePath = Paths.get(FOLDER_PATH, sslcFile.getOriginalFilename()).toString();
-        String hsc1YearFilePath = Paths.get(FOLDER_PATH, hsc1YearFile.getOriginalFilename()).toString();
-        String hsc2YearFilePath = Paths.get(FOLDER_PATH, hsc2YearFile.getOriginalFilename()).toString();
-        String diplomaFilePath = Paths.get(FOLDER_PATH, diplomaFile.getOriginalFilename()).toString();
+        // Create the folder if it doesn't exist
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        String profilePhotoPath = Paths.get(userFolderPath, profilePhoto.getOriginalFilename()).toString();
+        String sslcFilePath = Paths.get(userFolderPath, sslcFile.getOriginalFilename()).toString();
+        String hsc1YearFilePath = Paths.get(userFolderPath, hsc1YearFile.getOriginalFilename()).toString();
+        String hsc2YearFilePath = Paths.get(userFolderPath, hsc2YearFile.getOriginalFilename()).toString();
+        String diplomaFilePath = Paths.get(userFolderPath, diplomaFile.getOriginalFilename()).toString();
+
+        profilePhoto.transferTo(new File(profilePhotoPath));
+        sslcFile.transferTo(new File(sslcFilePath));
+        hsc1YearFile.transferTo(new File(hsc1YearFilePath));
+        hsc2YearFile.transferTo(new File(hsc2YearFilePath));
+        diplomaFile.transferTo(new File(diplomaFilePath));
 
         Student student = studentRepository.save(Student.builder()
                 .First_Name(firstName) // Assuming 'name' corresponds to the student's first name
@@ -88,11 +102,7 @@ public class StudentServiceImpl implements StudentService {
                 .First_Graduate(firstGraduate)
                 .Special_Category(specialCategory)
                 .build());
-        profilePhoto.transferTo(new File(profilePhotoPath));
-        sslcFile.transferTo(new File(sslcFilePath));
-        hsc1YearFile.transferTo(new File(hsc1YearFilePath));
-        hsc2YearFile.transferTo(new File(hsc2YearFilePath));
-        diplomaFile.transferTo(new File(diplomaFilePath));
+
         if (student != null) {
             return "Student created successfully with ID: " + student.getId();
         }
