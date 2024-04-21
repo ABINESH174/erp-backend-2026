@@ -21,6 +21,9 @@ public interface StudentService {
                              MultipartFile sslcFile, MultipartFile hsc1YearFile, MultipartFile hsc2YearFile,
                              MultipartFile diplomaFile, String emisNumber, String firstGraduate,
                              String specialCategory) throws IOException;
+    void createFolderIfNotExist(String folderPath);
+    String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException;
+    String getFileExtension(String filename);
     StudentDto getStudentById(Long Id);
     List<StudentDto> getAllStudents();
     StudentDto updateStudent(Long id, StudentDto updatedStudent);
