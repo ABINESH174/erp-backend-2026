@@ -4,4 +4,5 @@ import erp.javaguides.erpbackend.dto.AuthenticationDto;
 
 public interface AuthenticationService {
     AuthenticationDto createAuthentication (AuthenticationDto authenticationDto);
+    boolean authenticate(AuthenticationDto authenticationDto);
 }

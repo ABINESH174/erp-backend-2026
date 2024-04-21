@@ -8,7 +8,7 @@ public class AuthenticationMapper {
     public static AuthenticationDto mapToAuthenticationDto(Authentication authentication){
         return new AuthenticationDto(
                 authentication.getId(),
-                authentication.getEmail_Id(),
+                authentication.getEmailid(),
                 authentication.getPassword()
         );
     }
@@ -16,7 +16,7 @@ public class AuthenticationMapper {
     public static Authentication mapToAuthentication(AuthenticationDto authenticationDto){
         return new Authentication(
                 authenticationDto.getId(),
-                authenticationDto.getEmail_Id(),
+                authenticationDto.getEmailid(),
                 authenticationDto.getPassword()
         );
     }

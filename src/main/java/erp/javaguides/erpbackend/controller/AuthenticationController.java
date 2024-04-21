@@ -15,10 +15,21 @@ public class    AuthenticationController {
     private AuthenticationService authenticationService;
 
     //Build Add Student REST API
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
         AuthenticationDto savedStudent = authenticationService.createAuthentication(authenticationDto);
         return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    }
+    @PostMapping("/authenticate")
+    public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
+        // Call your authentication service to handle the authentication logic
+        boolean isAuthenticated = authenticationService.authenticate(authenticationDto);
+
+        if (isAuthenticated) {
+            return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }
