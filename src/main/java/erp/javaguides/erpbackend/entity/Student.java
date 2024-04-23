@@ -1,9 +1,7 @@
 package erp.javaguides.erpbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Getter
@@ -13,9 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Entity
 @Table(name="Student")
 public class Student {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name="First_Name",nullable=false)
     private String First_Name;
@@ -45,7 +40,7 @@ public class Student {
     private String Marital_Status;
     private String Profile_Photo_Path;
     private String Mobile_Number;
-    @Column(name="Email_id",nullable=false,unique=true)
+    @Id
     private String Email_Id;
     private String Residential_Address;
     private String Communication_Address;

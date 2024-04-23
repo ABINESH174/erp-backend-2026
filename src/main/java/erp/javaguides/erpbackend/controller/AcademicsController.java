@@ -24,9 +24,9 @@ public class AcademicsController {
     }
 
     //Build Get  Employee REST API
-    @GetMapping("{Register_No}")
-    public ResponseEntity<AcademicsDto> getAcademicsById(@PathVariable("Register_No") String Register_No){
-        AcademicsDto academicsDto=academicsService.getAcademicsById(Register_No);
+    @GetMapping("{Email_Id}")
+    public ResponseEntity<AcademicsDto> getAcademicsById(@PathVariable("Email_Id") String Email_Id){
+        AcademicsDto academicsDto=academicsService.getAcademicsById(Email_Id);
         return ResponseEntity.ok(academicsDto);
     }
 
@@ -38,16 +38,16 @@ public class AcademicsController {
     }
 
     //Build Update Student REST API
-    @PutMapping("{Register_No}")
-    public ResponseEntity<AcademicsDto>updateAcademicsa(@PathVariable("Register_No") String Register_No,@RequestBody AcademicsDto updatedAcademics){
-        AcademicsDto academicsDto=academicsService.updateAcademics(Register_No,updatedAcademics);
+    @PutMapping("{Email_Id}")
+    public ResponseEntity<AcademicsDto>updateAcademics(@PathVariable("Email_Id") String Email_Id,@RequestBody AcademicsDto updatedAcademics){
+        AcademicsDto academicsDto=academicsService.updateAcademics(Email_Id,updatedAcademics);
         return ResponseEntity.ok(academicsDto);
     }
 
     //Build Delete Student REST API
-    @DeleteMapping("{Register_No}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("Register_No") String Register_No){
-        academicsService.deleteAcademics(Register_No);
+    @DeleteMapping("{Email_Id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("Email_Id") String Email_Id){
+        academicsService.deleteAcademics(Email_Id);
         return ResponseEntity.ok("Student deleted successfully");
     }
 }

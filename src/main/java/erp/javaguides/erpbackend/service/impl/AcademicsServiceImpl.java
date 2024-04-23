@@ -27,9 +27,9 @@ public class AcademicsServiceImpl implements AcademicsService {
     }
 
     @Override
-    public AcademicsDto getAcademicsById(String Register_No) {
-        Academics academics = academicsRepository.findById(Register_No)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Register_No));
+    public AcademicsDto getAcademicsById(String Email_Id) {
+        Academics academics = academicsRepository.findById(Email_Id)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
         return AcademicsMapper.mapToAcademicsDto(academics);
     }
 
@@ -41,18 +41,18 @@ public class AcademicsServiceImpl implements AcademicsService {
     }
 
     @Override
-    public AcademicsDto updateAcademics(String Register_No, AcademicsDto updatedAcademics) {
-        Academics academics= academicsRepository.findById(Register_No)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Register_No));
+    public AcademicsDto updateAcademics(String Email_Id, AcademicsDto updatedAcademics) {
+        Academics academics= academicsRepository.findById(Email_Id)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
 
         Academics updatedAcademicsObj=academicsRepository.save(academics);
         return AcademicsMapper.mapToAcademicsDto(updatedAcademicsObj);
     }
 
     @Override
-    public void deleteAcademics(String Register_No) {
-        Academics academics = academicsRepository.findById(Register_No)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Register_No));
-        academicsRepository.deleteById(Register_No);
+    public void deleteAcademics(String Email_Id) {
+        Academics academics = academicsRepository.findById(Email_Id)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+        academicsRepository.deleteById(Email_Id);
     }
 }

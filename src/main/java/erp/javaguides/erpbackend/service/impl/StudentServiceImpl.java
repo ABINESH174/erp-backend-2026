@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
                 .Special_Category(specialCategory)
                 .build());
 
-        return student != null ? "Student created successfully with ID: " + student.getId() : null;
+        return student != null ? "Student created successfully with ID: " + student.getEmail_Id() : null;
     }
     @Override
     public void createFolderIfNotExist(String folderPath) {
@@ -115,10 +116,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto getStudentById(Long Id) {
-        Student student = studentRepository.findById(Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Id));
+    public StudentDto getStudentByEmailId(String Email_Id) {
+        Student student = studentRepository.findById(Email_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
         return StudentMapper.mapToStudentDto(student);
+    }
+    public byte[] readFile(String filePath) throws IOException {
+        return Files.readAllBytes(Paths.get(filePath));
     }
 
     @Override
@@ -128,9 +132,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
+    public StudentDto updateStudent(String Email_Id, StudentDto updatedStudent) {
+        Student student = studentRepository.findById(Email_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
 
         // Update student fields with the data from updatedStudent
         student.setFirst_Name(updatedStudent.getFirst_Name());
@@ -142,9 +146,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Long id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
-        studentRepository.deleteById(id);
+    public void deleteStudent(String Email_Id) {
+        Student student = studentRepository.findById(Email_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+        studentRepository.deleteById(Email_Id);
     }
 }

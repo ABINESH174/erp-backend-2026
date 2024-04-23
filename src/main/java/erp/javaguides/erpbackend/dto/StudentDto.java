@@ -11,10 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDto {
-    private Long Id;
     private String First_Name;
     private String Last_Name;
-    //@JsonFormat(pattern="yyyy-mm-dd")
     private String Date_Of_Birth;
     private String Gender;
     private String Aadhar_Number;

@@ -8,7 +8,6 @@ import erp.javaguides.erpbackend.entity.Student;
 public class StudentMapper {
     public static StudentDto mapToStudentDto(Student student){
         return new StudentDto(
-                student.getId(),
                 student.getFirst_Name(),
                 student.getLast_Name(),
                 student.getDate_Of_Birth(),
@@ -57,7 +56,6 @@ public class StudentMapper {
 
     public static Student mapToStudent(StudentDto studentDto){
         return new Student(
-                studentDto.getId(),
                 studentDto.getFirst_Name(),
                 studentDto.getLast_Name(),
                 studentDto.getDate_Of_Birth(),

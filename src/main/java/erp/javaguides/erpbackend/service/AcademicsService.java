@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AcademicsService {
     AcademicsDto createAcademics(AcademicsDto academicsDto);
-    AcademicsDto getAcademicsById(String Register_No);
+    AcademicsDto getAcademicsById(String Email_Id);
     List<AcademicsDto> getAllAcademics();
-    AcademicsDto updateAcademics(String Register_No, AcademicsDto updatedAcademics);
-    void deleteAcademics(String Register_No);
+    AcademicsDto updateAcademics(String Email_Id, AcademicsDto updatedAcademics);
+    void deleteAcademics(String Email_Id);
 }

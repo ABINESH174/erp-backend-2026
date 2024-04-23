@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
@@ -82,12 +83,54 @@ public class StudentController {
                 .body(savedStudent);
     }
 
-    //Build Get  Employee REST API
-    @GetMapping("{id}")
-    public ResponseEntity<StudentDto> getStudentById(@PathVariable("id") Long Id){
-        StudentDto studentDto=studentService.getStudentById(Id);
-        return ResponseEntity.ok(studentDto);
+    //Build Get Student REST API
+    @GetMapping("{Email_Id}")
+    public ResponseEntity<StudentWithFilesDto> getStudentById(@PathVariable("Email_Id") String Email_Id) {
+        // Retrieve student data
+        StudentDto studentDto = studentService.getStudentByEmailId(Email_Id);
+
+        // Retrieve file content
+        byte[] profilePhotoContent = null;
+        byte[] sslcFileContent = null;
+        byte[] hsc1YearFileContent = null;
+        byte[] hsc2YearFileContent = null;
+        byte[] diplomaFileContent = null;
+
+        // Retrieve file paths from student data
+        String profilePhotoPath = studentDto.getProfile_Photo_Path();
+        String sslcFilePath = studentDto.getSSLC_File_Path();
+        String hsc1YearFilePath = studentDto.getHSC_1_Year_File_Path();
+        String hsc2YearFilePath = studentDto.getHSC_2_Year_File_Path();
+        String diplomaFilePath = studentDto.getDiploma_File_Path();
+
+        // Read file content if paths exist
+        if (sslcFilePath != null) {
+            try {
+                profilePhotoContent = studentService.readFile(profilePhotoPath);
+                sslcFileContent = studentService.readFile(sslcFilePath);
+                hsc1YearFileContent= studentService.readFile(hsc1YearFilePath);
+                hsc2YearFileContent = studentService.readFile(hsc2YearFilePath);
+                diplomaFileContent = studentService.readFile(diplomaFilePath);
+            } catch (IOException e) {
+                // Handle file reading exception
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        }
+        // Repeat this process for other file paths...
+
+        // Create a DTO to hold both student data and file content
+        StudentWithFilesDto studentWithFilesDto = new StudentWithFilesDto();
+        studentWithFilesDto.setStudentDto(studentDto);
+        studentWithFilesDto.setProfilePhotoContent(profilePhotoContent);
+        studentWithFilesDto.setSslcFileContent(sslcFileContent);
+        studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
+        studentWithFilesDto.setHsc2YearFileContent(hsc2YearFileContent);
+        studentWithFilesDto.setDiplomaFileContent(diplomaFileContent);
+
+        return ResponseEntity.ok(studentWithFilesDto);
     }
+
 
     //Build GetAllEmployees REST API
     @GetMapping
@@ -97,16 +140,16 @@ public class StudentController {
     }
 
     //Build Update Student REST API
-    @PutMapping("{id}")
-    public ResponseEntity<StudentDto>updateStudent(@PathVariable("id") Long id,@RequestBody StudentDto updatedStudent){
-       StudentDto studentDto=studentService.updateStudent(id,updatedStudent);
+    @PutMapping("{Email_Id}")
+    public ResponseEntity<StudentDto>updateStudent(@PathVariable("Email_Id") String Email_Id,@RequestBody StudentDto updatedStudent){
+       StudentDto studentDto=studentService.updateStudent(Email_Id,updatedStudent);
        return ResponseEntity.ok(studentDto);
     }
 
     //Build Delete Student REST API
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("id") Long id){
-        studentService.deleteStudent(id);
+    @DeleteMapping("{Email_Id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("Email_Id") String Email_Id){
+        studentService.deleteStudent(Email_Id);
         return ResponseEntity.ok("Student deleted successfully");
     }
 }

@@ -24,8 +24,9 @@ public interface StudentService {
     void createFolderIfNotExist(String folderPath);
     String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException;
     String getFileExtension(String filename);
-    StudentDto getStudentById(Long Id);
+    StudentDto getStudentByEmailId(String Email_Id);
+    byte[] readFile(String filePath) throws IOException;
     List<StudentDto> getAllStudents();
-    StudentDto updateStudent(Long id, StudentDto updatedStudent);
-    void deleteStudent(Long id);
+    StudentDto updateStudent(String Email_Id, StudentDto updatedStudent);
+    void deleteStudent(String Email_Id);
 }
