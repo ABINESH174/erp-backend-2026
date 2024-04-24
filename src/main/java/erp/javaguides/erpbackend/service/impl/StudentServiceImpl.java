@@ -94,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
                 .Special_Category(specialCategory)
                 .build());
 
-        return student != null ? "Student created successfully with ID: " + student.getEmail_Id() : null;
+        return student != null ? "Student created successfully with EmailID: " + student.getEmail_Id() : null;
     }
     @Override
     public void createFolderIfNotExist(String folderPath) {
@@ -105,10 +105,13 @@ public class StudentServiceImpl implements StudentService {
     }
     @Override
     public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
-        String fileName = firstName + "_" + fileType + "." + getFileExtension(file.getOriginalFilename());
-        String filePath = Paths.get(userFolderPath, fileName).toString();
-        file.transferTo(new File(filePath));
-        return filePath;
+        if(file!=null){
+            String fileName = firstName + "_" + fileType + "." + getFileExtension(file.getOriginalFilename());
+            String filePath = Paths.get(userFolderPath, fileName).toString();
+            file.transferTo(new File(filePath));
+            return filePath;
+        }
+        return null;
     }
     @Override
     public String getFileExtension(String filename) {
@@ -118,7 +121,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDto getStudentByEmailId(String Email_Id) {
         Student student = studentRepository.findById(Email_Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given EmailId:" + Email_Id));
         return StudentMapper.mapToStudentDto(student);
     }
     public byte[] readFile(String filePath) throws IOException {
