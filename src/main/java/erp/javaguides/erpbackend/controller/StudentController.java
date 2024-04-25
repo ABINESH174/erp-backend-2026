@@ -47,7 +47,7 @@ public class StudentController {
                                            @RequestParam("residential_Address") String residentialAddress,
                                            @RequestParam("communication_Address") String communicationAddress,
                                            @RequestParam("hosteller") String hosteller,
-                                           @RequestParam("hostel_Type") String hostelType,
+                                           @RequestParam(value = "hostel_Type",required = false) String hostelType,
                                            @RequestParam("bank_Name") String bankName,
                                            @RequestParam("ifsc_Code") String ifscCode,
                                            @RequestParam("branch_Name") String branchName,
@@ -104,20 +104,30 @@ public class StudentController {
         String diplomaFilePath = studentDto.getDiploma_File_Path();
 
         // Read file content if paths exist
-        if (sslcFilePath != null) {
-            try {
+        try {
+            if (profilePhotoPath != null) {
                 profilePhotoContent = studentService.readFile(profilePhotoPath);
-                sslcFileContent = studentService.readFile(sslcFilePath);
-                hsc1YearFileContent= studentService.readFile(hsc1YearFilePath);
-                hsc2YearFileContent = studentService.readFile(hsc2YearFilePath);
-                diplomaFileContent = studentService.readFile(diplomaFilePath);
-            } catch (IOException e) {
-                // Handle file reading exception
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
+            if (sslcFilePath != null) {
+                sslcFileContent = studentService.readFile(sslcFilePath);
+            }
+            if (hsc1YearFilePath != null) {
+                hsc1YearFileContent = studentService.readFile(hsc1YearFilePath);
+            }
+            if (hsc2YearFilePath != null) {
+                hsc2YearFileContent = studentService.readFile(hsc2YearFilePath);
+            }
+            if (diplomaFilePath != null) {
+                diplomaFileContent = studentService.readFile(diplomaFilePath);
+            }
+            if(diplomaFilePath == null){
+                diplomaFileContent = studentService.readFile(sslcFilePath);
+            }
+        } catch (IOException e) {
+            // Handle file reading exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        // Repeat this process for other file paths...
 
         // Create a DTO to hold both student data and file content
         StudentWithFilesDto studentWithFilesDto = new StudentWithFilesDto();
@@ -130,6 +140,7 @@ public class StudentController {
 
         return ResponseEntity.ok(studentWithFilesDto);
     }
+
 
 
     //Build GetAllEmployees REST API

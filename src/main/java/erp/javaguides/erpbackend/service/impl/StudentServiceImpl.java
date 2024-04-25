@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:" + File.separator + "Users" + File.separator + "m.uvasri" + File.separator + "Desktop" + File.separator + "FileSystem";
+    private static final String FOLDER_PATH = "C:\\Users\\tarun\\OneDrive\\Desktop\\FileSystem";
 
     @Override
     public String createStudent(String firstName, String lastName, String dateOfBirth,
