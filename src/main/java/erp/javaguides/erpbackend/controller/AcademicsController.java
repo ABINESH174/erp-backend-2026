@@ -18,7 +18,7 @@ public class AcademicsController {
     private AcademicsService academicsService;
     //Build Add Student REST API
     @PostMapping
-    public ResponseEntity<AcademicsDto> createAcademics(@RequestBody AcademicsDto academicsDto){
+    public ResponseEntity<AcademicsDto> createAcademics(@RequestBody AcademicsDto academicsDto) throws Exception {
         AcademicsDto savedAcademics=academicsService.createAcademics(academicsDto);
         return new ResponseEntity<>(savedAcademics, HttpStatus.CREATED);
     }

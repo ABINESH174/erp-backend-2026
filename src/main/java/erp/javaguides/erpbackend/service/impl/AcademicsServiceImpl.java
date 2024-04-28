@@ -8,11 +8,11 @@ import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.AcademicsMapper;
 import erp.javaguides.erpbackend.repository.AcademicsRepository;
 import erp.javaguides.erpbackend.service.AcademicsService;
-import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,16 +20,20 @@ import java.util.stream.Collectors;
 public class AcademicsServiceImpl implements AcademicsService {
     private AcademicsRepository academicsRepository;
     @Override
-    public AcademicsDto createAcademics(AcademicsDto academicsDto) {
+    public AcademicsDto createAcademics(AcademicsDto academicsDto) throws Exception{
+        Optional<Academics> optionalAcademics = academicsRepository.findById(academicsDto.getEmailid());
+        if(optionalAcademics.isPresent()){
+            throw new Exception("EmailId already exists");
+        }
         Academics academics = AcademicsMapper.mapToAcademics(academicsDto);
         Academics savedAcademics=academicsRepository.save(academics);
         return AcademicsMapper.mapToAcademicsDto(savedAcademics);
     }
 
     @Override
-    public AcademicsDto getAcademicsById(String Email_Id) {
-        Academics academics = academicsRepository.findById(Email_Id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+    public AcademicsDto getAcademicsById(String emailid) {
+        Academics academics = academicsRepository.findById(emailid)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + emailid));
         return AcademicsMapper.mapToAcademicsDto(academics);
     }
 
@@ -41,18 +45,18 @@ public class AcademicsServiceImpl implements AcademicsService {
     }
 
     @Override
-    public AcademicsDto updateAcademics(String Email_Id, AcademicsDto updatedAcademics) {
-        Academics academics= academicsRepository.findById(Email_Id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+    public AcademicsDto updateAcademics(String emailid, AcademicsDto updatedAcademics) {
+        Academics academics= academicsRepository.findById(emailid)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + emailid));
 
         Academics updatedAcademicsObj=academicsRepository.save(academics);
         return AcademicsMapper.mapToAcademicsDto(updatedAcademicsObj);
     }
 
     @Override
-    public void deleteAcademics(String Email_Id) {
-        Academics academics = academicsRepository.findById(Email_Id)
-                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
-        academicsRepository.deleteById(Email_Id);
+    public void deleteAcademics(String emailid) {
+        Academics academics = academicsRepository.findById(emailid)
+                .orElseThrow(() ->new ResourceNotFoundException("Student is not exist with the given id:" + emailid));
+        academicsRepository.deleteById(emailid);
     }
 }

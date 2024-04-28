@@ -8,7 +8,7 @@ public class AcademicsMapper {
     public static AcademicsDto mapToAcademicsDto(Academics academics){
 
         return new AcademicsDto(
-                academics.getEmail_Id(),
+                academics.getEmailid(),
                 academics.getRegister_No(),
                 academics.getProgramme(),
                 academics.getDiscipline(),
@@ -29,8 +29,8 @@ public class AcademicsMapper {
 
     public static Academics mapToAcademics(AcademicsDto academicsDto) {
         return new Academics(
-                academicsDto.getEmail_Id(),
-                academicsDto.getRegister_No(),
+                academicsDto.getEmailid(),
+                academicsDto.getRegiste_No(),
                 academicsDto.getProgramme(),
                 academicsDto.getDiscipline(),
                 academicsDto.getAdmission_Number(),

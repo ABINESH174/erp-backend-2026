@@ -6,9 +6,9 @@ import java.util.List;
 
 
 public interface AcademicsService {
-    AcademicsDto createAcademics(AcademicsDto academicsDto);
-    AcademicsDto getAcademicsById(String Email_Id);
+    AcademicsDto createAcademics(AcademicsDto academicsDto)throws Exception;
+    AcademicsDto getAcademicsById(String emailid);
     List<AcademicsDto> getAllAcademics();
-    AcademicsDto updateAcademics(String Email_Id, AcademicsDto updatedAcademics);
-    void deleteAcademics(String Email_Id);
+    AcademicsDto updateAcademics(String emailid, AcademicsDto updatedAcademics);
+    void deleteAcademics(String emailid);
 }

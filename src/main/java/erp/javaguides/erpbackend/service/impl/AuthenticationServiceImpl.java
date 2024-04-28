@@ -20,13 +20,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     @Override
     public boolean authenticate(AuthenticationDto authenticationDto) {
-        // Implement your authentication logic here
-        // For example, you can check if the provided email and password match a record in the database
         Authentication authentication = authenticationRepository.findByEmailidAndPassword(
                 authenticationDto.getEmailid(),
                 authenticationDto.getPassword()
         );
-
-        return authentication != null;
+        return authentication != null && authentication.getPassword().equals(authenticationDto.getPassword());
     }
+
 }

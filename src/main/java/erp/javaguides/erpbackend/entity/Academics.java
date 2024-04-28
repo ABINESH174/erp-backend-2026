@@ -1,5 +1,5 @@
 package erp.javaguides.erpbackend.entity;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +15,8 @@ import lombok.Setter;
 @Table(name="Academics")
 public class Academics {
     @Id
-    private String Email_Id;
-    @Column(name="Register_No",nullable=false,unique=true)
+    private String emailid;
+    @Column(unique = true)
     private String Register_No;
     private String Programme;
     private String Discipline;

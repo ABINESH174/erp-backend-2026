@@ -1,5 +1,7 @@
 package erp.javaguides.erpbackend.dto;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,10 @@ import java.sql.Date;
 @AllArgsConstructor
 
 public class AcademicsDto {
-    private String Email_Id;
-    private String Register_No;
+    @Id
+    private String emailid;
+    @Column(unique = true)
+    private String Registe_No;
     private String Programme;
     private String Discipline;
     private String Admission_Number;
