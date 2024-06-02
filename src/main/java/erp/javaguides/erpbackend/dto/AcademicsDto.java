@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.dto;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,9 @@ import java.sql.Date;
 @AllArgsConstructor
 
 public class AcademicsDto {
+    @Id
+    private String emailid;
+    @Column(unique = true)
     private String Register_No;
     private String Programme;
     private String Discipline;

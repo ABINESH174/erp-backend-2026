@@ -1,13 +1,12 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.StudentDto;
-import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,74 +18,22 @@ public class StudentController {
     private StudentService studentService;
     //Build Add Student REST API
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestParam(value = "first_Name",required = false) String firstName,
-                                           @RequestParam("last_Name") String lastName,
-                                           @RequestParam("date_Of_Birth") String dateOfBirth,
-                                           @RequestParam("gender") String gender,
-                                           @RequestParam("aadhar_Number") String aadharNumber,
-                                           @RequestParam("nationality") String nationality,
-                                           @RequestParam("religion") String religion,
-                                           @RequestParam("caste") String caste,
-                                           @RequestParam("fathers_Name") String fathersName,
-                                           @RequestParam("fathers_Occupation") String fathersOccupation,
-                                           @RequestParam("fathers_Mobile_Number") String fathersMobileNumber,
-                                           @RequestParam("mothers_Name") String mothersName,
-                                           @RequestParam("mothers_Occupation") String mothersOccupation,
-                                           @RequestParam("mothers_Mobile_Number") String mothersMobileNumber,
-                                           @RequestParam("community") String community,
-                                           @RequestParam(value = "guardians_Name",required = false) String guardiansName,
-                                           @RequestParam(value = "guardians_Occupation",required = false) String guardiansOccupation,
-                                           @RequestParam(value = "guardians_Mobile_Number",required = false) String guardiansMobileNumber,
-                                           @RequestParam("parents_Status") String parentsStatus,
-                                           @RequestParam("income") String income,
-                                           @RequestParam("marital_Status") String maritalStatus,
-                                           @RequestParam("profile_Photo") MultipartFile profilePhoto,
-                                           @RequestParam("mobile_Number") String mobileNumber,
-                                           @RequestParam("email_Id") String emailId,
-                                           @RequestParam("residential_Address") String residentialAddress,
-                                           @RequestParam("communication_Address") String communicationAddress,
-                                           @RequestParam("hosteller") String hosteller,
-                                           @RequestParam("hostel_Type") String hostelType,
-                                           @RequestParam("bank_Name") String bankName,
-                                           @RequestParam("ifsc_Code") String ifscCode,
-                                           @RequestParam("branch_Name") String branchName,
-                                           @RequestParam("account_Number") String accountNumber,
-                                           @RequestParam("sslc") String sslc,
-                                           @RequestParam(value = "hsc_1_Year",required = false) String hsc1Year,
-                                           @RequestParam(value = "hsc_2_Year",required = false) String hsc2Year,
-                                           @RequestParam(value = "diploma",required = false) String diploma,
-                                           @RequestParam("sslc_File") MultipartFile sslcFile,
-                                           @RequestParam(value = "hsc_1_Year_File",required = false) MultipartFile hsc1YearFile,
-                                           @RequestParam(value = "hsc_2_Year_File",required = false) MultipartFile hsc2YearFile,
-                                           @RequestParam(value = "diploma_File",required = false) MultipartFile diplomaFile,
-                                           @RequestParam("emis_Number") String emisNumber,
-                                           @RequestParam("first_Graduate") String firstGraduate,
-                                           @RequestParam("special_Category") String specialCategory
-    ) throws IOException {
-        String savedStudent=studentService.createStudent(firstName, lastName, dateOfBirth,
-                 gender, aadharNumber,  nationality,  religion,
-                 caste,  fathersName,  fathersOccupation,
-                 fathersMobileNumber,  mothersName,  mothersOccupation,
-                 mothersMobileNumber,  community,  guardiansName,
-                 guardiansOccupation,  guardiansMobileNumber,  parentsStatus,
-                 income,  maritalStatus,  profilePhoto,
-                 mobileNumber,  emailId,  residentialAddress,
-                 communicationAddress,  hosteller,  hostelType,
-                 bankName,  ifscCode,  branchName,  accountNumber,
-                 sslc,  hsc1Year,  hsc2Year,  diploma,
-                 sslcFile,  hsc1YearFile,  hsc2YearFile,
-                 diplomaFile,  emisNumber,  firstGraduate,
-                 specialCategory);
-//        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(savedStudent);
+    public ResponseEntity<String> createStudent(@ModelAttribute StudentWithFilesDto studentWithFilesDto)throws Exception {
+        String savedStudent = studentService.createStudentWithFilesDto(studentWithFilesDto);
+        return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
     }
 
-    //Build Get  Employee REST API
-    @GetMapping("{id}")
-    public ResponseEntity<StudentDto> getStudentById(@PathVariable("id") Long Id){
-        StudentDto studentDto=studentService.getStudentById(Id);
-        return ResponseEntity.ok(studentDto);
+    //Build Get Student REST API
+    @GetMapping("{emailid}")
+    public ResponseEntity<StudentWithFilesDto> getStudentByEmailId(@PathVariable String emailid)throws IOException {
+        // Call the service method to retrieve the student by email ID
+        StudentWithFilesDto studentWithFilesDto = studentService.getStudentWithFilesDtoByEmailId(emailid);
+
+        if (studentWithFilesDto != null) {
+            return ResponseEntity.ok(studentWithFilesDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     //Build GetAllEmployees REST API
@@ -97,16 +44,16 @@ public class StudentController {
     }
 
     //Build Update Student REST API
-    @PutMapping("{id}")
-    public ResponseEntity<StudentDto>updateStudent(@PathVariable("id") Long id,@RequestBody StudentDto updatedStudent){
-       StudentDto studentDto=studentService.updateStudent(id,updatedStudent);
+    @PutMapping("{emailid}")
+    public ResponseEntity<StudentDto>updateStudent(@PathVariable("emailid") String Email_Id,@RequestBody StudentDto updatedStudent){
+       StudentDto studentDto=studentService.updateStudent(Email_Id,updatedStudent);
        return ResponseEntity.ok(studentDto);
     }
 
     //Build Delete Student REST API
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("id") Long id){
-        studentService.deleteStudent(id);
+    @DeleteMapping("{Email_Id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("Email_Id") String Email_Id){
+        studentService.deleteStudent(Email_Id);
         return ResponseEntity.ok("Student deleted successfully");
     }
 }

@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
@@ -10,91 +11,50 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:" + File.separator + "Users" + File.separator + "m.uvasri" + File.separator + "Desktop" + File.separator + "FileSystem";
+    private static final String FOLDER_PATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
 
     @Override
-    public String createStudent(String firstName, String lastName, String dateOfBirth,
-                                String gender, String aadharNumber, String nationality, String religion,
-                                String caste, String fathersName, String fathersOccupation,
-                                String fathersMobileNumber, String mothersName, String mothersOccupation,
-                                String mothersMobileNumber, String community, String guardiansName,
-                                String guardiansOccupation, String guardiansMobileNumber, String parentsStatus,
-                                String income, String maritalStatus, MultipartFile profilePhoto,
-                                String mobileNumber, String emailId, String residentialAddress,
-                                String communicationAddress, String hosteller, String hostelType,
-                                String bankName, String ifscCode, String branchName, String accountNumber,
-                                String sslc, String hsc1Year, String hsc2Year, String diploma,
-                                MultipartFile sslcFile, MultipartFile hsc1YearFile, MultipartFile hsc2YearFile,
-                                MultipartFile diplomaFile, String emisNumber, String firstGraduate,
-                                String specialCategory) throws IOException {
-
+    public String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception {
+        if (studentWithFilesDto == null || studentWithFilesDto.getEmailid() == null) {
+            throw new IllegalArgumentException("StudentWithFilesDto or emailId cannot be null");
+        }
+        Optional<Student> optionalStudent = studentRepository.findById(studentWithFilesDto.getEmailid());
+        if(optionalStudent.isPresent()){
+            throw new Exception("EmailId already exists");
+        }
+        String firstname = studentWithFilesDto.getFirst_Name();
+        String emailId = studentWithFilesDto.getEmailid();
         String userFolderPath = Paths.get(FOLDER_PATH, emailId).toString();
         createFolderIfNotExist(userFolderPath);
 
-        String profilePhotoPath = saveFile(firstName, userFolderPath, "profilephoto", profilePhoto);
-        String sslcFilePath = saveFile(firstName, userFolderPath, "sslcfile", sslcFile);
-        String hsc1YearFilePath = saveFile(firstName, userFolderPath, "hsc1file", hsc1YearFile);
-        String hsc2YearFilePath = saveFile(firstName, userFolderPath, "hsc2file", hsc2YearFile);
-        String diplomaFilePath = saveFile(firstName, userFolderPath, "diplomafile", diplomaFile);
+        // Map StudentWithFilesDto to Student object
+        Student student = StudentMapper.mapToStudentWithFilesDto(studentWithFilesDto);
 
-        Student student = studentRepository.save(Student.builder()
-                .First_Name(firstName)
-                .Last_Name(lastName)
-                .Date_Of_Birth(dateOfBirth)
-                .Gender(gender)
-                .Aadhar_Number(aadharNumber)
-                .Nationality(nationality)
-                .Religion(religion)
-                .Caste(caste)
-                .Fathers_Name(fathersName)
-                .Fathers_Occupation(fathersOccupation)
-                .Fathers_Mobile_Number(fathersMobileNumber)
-                .Mothers_Name(mothersName)
-                .Mothers_Occupation(mothersOccupation)
-                .Mothers_Mobile_Number(mothersMobileNumber)
-                .Community(community)
-                .Guardians_Name(guardiansName)
-                .Guardians_Occupation(guardiansOccupation)
-                .Guardians_Mobile_Number(guardiansMobileNumber)
-                .Parents_Status(parentsStatus)
-                .Income(income)
-                .Marital_Status(maritalStatus)
-                .Profile_Photo_Path(profilePhotoPath)
-                .Mobile_Number(mobileNumber)
-                .Email_Id(emailId)
-                .Residential_Address(residentialAddress)
-                .Communication_Address(communicationAddress)
-                .Hosteller(hosteller)
-                .Hostel_Type(hostelType)
-                .Bank_Name(bankName)
-                .IFSC_Code(ifscCode)
-                .Branch_Name(branchName)
-                .Account_Number(accountNumber)
-                .SSLC(sslc)
-                .HSC_1_Year(hsc1Year)
-                .HSC_2_Year(hsc2Year)
-                .Diploma(diploma)
-                .SSLC_File_Path(sslcFilePath)
-                .HSC_1_Year_File_Path(hsc1YearFilePath)
-                .HSC_2_Year_File_Path(hsc2YearFilePath)
-                .Diploma_File_Path(diplomaFilePath)
-                .Emis_Number(emisNumber)
-                .First_Graduate(firstGraduate)
-                .Special_Category(specialCategory)
-                .build());
+        // Save files and update file paths in the Student object
+        student.setProfile_Photo_Path(saveFile(firstname, userFolderPath, "profilephoto", studentWithFilesDto.getProfile_Photo()));
+        student.setSslc_File_Path(saveFile(firstname, userFolderPath, "sslcfile", studentWithFilesDto.getSslc_File()));
+        student.setHsc_1_Year_File_Path(saveFile(firstname, userFolderPath, "hsc1file", studentWithFilesDto.getHsc_1_Year_File()));
+        student.setHsc_2_Year_File_Path(saveFile(firstname, userFolderPath, "hsc2file", studentWithFilesDto.getHsc_2_Year_File()));
+        student.setDiploma_File_Path(saveFile(firstname, userFolderPath, "diplomafile", studentWithFilesDto.getDiploma_File()));
 
-        return student != null ? "Student created successfully with ID: " + student.getId() : null;
+        // Save the Student object
+        student = studentRepository.save(student);
+
+        return "Student created successfully with EmailID: " + student.getEmailid();
     }
+
     @Override
     public void createFolderIfNotExist(String folderPath) {
         File folder = new File(folderPath);
@@ -102,23 +62,53 @@ public class StudentServiceImpl implements StudentService {
             folder.mkdirs();
         }
     }
-    @Override
     public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
-        String fileName = firstName + "_" + fileType + "." + getFileExtension(file.getOriginalFilename());
-        String filePath = Paths.get(userFolderPath, fileName).toString();
-        file.transferTo(new File(filePath));
-        return filePath;
+        if(file!=null){
+            String fileName = firstName + "_" + fileType + "." + getFileExtension(file.getOriginalFilename());
+            String filePath = Paths.get(userFolderPath, fileName).toString();
+            file.transferTo(new File(filePath));
+            return filePath;
+        }
+        return null;
     }
-    @Override
+
     public String getFileExtension(String filename) {
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
-
     @Override
-    public StudentDto getStudentById(Long Id) {
-        Student student = studentRepository.findById(Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Id));
-        return StudentMapper.mapToStudentDto(student);
+    public StudentWithFilesDto getStudentWithFilesDtoByEmailId(String emailId) {
+        Student student = studentRepository.findById(emailId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with email ID: " + emailId));
+
+        // Read files from their stored paths
+        byte[] profilePhotoContent = readFile(student.getProfile_Photo_Path());
+        byte[] sslcFileContent = readFile(student.getSslc_File_Path());
+        byte[] hsc1YearFileContent = readFile(student.getHsc_1_Year_File_Path());
+        byte[] hsc2YearFileContent = readFile(student.getHsc_2_Year_File_Path());
+        byte[] diplomaFileContent = readFile(student.getDiploma_File_Path());
+
+        StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student); // Map StudentDto to StudentWithFilesDto
+
+        studentWithFilesDto.setProfilePhotoContent(profilePhotoContent);
+        studentWithFilesDto.setSslcFileContent(sslcFileContent);
+        studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
+        studentWithFilesDto.setHsc2YearFileContent(hsc2YearFileContent);
+        studentWithFilesDto.setDiplomaFileContent(diplomaFileContent);
+
+        return studentWithFilesDto;
+    }
+
+    public byte[] readFile(String filePath) {
+        if (filePath != null) {
+            try {
+                Path path = Paths.get(filePath);
+                return Files.readAllBytes(path);
+            } catch (IOException e) {
+                // Handle exception
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -128,9 +118,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto updateStudent(Long id, StudentDto updatedStudent) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
+    public StudentDto updateStudent(String Email_Id, StudentDto updatedStudent) {
+        Student student = studentRepository.findById(Email_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
 
         // Update student fields with the data from updatedStudent
         student.setFirst_Name(updatedStudent.getFirst_Name());
@@ -142,9 +132,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Long id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + id));
-        studentRepository.deleteById(id);
+    public void deleteStudent(String Email_Id) {
+        Student student = studentRepository.findById(Email_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+        studentRepository.deleteById(Email_Id);
     }
 }

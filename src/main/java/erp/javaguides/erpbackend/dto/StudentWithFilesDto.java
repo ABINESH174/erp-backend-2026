@@ -1,16 +1,19 @@
 package erp.javaguides.erpbackend.dto;
 
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class StudentDto {
+@NoArgsConstructor
+public class StudentWithFilesDto {
     private String First_Name;
     private String Last_Name;
     private String Date_Of_Birth;
     private String Gender;
+    @Column(unique = true)
     private String Aadhar_Number;
     private String Nationality;
     private String Religion;
@@ -28,8 +31,8 @@ public class StudentDto {
     private String Parents_Status;
     private String Income;
     private String Marital_Status;
-    private String Profile_Photo_Path;
     private String Mobile_Number;
+    @Id
     private String emailid;
     private String Residential_Address;
     private String Communication_Address;
@@ -43,12 +46,18 @@ public class StudentDto {
     private String Hsc_1_Year;
     private String Hsc_2_Year;
     private String Diploma;
-    private String Sslc_File_Path;
-    private String Hsc_1_Year_File_Path;
-    private String Hsc_2_Year_File_Path;
-    private String Diploma_File_Path;
     private String Emis_Number;
     private String First_Graduate;
     private String Special_Category;
+    private MultipartFile Profile_Photo;
+    private MultipartFile Sslc_File;
+    private MultipartFile Hsc_1_Year_File;
+    private MultipartFile Hsc_2_Year_File;
+    private MultipartFile Diploma_File;
+    private byte[] ProfilePhotoContent;
+    private byte[] SslcFileContent;
+    private byte[] Hsc1YearFileContent;
+    private byte[] Hsc2YearFileContent;
+    private byte[] DiplomaFileContent;
+    // Getters and setters
 }
-
