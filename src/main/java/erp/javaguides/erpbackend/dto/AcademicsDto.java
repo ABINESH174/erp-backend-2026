@@ -18,7 +18,7 @@ public class AcademicsDto {
     @Id
     private String emailid;
     @Column(unique = true)
-    private String Registe_No;
+    private String Register_No;
     private String Programme;
     private String Discipline;
     private String Admission_Number;

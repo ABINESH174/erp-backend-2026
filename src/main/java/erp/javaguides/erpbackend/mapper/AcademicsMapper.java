@@ -30,7 +30,7 @@ public class AcademicsMapper {
     public static Academics mapToAcademics(AcademicsDto academicsDto) {
         return new Academics(
                 academicsDto.getEmailid(),
-                academicsDto.getRegiste_No(),
+                academicsDto.getRegister_No(),
                 academicsDto.getProgramme(),
                 academicsDto.getDiscipline(),
                 academicsDto.getAdmission_Number(),
