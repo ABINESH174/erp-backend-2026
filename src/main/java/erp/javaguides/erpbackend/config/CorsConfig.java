@@ -1,4 +1,4 @@
-package erp.javaguides.erpbackend;
+package erp.javaguides.erpbackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
