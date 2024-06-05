@@ -28,7 +28,7 @@ public class    AuthenticationController {
         if (isAuthenticated) {
             return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid register Number", HttpStatus.UNAUTHORIZED);
         }
     }
 

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
+    private static final String FOLDER_PATH = "C:\\Users\\New\\Desktop\\FileSystem";
 
     @Override
     public String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception {

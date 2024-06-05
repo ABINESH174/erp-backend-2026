@@ -17,6 +17,6 @@ public class AuthenticationDto {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String emailid;
+    private String registerNo;
     private String password;
 }

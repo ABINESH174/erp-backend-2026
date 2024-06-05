@@ -31,7 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public boolean authenticate(AuthenticationDto authenticationDto) {
         // Retrieve the Authentication entity by email
-        Authentication authentication = authenticationRepository.findByEmailid(authenticationDto.getEmailid());
+        Authentication authentication = authenticationRepository.findByRegisterNo(authenticationDto.getRegisterNo());
         if (authentication != null) {
             // Compare the provided password with the stored hashed password
             return passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
