@@ -10,7 +10,9 @@ import lombok.*;
 @Entity
 @Table(name="Student")
 public class Student {
-
+    @Id
+    @Column(unique = true)
+    private String register_No;
     @Column(nullable=false)
     private String First_Name;
     @Column(nullable = false)
@@ -38,8 +40,6 @@ public class Student {
     private String Marital_Status;
     private String Profile_Photo_Path;
     private String Mobile_Number;
-
-    @Id
     private String emailid;
     private String Residential_Address;
     private String Communication_Address;
@@ -49,6 +49,7 @@ public class Student {
     private String Ifsc_Code;
     private String Branch_Name;
     private String Account_Number;
+    private String Passbook_Path;
     private String Sslc;
     private String Hsc_1_Year;
     private String Hsc_2_Year;

@@ -9,6 +9,7 @@ import erp.javaguides.erpbackend.entity.Student;
 public class StudentMapper {
     public static StudentDto mapToStudentDto(Student student){
         return new StudentDto(
+                student.getRegister_No(),
                 student.getFirst_Name(),
                 student.getLast_Name(),
                 student.getDate_Of_Birth(),
@@ -41,6 +42,7 @@ public class StudentMapper {
                 student.getIfsc_Code(),
                 student.getBranch_Name(),
                 student.getAccount_Number(),
+                student.getPassbook_Path(),
                 student.getSslc(),
                 student.getHsc_1_Year(),
                 student.getHsc_2_Year(),
@@ -57,6 +59,7 @@ public class StudentMapper {
 
     public static Student mapToStudent(StudentDto studentDto){
         return new Student(
+                studentDto.getRegister_No(),
                 studentDto.getFirst_Name(),
                 studentDto.getLast_Name(),
                 studentDto.getDate_Of_Birth(),
@@ -89,6 +92,7 @@ public class StudentMapper {
                 studentDto.getIfsc_Code(),
                 studentDto.getBranch_Name(),
                 studentDto.getAccount_Number(),
+                studentDto.getPassbook_Path(),
                 studentDto.getSslc(),
                 studentDto.getHsc_1_Year(),
                 studentDto.getHsc_2_Year(),
@@ -105,6 +109,7 @@ public class StudentMapper {
     }
     public static StudentWithFilesDto mapToStudentWithFilesDto(Student student){
         return new StudentWithFilesDto(
+                student.getRegister_No(),
                 student.getFirst_Name(),
                 student.getLast_Name(),
                 student.getDate_Of_Birth(),
@@ -152,12 +157,15 @@ public class StudentMapper {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null
         );
     }
 
     public static Student mapToStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto){
         return new Student(
+                studentWithFilesDto.getRegister_No(),
                 studentWithFilesDto.getFirst_Name(),
                 studentWithFilesDto.getLast_Name(),
                 studentWithFilesDto.getDate_Of_Birth(),
@@ -190,6 +198,7 @@ public class StudentMapper {
                 studentWithFilesDto.getIfsc_Code(),
                 studentWithFilesDto.getBranch_Name(),
                 studentWithFilesDto.getAccount_Number(),
+                null,
                 studentWithFilesDto.getSslc(),
                 studentWithFilesDto.getHsc_1_Year(),
                 studentWithFilesDto.getHsc_2_Year(),

@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentWithFilesDto {
+    @Id
+    @Column(unique = true)
+    private String register_No;
     private String First_Name;
     private String Last_Name;
     private String Date_Of_Birth;
@@ -32,7 +35,6 @@ public class StudentWithFilesDto {
     private String Income;
     private String Marital_Status;
     private String Mobile_Number;
-    @Id
     private String emailid;
     private String Residential_Address;
     private String Communication_Address;
@@ -50,11 +52,13 @@ public class StudentWithFilesDto {
     private String First_Graduate;
     private String Special_Category;
     private MultipartFile Profile_Photo;
+    private MultipartFile Passbook;
     private MultipartFile Sslc_File;
     private MultipartFile Hsc_1_Year_File;
     private MultipartFile Hsc_2_Year_File;
     private MultipartFile Diploma_File;
     private byte[] ProfilePhotoContent;
+    private byte[] Passbookcontent;
     private byte[] SslcFileContent;
     private byte[] Hsc1YearFileContent;
     private byte[] Hsc2YearFileContent;

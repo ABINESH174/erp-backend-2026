@@ -1,5 +1,7 @@
 package erp.javaguides.erpbackend.dto;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import lombok.*;
 
 @Getter
@@ -7,6 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDto {
+    @Id
+    private String register_No;
     private String First_Name;
     private String Last_Name;
     private String Date_Of_Birth;
@@ -39,6 +43,7 @@ public class StudentDto {
     private String Ifsc_Code;
     private String Branch_Name;
     private String Account_Number;
+    private String Passbook_Path;
     private String Sslc;
     private String Hsc_1_Year;
     private String Hsc_2_Year;
