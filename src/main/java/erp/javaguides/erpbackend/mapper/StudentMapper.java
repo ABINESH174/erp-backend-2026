@@ -42,6 +42,7 @@ public class StudentMapper {
                 student.getIfsc_Code(),
                 student.getBranch_Name(),
                 student.getAccount_Number(),
+                student.getPassbook_Path(),
                 student.getSslc(),
                 student.getHsc_1_Year(),
                 student.getHsc_2_Year(),
@@ -91,6 +92,7 @@ public class StudentMapper {
                 studentDto.getIfsc_Code(),
                 studentDto.getBranch_Name(),
                 studentDto.getAccount_Number(),
+                studentDto.getPassbook_Path(),
                 studentDto.getSslc(),
                 studentDto.getHsc_1_Year(),
                 studentDto.getHsc_2_Year(),
@@ -155,6 +157,8 @@ public class StudentMapper {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null
         );
     }
@@ -194,6 +198,7 @@ public class StudentMapper {
                 studentWithFilesDto.getIfsc_Code(),
                 studentWithFilesDto.getBranch_Name(),
                 studentWithFilesDto.getAccount_Number(),
+                null,
                 studentWithFilesDto.getSslc(),
                 studentWithFilesDto.getHsc_1_Year(),
                 studentWithFilesDto.getHsc_2_Year(),

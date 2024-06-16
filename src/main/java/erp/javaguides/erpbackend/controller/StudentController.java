@@ -38,8 +38,8 @@ public class StudentController {
 
     //Build GetAllEmployees REST API
     @GetMapping
-    public ResponseEntity<List<StudentDto>>getAllStudents(){
-        List<StudentDto> students=studentService.getAllStudents();
+    public ResponseEntity<List<StudentWithFilesDto>>getAllStudents(){
+        List<StudentWithFilesDto> students=studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
