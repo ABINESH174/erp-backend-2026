@@ -1,7 +1,11 @@
 package erp.javaguides.erpbackend.controller;
 
+import erp.javaguides.erpbackend.dto.AcademicsDto;
 import erp.javaguides.erpbackend.dto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.AuthenticationService;
+import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,25 +15,45 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/authentication")
-public class    AuthenticationController {
-    private AuthenticationService authenticationService;
+public class AuthenticationController {
 
-    //Build Add Student REST API
+    private final AuthenticationService authenticationService;
+    private final StudentService studentService;
+    private final AcademicsService academicsService;
+
+    // Build Add Student REST API
     @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
         AuthenticationDto savedStudent = authenticationService.createAuthentication(authenticationDto);
         return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
     }
+
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
-        // Call your authentication service to handle the authentication logic
         boolean isAuthenticated = authenticationService.authenticate(authenticationDto);
 
-        if (isAuthenticated) {
-            return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+        if (!isAuthenticated) {
+            return new ResponseEntity<>("Invalid register number", HttpStatus.UNAUTHORIZED);
         }
-    }
 
+        try {
+            StudentWithFilesDto student = studentService.getStudentWithFilesDtoByRegisterNo(authenticationDto.getRegisterNo());
+            if (student == null) {
+                return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
+        }
+
+        try {
+            AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getRegisterNo());
+            if (academic == null) {
+                return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
+    }
 }
