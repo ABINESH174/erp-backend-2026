@@ -44,6 +44,7 @@ public class StudentServiceImpl implements StudentService {
 
         // Save files and update file paths in the Student object
         student.setProfile_Photo_Path(saveFile(firstname, userFolderPath, "profilephoto", studentWithFilesDto.getProfile_Photo()));
+        student.setPassbook_Path(saveFile(firstname, userFolderPath, "passbook", studentWithFilesDto.getPassbook()));
         student.setSslc_File_Path(saveFile(firstname, userFolderPath, "sslcfile", studentWithFilesDto.getSslc_File()));
         student.setHsc_1_Year_File_Path(saveFile(firstname, userFolderPath, "hsc1file", studentWithFilesDto.getHsc_1_Year_File()));
         student.setHsc_2_Year_File_Path(saveFile(firstname, userFolderPath, "hsc2file", studentWithFilesDto.getHsc_2_Year_File()));
@@ -82,6 +83,7 @@ public class StudentServiceImpl implements StudentService {
 
         // Read files from their stored paths
         byte[] profilePhotoContent = readFile(student.getProfile_Photo_Path());
+        byte[] passbookcontent = readFile(student.getPassbook_Path());
         byte[] sslcFileContent = readFile(student.getSslc_File_Path());
         byte[] hsc1YearFileContent = readFile(student.getHsc_1_Year_File_Path());
         byte[] hsc2YearFileContent = readFile(student.getHsc_2_Year_File_Path());
@@ -90,6 +92,7 @@ public class StudentServiceImpl implements StudentService {
         StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student); // Map StudentDto to StudentWithFilesDto
 
         studentWithFilesDto.setProfilePhotoContent(profilePhotoContent);
+        studentWithFilesDto.setPassbookcontent(passbookcontent);
         studentWithFilesDto.setSslcFileContent(sslcFileContent);
         studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
         studentWithFilesDto.setHsc2YearFileContent(hsc2YearFileContent);
@@ -112,9 +115,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDto> getAllStudents() {
+    public List<StudentWithFilesDto> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students.stream().map(StudentMapper::mapToStudentDto).collect(Collectors.toList());
+        return students.stream().map(StudentMapper::mapToStudentWithFilesDto).collect(Collectors.toList());
     }
 
     @Override

@@ -43,6 +43,7 @@ public class StudentDto {
     private String Ifsc_Code;
     private String Branch_Name;
     private String Account_Number;
+    private String Passbook_Path;
     private String Sslc;
     private String Hsc_1_Year;
     private String Hsc_2_Year;
