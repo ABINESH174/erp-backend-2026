@@ -23,20 +23,20 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:\\Users\\New\\Desktop\\FileSystem";
+    private static final String FOLDER_PATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
 
     @Override
     public String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception {
-        if (studentWithFilesDto == null || studentWithFilesDto.getEmailid() == null) {
-            throw new IllegalArgumentException("StudentWithFilesDto or emailId cannot be null");
+        if (studentWithFilesDto == null || studentWithFilesDto.getRegister_No() == null) {
+            throw new IllegalArgumentException("StudentWithFilesDto or Register Number cannot be null");
         }
-        Optional<Student> optionalStudent = studentRepository.findById(studentWithFilesDto.getEmailid());
+        Optional<Student> optionalStudent = studentRepository.findById(studentWithFilesDto.getRegister_No());
         if(optionalStudent.isPresent()){
-            throw new Exception("EmailId already exists");
+            throw new Exception("Register Number already exists");
         }
         String firstname = studentWithFilesDto.getFirst_Name();
-        String emailId = studentWithFilesDto.getEmailid();
-        String userFolderPath = Paths.get(FOLDER_PATH, emailId).toString();
+        String registerNo = studentWithFilesDto.getRegister_No();
+        String userFolderPath = Paths.get(FOLDER_PATH, registerNo).toString();
         createFolderIfNotExist(userFolderPath);
 
         // Map StudentWithFilesDto to Student object
@@ -52,7 +52,7 @@ public class StudentServiceImpl implements StudentService {
         // Save the Student object
         student = studentRepository.save(student);
 
-        return "Student created successfully with EmailID: " + student.getEmailid();
+        return "Student created successfully with RegisterNo: " + student.getRegister_No();
     }
 
     @Override
@@ -76,9 +76,9 @@ public class StudentServiceImpl implements StudentService {
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
     @Override
-    public StudentWithFilesDto getStudentWithFilesDtoByEmailId(String emailId) {
-        Student student = studentRepository.findById(emailId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with email ID: " + emailId));
+    public StudentWithFilesDto getStudentWithFilesDtoByRegisterNo(String register_No) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + register_No));
 
         // Read files from their stored paths
         byte[] profilePhotoContent = readFile(student.getProfile_Photo_Path());
@@ -118,9 +118,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto updateStudent(String Email_Id, StudentDto updatedStudent) {
-        Student student = studentRepository.findById(Email_Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+    public StudentDto updateStudent(String register_No, StudentDto updatedStudent) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given Register number:" + register_No));
 
         // Update student fields with the data from updatedStudent
         student.setFirst_Name(updatedStudent.getFirst_Name());
@@ -132,9 +132,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(String Email_Id) {
-        Student student = studentRepository.findById(Email_Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
-        studentRepository.deleteById(Email_Id);
+    public void deleteStudent(String register_No) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student does not exist with the given Register number:" + register_No));
+        studentRepository.deleteById(register_No);
     }
 }
