@@ -24,10 +24,10 @@ public class StudentController {
     }
 
     //Build Get Student REST API
-    @GetMapping("{emailid}")
-    public ResponseEntity<StudentWithFilesDto> getStudentByEmailId(@PathVariable String emailid)throws IOException {
-        // Call the service method to retrieve the student by email ID
-        StudentWithFilesDto studentWithFilesDto = studentService.getStudentWithFilesDtoByEmailId(emailid);
+    @GetMapping("{register_No}")
+    public ResponseEntity<StudentWithFilesDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
+        // Call the service method to retrieve the student by
+        StudentWithFilesDto studentWithFilesDto = studentService.getStudentWithFilesDtoByRegisterNo(register_No);
 
         if (studentWithFilesDto != null) {
             return ResponseEntity.ok(studentWithFilesDto);
@@ -44,16 +44,16 @@ public class StudentController {
     }
 
     //Build Update Student REST API
-    @PutMapping("{emailid}")
-    public ResponseEntity<StudentDto>updateStudent(@PathVariable("emailid") String Email_Id,@RequestBody StudentDto updatedStudent){
-       StudentDto studentDto=studentService.updateStudent(Email_Id,updatedStudent);
+    @PutMapping("{register_No}")
+    public ResponseEntity<StudentDto>updateStudent(@PathVariable("register_No") String register_No,@RequestBody StudentDto updatedStudent){
+       StudentDto studentDto=studentService.updateStudent(register_No,updatedStudent);
        return ResponseEntity.ok(studentDto);
     }
 
     //Build Delete Student REST API
-    @DeleteMapping("{Email_Id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("Email_Id") String Email_Id){
-        studentService.deleteStudent(Email_Id);
+    @DeleteMapping("{register_No}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("register_No") String register_No){
+        studentService.deleteStudent(register_No);
         return ResponseEntity.ok("Student deleted successfully");
     }
 }

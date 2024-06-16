@@ -10,8 +10,8 @@ import java.util.List;
 public interface StudentService {
     String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception;
     void createFolderIfNotExist(String folderPath);
-    public StudentWithFilesDto getStudentWithFilesDtoByEmailId(String emailId) ;
+    public StudentWithFilesDto getStudentWithFilesDtoByRegisterNo(String register_No) ;
     List<StudentDto> getAllStudents();
-    StudentDto updateStudent(String emailid, StudentDto updatedStudent);
-    void deleteStudent(String emailid);
+    StudentDto updateStudent(String register_No, StudentDto updatedStudent);
+    void deleteStudent(String register_No);
 }

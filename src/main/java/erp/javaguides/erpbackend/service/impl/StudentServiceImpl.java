@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDER_PATH = "C:\\Users\\New\\Desktop\\FileSystem";
+    private static final String FOLDER_PATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
 
     @Override
     public String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception {
         if (studentWithFilesDto == null || studentWithFilesDto.getEmailid() == null) {
-            throw new IllegalArgumentException("StudentWithFilesDto or emailId cannot be null");
+            throw new IllegalArgumentException("StudentWithFilesDto or Register No cannot be null");
         }
         Optional<Student> optionalStudent = studentRepository.findById(studentWithFilesDto.getEmailid());
         if(optionalStudent.isPresent()){
@@ -76,9 +76,9 @@ public class StudentServiceImpl implements StudentService {
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
     @Override
-    public StudentWithFilesDto getStudentWithFilesDtoByEmailId(String emailId) {
-        Student student = studentRepository.findById(emailId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with email ID: " + emailId));
+    public StudentWithFilesDto getStudentWithFilesDtoByRegisterNo(String register_No) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + register_No));
 
         // Read files from their stored paths
         byte[] profilePhotoContent = readFile(student.getProfile_Photo_Path());
@@ -118,9 +118,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto updateStudent(String Email_Id, StudentDto updatedStudent) {
-        Student student = studentRepository.findById(Email_Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
+    public StudentDto updateStudent(String register_No, StudentDto updatedStudent) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + register_No));
 
         // Update student fields with the data from updatedStudent
         student.setFirst_Name(updatedStudent.getFirst_Name());
@@ -132,9 +132,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(String Email_Id) {
-        Student student = studentRepository.findById(Email_Id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + Email_Id));
-        studentRepository.deleteById(Email_Id);
+    public void deleteStudent(String register_No) {
+        Student student = studentRepository.findById(register_No)
+                .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given id:" + register_No));
+        studentRepository.deleteById(register_No);
     }
 }
