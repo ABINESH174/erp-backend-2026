@@ -1,11 +1,17 @@
 package erp.javaguides.erpbackend.service.impl;
 
+import erp.javaguides.erpbackend.dto.AcademicsDto;
+import erp.javaguides.erpbackend.dto.CombinedDto;
 import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.entity.Academics;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
+import erp.javaguides.erpbackend.mapper.AcademicsMapper;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
+import erp.javaguides.erpbackend.repository.AcademicsRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
+import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,10 +29,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final AcademicsService academicsService;
     private static final String FOLDER_PATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
 
     @Override
-    public String createStudentWithFilesDto(StudentWithFilesDto studentWithFilesDto) throws Exception {
+    public String createStudentWithFiles(StudentWithFilesDto studentWithFilesDto) throws Exception {
         if (studentWithFilesDto == null || studentWithFilesDto.getRegister_No() == null) {
             throw new IllegalArgumentException("StudentWithFilesDto or Register Number cannot be null");
         }
@@ -115,9 +122,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentWithFilesDto> getAllStudents() {
+    public List<CombinedDto> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students.stream().map(StudentMapper::mapToStudentWithFilesDto).collect(Collectors.toList());
+        return students.stream().map(student -> {
+            StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
+            AcademicsDto academicsDto = academicsService.getAcademicsById(student.getRegister_No());
+
+            CombinedDto combinedDto = new CombinedDto();
+            combinedDto.setStudentWithFilesDto(studentWithFilesDto);
+            combinedDto.setAcademicsDto(academicsDto);
+
+            return combinedDto;
+        }).collect(Collectors.toList());
     }
 
     @Override

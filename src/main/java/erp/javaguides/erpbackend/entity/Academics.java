@@ -15,8 +15,6 @@ import lombok.Setter;
 @Table(name="Academics")
 public class Academics {
     @Id
-//    private String emailid;
-    @Column(unique = true)
     private String register_No;
     private String Programme;
     private String Discipline;

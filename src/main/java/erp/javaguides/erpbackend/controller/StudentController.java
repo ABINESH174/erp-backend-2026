@@ -1,7 +1,10 @@
 package erp.javaguides.erpbackend.controller;
 
+import erp.javaguides.erpbackend.dto.AcademicsDto;
+import erp.javaguides.erpbackend.dto.CombinedDto;
 import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,30 +19,28 @@ import java.util.List;
 @RequestMapping("/api/student")
 public class StudentController {
     private StudentService studentService;
+    private AcademicsService academicsService;
     //Build Add Student REST API
     @PostMapping
     public ResponseEntity<String> createStudent(@ModelAttribute StudentWithFilesDto studentWithFilesDto)throws Exception {
-        String savedStudent = studentService.createStudentWithFilesDto(studentWithFilesDto);
+        String savedStudent = studentService.createStudentWithFiles(studentWithFilesDto);
         return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
     }
 
     //Build Get Student REST API
     @GetMapping("{register_No}")
-    public ResponseEntity<StudentWithFilesDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
+    public ResponseEntity<CombinedDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
         // Call the service method to retrieve the student by
         StudentWithFilesDto studentWithFilesDto = studentService.getStudentWithFilesDtoByRegisterNo(register_No);
-
-        if (studentWithFilesDto != null) {
-            return ResponseEntity.ok(studentWithFilesDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        AcademicsDto academicsDto = academicsService.getAcademicsById(register_No);
+        CombinedDto combinedDto = new CombinedDto(studentWithFilesDto,academicsDto);
+        return ResponseEntity.ok(combinedDto);
     }
 
     //Build GetAllEmployees REST API
     @GetMapping
-    public ResponseEntity<List<StudentWithFilesDto>>getAllStudents(){
-        List<StudentWithFilesDto> students=studentService.getAllStudents();
+    public ResponseEntity<List<CombinedDto>>getAllStudents(){
+        List<CombinedDto> students=studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
