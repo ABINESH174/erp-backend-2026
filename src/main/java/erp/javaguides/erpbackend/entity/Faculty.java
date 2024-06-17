@@ -18,6 +18,6 @@ public class Faculty {
     private String name;
     @Id
     private String email;
-    private String department;
-    private String batch;
+    private String discipline;
+    private String academicYear;
 }

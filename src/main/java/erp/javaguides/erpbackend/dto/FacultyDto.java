@@ -12,6 +12,6 @@ import lombok.Setter;
 public class FacultyDto {
     private String name;
     private String email;
-    private String department;
-    private String batch;
+    private String discipline;
+    private String academicYear;
 }

@@ -37,7 +37,7 @@ public class AuthenticationController {
         }
 
         try {
-            StudentWithFilesDto student = studentService.getStudentWithFilesDtoByRegisterNo(authenticationDto.getRegisterNo());
+            StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getRegisterNo());
             if (student == null) {
                 return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
             }

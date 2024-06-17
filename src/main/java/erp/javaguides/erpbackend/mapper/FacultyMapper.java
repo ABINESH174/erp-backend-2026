@@ -8,16 +8,16 @@ public class FacultyMapper {
         return new FacultyDto(
                 faculty.getName(),
                 faculty.getEmail(),
-                faculty.getDepartment(),
-                faculty.getBatch()
+                faculty.getDiscipline(),
+                faculty.getAcademicYear()
         );
     }
     public static Faculty mapToFaculty(FacultyDto facultyDto){
         return new Faculty(
                 facultyDto.getName(),
                 facultyDto.getEmail(),
-                facultyDto.getDepartment(),
-                facultyDto.getBatch()
+                facultyDto.getDiscipline(),
+                facultyDto.getAcademicYear()
         );
     }
 }

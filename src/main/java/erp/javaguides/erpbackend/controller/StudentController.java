@@ -23,7 +23,7 @@ public class StudentController {
     //Build Add Student REST API
     @PostMapping
     public ResponseEntity<String> createStudent(@ModelAttribute StudentWithFilesDto studentWithFilesDto)throws Exception {
-        String savedStudent = studentService.createStudentWithFiles(studentWithFilesDto);
+        String savedStudent = studentService.createStudent(studentWithFilesDto);
         return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
     }
 
@@ -31,7 +31,7 @@ public class StudentController {
     @GetMapping("{register_No}")
     public ResponseEntity<CombinedDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
         // Call the service method to retrieve the student by
-        StudentWithFilesDto studentWithFilesDto = studentService.getStudentWithFilesDtoByRegisterNo(register_No);
+        StudentWithFilesDto studentWithFilesDto = studentService.getStudentByRegisterNo(register_No);
         AcademicsDto academicsDto = academicsService.getAcademicsById(register_No);
         CombinedDto combinedDto = new CombinedDto(studentWithFilesDto,academicsDto);
         return ResponseEntity.ok(combinedDto);
