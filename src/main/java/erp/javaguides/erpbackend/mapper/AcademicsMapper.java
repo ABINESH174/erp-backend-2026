@@ -8,43 +8,41 @@ public class AcademicsMapper {
     public static AcademicsDto mapToAcademicsDto(Academics academics){
 
         return new AcademicsDto(
-//                academics.getEmailid(),
-                academics.getRegister_No(),
+                academics.getRegisterNo(),
                 academics.getProgramme(),
                 academics.getDiscipline(),
-                academics.getAdmission_Number(),
-                academics.getAcademic_Year(),
+                academics.getAdmissionNumber(),
+                academics.getAcademicYear(),
                 academics.getSemester(),
-                academics.getABC_Id(),
-                academics.getUMIS_Id(),
-                academics.getDate_Of_Admission(),
-                academics.getCourse_Joined_Date(),
-                academics.getCourse_Type(),
+                academics.getAbcId(),
+                academics.getUmisId(),
+                academics.getDateOfAdmission(),
+                academics.getCourseJoinedDate(),
+                academics.getCourseType(),
                 academics.getRegulation(),
-                academics.getFast_Track(),
-                academics.getCGPA(),
-                academics.getStudent_Status()
+                academics.getFastTrack(),
+                academics.getCgpa(),
+                academics.getStudentStatus()
         );
     }
 
     public static Academics mapToAcademics(AcademicsDto academicsDto) {
         return new Academics(
-//                academicsDto.getEmailid(),
-                academicsDto.getRegister_No(),
+                academicsDto.getRegisterNo(),
                 academicsDto.getProgramme(),
                 academicsDto.getDiscipline(),
-                academicsDto.getAdmission_Number(),
-                academicsDto.getAcademic_Year(),
+                academicsDto.getAdmissionNumber(),
+                academicsDto.getAcademicYear(),
                 academicsDto.getSemester(),
-                academicsDto.getABC_Id(),
-                academicsDto.getUMIS_Id(),
-                academicsDto.getDate_Of_Admission(),
-                academicsDto.getCourse_Joined_Date(),
-                academicsDto.getCourse_Type(),
+                academicsDto.getAbcId(),
+                academicsDto.getUmisId(),
+                academicsDto.getDateOfAdmission(),
+                academicsDto.getCourseJoinedDate(),
+                academicsDto.getCourseType(),
                 academicsDto.getRegulation(),
-                academicsDto.getFast_Track(),
-                academicsDto.getCGPA(),
-                academicsDto.getStudent_Status()
+                academicsDto.getFastTrack(),
+                academicsDto.getCgpa(),
+                academicsDto.getStudentStatus()
         );
     }
 }

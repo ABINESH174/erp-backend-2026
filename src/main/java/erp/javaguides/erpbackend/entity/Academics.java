@@ -15,21 +15,20 @@ import lombok.Setter;
 @Table(name="Academics")
 public class Academics {
     @Id
-//    private String emailid;
-    @Column(unique = true)
-    private String register_No;
-    private String Programme;
-    private String Discipline;
-    private String Admission_Number;
-    private String Academic_Year;
-    private String Semester;
-    private String ABC_Id;
-    private String UMIS_Id;
-    private String Date_Of_Admission;
-    private String Course_Joined_Date;
-    private String Course_Type;
-    private String Regulation;
-    private String Fast_Track;
-    private String CGPA;
-    private String Student_Status;
+    private String registerNo;
+    private String programme;
+    private String discipline;
+    private String admissionNumber;
+    private String academicYear;
+    private String semester;
+    private String abcId;
+    private String umisId;
+    private String dateOfAdmission;
+    private String courseJoinedDate;
+    private String courseType;
+    private String regulation;
+    private String fastTrack;
+    private String cgpa;
+    private String studentStatus;
+
 }
