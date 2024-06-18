@@ -12,53 +12,54 @@ import lombok.*;
 public class Student {
     @Id
     @Column(unique = true)
-    private String register_No;
+    private String registerNo;
     @Column(nullable=false)
-    private String First_Name;
+    private String firstName;
     @Column(nullable = false)
-    private String Last_Name;
+    private String lastName;
     @Column(nullable = false)
-    private String Date_Of_Birth;
-    private String Gender;
+    private String dateOfBirth;
+    private String gender;
     @Column(unique = true)
-    private String Aadhar_Number;
-    private String Nationality;
+    private String aadharNumber;
+    private String nationality;
     private String Religion;
-    private String Community;
-    private String Caste;
-    private String Fathers_Name;
-    private String Fathers_Occupation;
-    private String Fathers_Mobile_Number;
-    private String Mothers_Name;
-    private String Mothers_Occupation;
-    private String Mothers_Mobile_Number;
-    private String Guardians_Name;
-    private String Guardians_Occupation;
-    private String Guardians_Mobile_Number;
-    private String Parents_Status;
-    private String Income;
-    private String Marital_Status;
-    private String Profile_Photo_Path;
-    private String Mobile_Number;
+    private String community;
+    private String caste;
+    private String fathersName;
+    private String fathersOccupation;
+    private String fathersMobileNumber;
+    private String mothersName;
+    private String mothersOccupation;
+    private String mothersMobileNumber;
+    private String guardiansName;
+    private String guardiansOccupation;
+    private String guardiansMobileNumber;
+    private String parentsStatus;
+    private String income;
+    private String maritalStatus;
+    private String profilePhotoPath;
+    private String mobileNumber;
     private String emailid;
-    private String Residential_Address;
-    private String Communication_Address;
-    private String Hosteller;
-    private String Hostel_Type;
-    private String Bank_Name;
-    private String Ifsc_Code;
-    private String Branch_Name;
-    private String Account_Number;
-    private String Sslc;
-    private String Hsc_1_Year;
-    private String Hsc_2_Year;
-    private String Diploma;
-    private String Sslc_File_Path;
-    private String Hsc_1_Year_File_Path;
-    private String Hsc_2_Year_File_Path;
-    private String Diploma_File_Path;
-    private String Emis_Number;
-    private String First_Graduate;
-    private String Special_Category;
+    private String residentialAddress;
+    private String communicationAddress;
+    private String hosteller;
+    private String hostelType;
+    private String bankName;
+    private String ifscCode;
+    private String branchName;
+    private String accountNumber;
+    private String passbookPath;
+    private String sslc;
+    private String hsc1Year;
+    private String hsc2Year;
+    private String diploma;
+    private String sslcFilePath;
+    private String hsc1YearFilePath;
+    private String hsc2YearFilePath;
+    private String diplomaFilePath;
+    private String emisNumber;
+    private String firstGraduate;
+    private String specialCategory;
 }
 
