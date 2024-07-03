@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service;
 
 import erp.javaguides.erpbackend.dto.AcademicsDto;
+import erp.javaguides.erpbackend.entity.Academics;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface AcademicsService {
     List<AcademicsDto> getAllAcademics();
     AcademicsDto updateAcademics(String register_No, AcademicsDto updatedAcademics);
     void deleteAcademics(String register_No);
+
 }
