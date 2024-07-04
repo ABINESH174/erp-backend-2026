@@ -1,14 +1,10 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.AcademicsDto;
-import erp.javaguides.erpbackend.dto.CombinedDto;
-import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
 import erp.javaguides.erpbackend.repository.StudentRepository;
-import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +22,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private final AcademicsService academicsService;
-    private static final String FOLDERPATH = "J:\\FileSystem";
+//    private final AcademicsService academicsService;
+    private static final String FOLDERPATH = "C:\\Users\\New\\Desktop\\FileSystem";
 
     @Override
     public String createStudent(StudentWithFilesDto studentWithFilesDto) throws Exception {
@@ -119,21 +115,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<CombinedDto> getAllStudents() {
+    public List<StudentWithFilesDto> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return students.stream().map(student -> {
             StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-            AcademicsDto academicsDto = academicsService.getAcademicsById(student.getRegisterNo());
-
-            CombinedDto combinedDto = new CombinedDto();
-            combinedDto.setStudentWithFilesDto(studentWithFilesDto);
-            combinedDto.setAcademicsDto(academicsDto);
-
-            return combinedDto;
+            return studentWithFilesDto;
         }).collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public StudentDto updateStudent(String registerNo, StudentDto updatedStudent) {
         Student student = studentRepository.findById(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student is not exist with the given Register number:" + registerNo));
@@ -152,5 +142,5 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student does not exist with the given Register number:" + registerNo));
         studentRepository.deleteById(registerNo);
-    }
+    }*/
 }

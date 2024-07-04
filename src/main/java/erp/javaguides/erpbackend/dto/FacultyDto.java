@@ -1,6 +1,5 @@
 package erp.javaguides.erpbackend.dto;
 
-import erp.javaguides.erpbackend.entity.Academics;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,5 @@ public class FacultyDto {
     private String email;
     private String discipline;
     private String academicYear;
-    private List<CombinedDto> students;
+    private List<StudentWithFilesDto> students;
 }

@@ -61,5 +61,19 @@ public class Student {
     private String emisNumber;
     private String firstGraduate;
     private String specialCategory;
+    private String programme;
+    private String discipline;
+    private String admissionNumber;
+    private String academicYear;
+    private String semester;
+    private String abcId;
+    private String umisId;
+    private String dateOfAdmission;
+    private String courseJoinedDate;
+    private String courseType;
+    private String regulation;
+    private String fastTrack;
+    private String cgpa;
+    private String studentStatus;
 }
 
