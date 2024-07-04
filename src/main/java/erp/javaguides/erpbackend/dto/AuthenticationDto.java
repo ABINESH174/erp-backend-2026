@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name="Authentication")
+//@Entity
+//@Table(name="Authentication")
 public class AuthenticationDto {
     private Long id;
     private String userId;
