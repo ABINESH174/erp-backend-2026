@@ -8,16 +8,18 @@ public class AuthenticationMapper {
     public static AuthenticationDto mapToAuthenticationDto(Authentication authentication){
         return new AuthenticationDto(
                 authentication.getId(),
-                authentication.getRegisterNo(),
-                authentication.getPassword()
+                authentication.getUserId(),
+                authentication.getPassword(),
+                authentication.getRole()
         );
     }
 
     public static Authentication mapToAuthentication(AuthenticationDto authenticationDto){
         return new Authentication(
                 authenticationDto.getId(),
-                authenticationDto.getRegisterNo(),
-                authenticationDto.getPassword()
+                authenticationDto.getUserId(),
+                authenticationDto.getPassword(),
+                authenticationDto.getRole()
         );
     }
 }
