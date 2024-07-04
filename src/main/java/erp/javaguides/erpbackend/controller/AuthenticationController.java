@@ -33,30 +33,34 @@ public class AuthenticationController {
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticationService.authenticate(authenticationDto);
 
-        if (authentication!=null) {
+        if (authentication==null) {
             return new ResponseEntity<>("Invalid register number", HttpStatus.UNAUTHORIZED);
         }
 
-        try {
-            StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
-            if (student == null) {
-                return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
-        }
-
-        try {
-            AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getUserId());
-            if (academic == null) {
-                return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
-        }
-        if(authentication.getRole()=="FA"){
+        if(authentication.getRole().equalsIgnoreCase("FA")){
             return new ResponseEntity<>("Faculty Authentication successful", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Student Authentication successful", HttpStatus.OK);
+        if(authentication.getRole().equalsIgnoreCase("ST")){
+            try {
+                StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
+                if (student == null) {
+                    return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
+            }
+
+            try {
+                AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getUserId());
+                if (academic == null) {
+                    return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Student Authentication successful", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid register number", HttpStatus.OK);
+
     }
 }
