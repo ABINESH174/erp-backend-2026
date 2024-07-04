@@ -10,13 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name="Authentication")
+//@Entity
+//@Table(name="Authentication")
 public class AuthenticationDto {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String registerNo;
+    private String userId;
     private String password;
+    private String role;
 }

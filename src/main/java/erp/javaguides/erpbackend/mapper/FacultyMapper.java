@@ -9,7 +9,8 @@ public class FacultyMapper {
                 faculty.getName(),
                 faculty.getEmail(),
                 faculty.getDiscipline(),
-                faculty.getAcademicYear()
+                faculty.getAcademicYear(),
+                null
         );
     }
     public static Faculty mapToFaculty(FacultyDto facultyDto){
