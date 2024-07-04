@@ -4,12 +4,9 @@ import erp.javaguides.erpbackend.dto.AcademicsDto;
 import erp.javaguides.erpbackend.dto.CombinedDto;
 import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
-import erp.javaguides.erpbackend.entity.Academics;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
-import erp.javaguides.erpbackend.mapper.AcademicsMapper;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
-import erp.javaguides.erpbackend.repository.AcademicsRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.StudentService;
@@ -30,7 +27,7 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final AcademicsService academicsService;
-    private static final String FOLDERPATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
+    private static final String FOLDERPATH = "J:\\FileSystem";
 
     @Override
     public String createStudent(StudentWithFilesDto studentWithFilesDto) throws Exception {

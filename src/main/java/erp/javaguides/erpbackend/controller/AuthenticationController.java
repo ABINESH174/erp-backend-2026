@@ -3,6 +3,7 @@ package erp.javaguides.erpbackend.controller;
 import erp.javaguides.erpbackend.dto.AcademicsDto;
 import erp.javaguides.erpbackend.dto.AuthenticationDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.StudentService;
@@ -30,14 +31,14 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
-        boolean isAuthenticated = authenticationService.authenticate(authenticationDto);
+        Authentication authentication = authenticationService.authenticate(authenticationDto);
 
-        if (!isAuthenticated) {
+        if (authentication!=null) {
             return new ResponseEntity<>("Invalid register number", HttpStatus.UNAUTHORIZED);
         }
 
         try {
-            StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getRegisterNo());
+            StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
             if (student == null) {
                 return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
             }
@@ -46,14 +47,16 @@ public class AuthenticationController {
         }
 
         try {
-            AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getRegisterNo());
+            AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getUserId());
             if (academic == null) {
                 return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
         }
-
-        return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
+        if(authentication.getRole()=="FA"){
+            return new ResponseEntity<>("Faculty Authentication successful", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Student Authentication successful", HttpStatus.OK);
     }
 }
