@@ -27,10 +27,10 @@ public class FacultyController {
         }
     }
     @GetMapping("{email}")
-    public ResponseEntity<Faculty> getFacultyByEmail(@PathVariable String email)throws IOException {
+    public ResponseEntity<FacultyDto> getFacultyByEmail(@PathVariable String email)throws IOException {
         // Call the service method to retrieve the student by
-        Faculty faculty = facultyService.getFacultyByEmail(email);
-        return ResponseEntity.ok(faculty);
+        FacultyDto facultyDto = facultyService.getFacultyByEmail(email);
+        return ResponseEntity.ok(facultyDto);
     }
     @GetMapping("/getall")
     public ResponseEntity<List<FacultyDto>>getAllFaculties(){
