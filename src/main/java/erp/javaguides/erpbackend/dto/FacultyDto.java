@@ -12,9 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FacultyDto {
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
+    private String mobileNumber;
     private String discipline;
-    private String academicYear;
+    private String handlingBatch;
+    private String handlingClass;
     private List<StudentWithFilesDto> students;
 }

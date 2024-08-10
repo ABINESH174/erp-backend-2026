@@ -6,19 +6,25 @@ import erp.javaguides.erpbackend.entity.Faculty;
 public class FacultyMapper {
     public static FacultyDto mapToFacultyDto(Faculty faculty){
         return new FacultyDto(
-                faculty.getName(),
+                faculty.getFirstName(),
+                faculty.getLastName(),
                 faculty.getEmail(),
+                faculty.getMobileNumber(),
                 faculty.getDiscipline(),
-                faculty.getAcademicYear(),
+                faculty.getHandlingBatch(),
+                faculty.getHandlingClass(),
                 null
         );
     }
     public static Faculty mapToFaculty(FacultyDto facultyDto){
         return new Faculty(
-                facultyDto.getName(),
+                facultyDto.getFirstName(),
+                facultyDto.getLastName(),
                 facultyDto.getEmail(),
+                facultyDto.getMobileNumber(),
                 facultyDto.getDiscipline(),
-                facultyDto.getAcademicYear()
+                facultyDto.getHandlingBatch(),
+                facultyDto.getHandlingClass()
         );
     }
 }

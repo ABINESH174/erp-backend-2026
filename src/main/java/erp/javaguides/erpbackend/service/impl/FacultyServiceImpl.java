@@ -41,7 +41,7 @@ public class FacultyServiceImpl implements FacultyService {
 
         // Fetch academics based on discipline and academic year
         List<Student> studentsList = studentRepository.findByDisciplineAndAcademicYear(
-                faculty.getDiscipline(), faculty.getAcademicYear()
+                faculty.getDiscipline(), faculty.getHandlingBatch()
         );
 
         // Combine student and academic details into CombinedDto
