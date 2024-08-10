@@ -15,9 +15,12 @@ import lombok.Setter;
 @Entity
 @Table(name="Faculty")
 public class Faculty {
-    private String name;
+    private String firstName;
+    private String lastName;
     @Id
     private String email;
+    private String mobileNumber;
     private String discipline;
-    private String academicYear;
+    private String handlingBatch;
+    private String handlingClass;
 }
