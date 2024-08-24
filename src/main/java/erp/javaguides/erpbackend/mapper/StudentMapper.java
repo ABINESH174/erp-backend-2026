@@ -7,106 +7,7 @@ import erp.javaguides.erpbackend.entity.Student;
 
 
 public class StudentMapper {
-    public static StudentDto mapToStudentDto(Student student){
-        return new StudentDto(
-                student.getRegisterNo(),
-                student.getFirstName(),
-                student.getLastName(),
-                student.getDateOfBirth(),
-                student.getGender(),
-                student.getAadharNumber(),
-                student.getNationality(),
-                student.getReligion(),
-                student.getCommunity(),
-                student.getCaste(),
-                student.getFathersName(),
-                student.getFathersOccupation(),
-                student.getFathersMobileNumber(),
-                student.getMothersName(),
-                student.getMothersOccupation(),
-                student.getMothersMobileNumber(),
-                student.getGuardiansName(),
-                student.getGuardiansOccupation(),
-                student.getGuardiansMobileNumber(),
-                student.getParentsStatus(),
-                student.getIncome(),
-                student.getMaritalStatus(),
-                student.getProfilePhotoPath(),
-                student.getMobileNumber(),
-                student.getEmailid(),
-                student.getResidentialAddress(),
-                student.getCommunicationAddress(),
-                student.getHosteller(),
-                student.getHostelType(),
-                student.getBankName(),
-                student.getIfscCode(),
-                student.getBranchName(),
-                student.getAccountNumber(),
-                student.getPassbookPath(),
-                student.getSslc(),
-                student.getHsc1Year(),
-                student.getHsc2Year(),
-                student.getDiploma(),
-                student.getSslcFilePath(),
-                student.getHsc1YearFilePath(),
-                student.getHsc2YearFilePath(),
-                student.getDiplomaFilePath(),
-                student.getEmisNumber(),
-                student.getFirstGraduate(),
-                student.getSpecialCategory()
-        );
-    }
 
-    public static Student mapToStudent(StudentDto studentDto){
-        return new Student(
-                studentDto.getRegisterNo(),
-                studentDto.getFirstName(),
-                studentDto.getLastName(),
-                studentDto.getDateOfBirth(),
-                studentDto.getGender(),
-                studentDto.getAadharNumber(),
-                studentDto.getNationality(),
-                studentDto.getReligion(),
-                studentDto.getCommunity(),
-                studentDto.getCaste(),
-                studentDto.getFathersName(),
-                studentDto.getFathersOccupation(),
-                studentDto.getFathersMobileNumber(),
-                studentDto.getMothersName(),
-                studentDto.getMothersOccupation(),
-                studentDto.getMothersMobileNumber(),
-                studentDto.getGuardiansName(),
-                studentDto.getGuardiansOccupation(),
-                studentDto.getGuardiansMobileNumber(),
-                studentDto.getParentsStatus(),
-                studentDto.getIncome(),
-                studentDto.getMaritalStatus(),
-                studentDto.getProfilePhotoPath(),
-                studentDto.getMobileNumber(),
-                studentDto.getEmailid(),
-                studentDto.getResidentialAddress(),
-                studentDto.getCommunicationAddress(),
-                studentDto.getHosteller(),
-                studentDto.getHostelType(),
-                studentDto.getBankName(),
-                studentDto.getIfscCode(),
-                studentDto.getBranchName(),
-                studentDto.getAccountNumber(),
-                studentDto.getPassbookPath(),
-                studentDto.getSslc(),
-                studentDto.getHsc1Year(),
-                studentDto.getHsc2Year(),
-                studentDto.getDiploma(),
-                studentDto.getSslcFilePath(),
-                studentDto.getHsc1Year(),
-                studentDto.getDiplomaFilePath(),
-                studentDto.getDiplomaFilePath(),
-                studentDto.getEmisNumber(),
-                studentDto.getFirstGraduate(),
-                studentDto.getSpecialCategory()
-
-        );
-    }
     public static StudentWithFilesDto mapToStudentWithFilesDto(Student student){
         return new StudentWithFilesDto(
                 student.getRegisterNo(),
@@ -159,7 +60,21 @@ public class StudentMapper {
                 null,
                 null,
                 null,
-                null
+                null,
+                student.getProgramme(),
+                student.getDiscipline(),
+                student.getAdmissionNumber(),
+                student.getAcademicYear(),
+                student.getSemester(),
+                student.getAbcId(),
+                student.getUmisId(),
+                student.getDateOfAdmission(),
+                student.getCourseJoinedDate(),
+                student.getCourseType(),
+                student.getRegulation(),
+                student.getFastTrack(),
+                student.getCgpa(),
+                student.getStudentStatus()
         );
     }
 
@@ -209,7 +124,21 @@ public class StudentMapper {
                 null,
                 studentWithFilesDto.getEmisNumber(),
                 studentWithFilesDto.getFirstGraduate(),
-                studentWithFilesDto.getSpecialCategory()
+                studentWithFilesDto.getSpecialCategory(),
+                studentWithFilesDto.getProgramme(),
+                studentWithFilesDto.getDiscipline(),
+                studentWithFilesDto.getAdmissionNumber(),
+                studentWithFilesDto.getAcademicYear(),
+                studentWithFilesDto.getSemester(),
+                studentWithFilesDto.getAbcId(),
+                studentWithFilesDto.getUmisId(),
+                studentWithFilesDto.getDateOfAdmission(),
+                studentWithFilesDto.getCourseJoinedDate(),
+                studentWithFilesDto.getCourseType(),
+                studentWithFilesDto.getRegulation(),
+                studentWithFilesDto.getFastTrack(),
+                studentWithFilesDto.getCgpa(),
+                studentWithFilesDto.getStudentStatus()
         );
     }
 }

@@ -1,10 +1,6 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.AcademicsDto;
-import erp.javaguides.erpbackend.dto.CombinedDto;
-import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
-import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:3000/personal-form")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
     private StudentService studentService;
-    private AcademicsService academicsService;
     //Build Add Student REST API
     @PostMapping
     public ResponseEntity<String> createStudent(@ModelAttribute StudentWithFilesDto studentWithFilesDto)throws Exception {
@@ -29,23 +25,22 @@ public class StudentController {
 
     //Build Get Student REST API
     @GetMapping("{register_No}")
-    public ResponseEntity<CombinedDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
+    public ResponseEntity<StudentWithFilesDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
         // Call the service method to retrieve the student by
         StudentWithFilesDto studentWithFilesDto = studentService.getStudentByRegisterNo(register_No);
-        AcademicsDto academicsDto = academicsService.getAcademicsById(register_No);
-        CombinedDto combinedDto = new CombinedDto(studentWithFilesDto,academicsDto);
-        return ResponseEntity.ok(combinedDto);
+
+        return ResponseEntity.ok(studentWithFilesDto);
     }
 
     //Build GetAllEmployees REST API
     @GetMapping
-    public ResponseEntity<List<CombinedDto>>getAllStudents(){
-        List<CombinedDto> students=studentService.getAllStudents();
+    public ResponseEntity<List<StudentWithFilesDto>>getAllStudents(){
+        List<StudentWithFilesDto> students=studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
     //Build Update Student REST API
-    @PutMapping("{register_No}")
+   /* @PutMapping("{register_No}")
     public ResponseEntity<StudentDto>updateStudent(@PathVariable("register_No") String register_No,@RequestBody StudentDto updatedStudent){
        StudentDto studentDto=studentService.updateStudent(register_No,updatedStudent);
        return ResponseEntity.ok(studentDto);
@@ -56,5 +51,5 @@ public class StudentController {
     public ResponseEntity<String> deleteStudent(@PathVariable("register_No") String register_No){
         studentService.deleteStudent(register_No);
         return ResponseEntity.ok("Student deleted successfully");
-    }
+    }*/
 }

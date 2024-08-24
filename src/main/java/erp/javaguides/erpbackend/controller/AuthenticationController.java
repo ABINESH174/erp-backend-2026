@@ -1,10 +1,8 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.AcademicsDto;
 import erp.javaguides.erpbackend.dto.AuthenticationDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.entity.Authentication;
-import erp.javaguides.erpbackend.service.AcademicsService;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
@@ -20,7 +18,6 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final StudentService studentService;
-    private final AcademicsService academicsService;
 
     // Build Add Student REST API
     @PostMapping("/create")
@@ -44,19 +41,10 @@ public class AuthenticationController {
             try {
                 StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
                 if (student == null) {
-                    return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
+                    return new ResponseEntity<>("Form not filled", HttpStatus.OK);
                 }
             } catch (Exception e) {
-                return new ResponseEntity<>("Personal form not filled", HttpStatus.OK);
-            }
-
-            try {
-                AcademicsDto academic = academicsService.getAcademicsById(authenticationDto.getUserId());
-                if (academic == null) {
-                    return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
-                }
-            } catch (Exception e) {
-                return new ResponseEntity<>("Academics form not filled", HttpStatus.OK);
+                return new ResponseEntity<>("Form not filled", HttpStatus.OK);
             }
             return new ResponseEntity<>("Student Authentication successful", HttpStatus.OK);
         }
