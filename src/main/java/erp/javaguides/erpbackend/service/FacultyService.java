@@ -8,4 +8,6 @@ public interface FacultyService {
     FacultyDto createFaculty(FacultyDto facultyDto)throws Exception;
     FacultyDto getFacultyByEmail(String email);
     List<FacultyDto> getAllFaculties();
+
+    FacultyDto getFacultyByEmail(String email, String className, String batchYear);
 }
