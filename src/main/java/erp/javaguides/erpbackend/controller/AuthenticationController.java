@@ -36,7 +36,17 @@ public class AuthenticationController {
         if (authentication==null) {
             return new ResponseEntity<>("Invalid Register Number", HttpStatus.UNAUTHORIZED);
         }
-
+        if(authentication.getRole().equalsIgnoreCase("HOD")){
+            try {
+                FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
+                if (facultyDto==null) {
+                    return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("HOD Authentication Successful", HttpStatus.OK);
+        }
         if(authentication.getRole().equalsIgnoreCase("FA")){
             try {
                 FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());

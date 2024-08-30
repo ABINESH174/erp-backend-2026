@@ -33,27 +33,28 @@ public class FacultyServiceImpl implements FacultyService {
         Faculty savedFaculty = facultyRepository.save(faculty);
         return FacultyMapper.mapToFacultyDto(savedFaculty);
     }
-
     @Override
     public FacultyDto getFacultyByEmail(String email) {
         Faculty faculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
+        return getFacultyDtoWithStudents(faculty, faculty.getDiscipline(), faculty.getHandlingBatch());
+    }
 
-        // Fetch academics based on discipline and academic year
-        List<Student> studentsList = studentRepository.findByDisciplineAndAcademicYear(
-                faculty.getDiscipline(), faculty.getHandlingBatch()
-        );
+    @Override
+    public FacultyDto getFacultyByEmail(String email, String className, String batchYear) {
+        Faculty faculty = facultyRepository.findById(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
+        return getFacultyDtoWithStudents(faculty, className, batchYear);
+    }
 
-        // Combine student and academic details into CombinedDto
-        List<StudentWithFilesDto> studentWithFilesDtos = studentsList.stream().map(student -> {
-            StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-            return studentWithFilesDto;
-        }).collect(Collectors.toList());
+    private FacultyDto getFacultyDtoWithStudents(Faculty faculty, String discipline, String academicYear) {
+        List<Student> studentsList = studentRepository.findByDisciplineAndAcademicYear(discipline, academicYear);
+        List<StudentWithFilesDto> studentWithFilesDtos = studentsList.stream()
+                .map(StudentMapper::mapToStudentWithFilesDto)
+                .collect(Collectors.toList());
 
-        // Convert faculty entity to DTO
         FacultyDto facultyDto = FacultyMapper.mapToFacultyDto(faculty);
         facultyDto.setStudents(studentWithFilesDtos);
-
         return facultyDto;
     }
 
@@ -63,26 +64,5 @@ public class FacultyServiceImpl implements FacultyService {
         return faculties.stream()
                 .map(FacultyMapper::mapToFacultyDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public FacultyDto getFacultyByEmail(String email,String className,String batchYear){
-        Faculty faculty = facultyRepository.findById(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
-
-        // Fetch academics based on discipline and academic year
-        List<Student> studentsList = studentRepository.findByDisciplineAndAcademicYear(className, batchYear);
-
-        // Combine student and academic details into CombinedDto
-        List<StudentWithFilesDto> studentWithFilesDtos = studentsList.stream().map(student -> {
-            StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-            return studentWithFilesDto;
-        }).collect(Collectors.toList());
-
-        // Convert faculty entity to DTO
-        FacultyDto facultyDto = FacultyMapper.mapToFacultyDto(faculty);
-        facultyDto.setStudents(studentWithFilesDtos);
-
-        return facultyDto;
     }
 }
