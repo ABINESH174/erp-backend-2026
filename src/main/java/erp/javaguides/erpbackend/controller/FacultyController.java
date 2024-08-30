@@ -25,6 +25,12 @@ public class FacultyController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/hod/{email}")
+    public ResponseEntity<FacultyDto> getHodByEmail(@PathVariable String email)throws IOException {
+        // Call the service method to retrieve the student by
+        FacultyDto facultyDto = facultyService.getFacultyByEmail(email);
+        return ResponseEntity.ok(facultyDto);
+    }
     @GetMapping("{email}")
     public ResponseEntity<FacultyDto> getFacultyByEmail(@PathVariable String email)throws IOException {
         // Call the service method to retrieve the student by
@@ -32,8 +38,9 @@ public class FacultyController {
         return ResponseEntity.ok(facultyDto);
     }
     @GetMapping("/filter")
-    public ResponseEntity<FacultyDto> getFacultyByEmailAndClass(@RequestParam String email,@RequestParam String className,
-                                                        @RequestParam String batchYear )throws IOException {
+    public ResponseEntity<FacultyDto> getFacultyByEmailAndClass(@RequestParam String email,
+                                                                @RequestParam String className,
+                                                                @RequestParam String batchYear )throws IOException {
         // Call the service method to retrieve the student by
         FacultyDto facultyDto = facultyService.getFacultyByEmail(email,className,batchYear);
         return ResponseEntity.ok(facultyDto);
