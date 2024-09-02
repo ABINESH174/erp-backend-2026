@@ -122,7 +122,13 @@ public class StudentServiceImpl implements StudentService {
             return studentWithFilesDto;
         }).collect(Collectors.toList());
     }
-
+    @Override
+    public List<StudentWithFilesDto> getAllStudentsByDiscipline(String discipline) {
+        List<Student> cseStudents = studentRepository.findByDiscipline(discipline);
+        return cseStudents.stream()
+                .map(StudentMapper::mapToStudentWithFilesDto)
+                .collect(Collectors.toList());
+    }
     /*@Override
     public StudentDto updateStudent(String registerNo, StudentDto updatedStudent) {
         Student student = studentRepository.findById(registerNo)

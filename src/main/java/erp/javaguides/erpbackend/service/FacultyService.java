@@ -7,7 +7,8 @@ import java.util.List;
 public interface FacultyService {
     FacultyDto createFaculty(FacultyDto facultyDto)throws Exception;
     FacultyDto getFacultyByEmail(String email);
-    List<FacultyDto> getAllFaculties();
-
     FacultyDto getFacultyByEmail(String email, String className, String batchYear);
+    FacultyDto getFacultyWithStudent(String email);
+    FacultyDto getFaculty(String hodEmail);
+    List<FacultyDto> getAllFaculties();
 }

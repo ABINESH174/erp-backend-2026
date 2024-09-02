@@ -37,17 +37,29 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyDto getFacultyByEmail(String email) {
         Faculty faculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
-        return getFacultyDtoWithStudents(faculty, faculty.getDiscipline(), faculty.getHandlingBatch());
+        return getFacultyWithStudent(faculty, faculty.getDiscipline(), faculty.getHandlingBatch());
     }
 
     @Override
     public FacultyDto getFacultyByEmail(String email, String className, String batchYear) {
         Faculty faculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
-        return getFacultyDtoWithStudents(faculty, className, batchYear);
+        return getFacultyWithStudent(faculty, className, batchYear);
     }
+    @Override
+    public FacultyDto getFacultyWithStudent(String email){
+        Faculty faculty = facultyRepository.findById(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
+        List<Student> studentsList = studentRepository.findByDiscipline(faculty.getDiscipline());
+        List<StudentWithFilesDto> studentWithFilesDtos = studentsList.stream()
+                .map(StudentMapper::mapToStudentWithFilesDto)
+                .collect(Collectors.toList());
 
-    private FacultyDto getFacultyDtoWithStudents(Faculty faculty, String discipline, String academicYear) {
+        FacultyDto facultyDto = FacultyMapper.mapToFacultyDto(faculty);
+        facultyDto.setStudents(studentWithFilesDtos);
+        return facultyDto;
+    }
+    private FacultyDto getFacultyWithStudent(Faculty faculty, String discipline, String academicYear) {
         List<Student> studentsList = studentRepository.findByDisciplineAndAcademicYear(discipline, academicYear);
         List<StudentWithFilesDto> studentWithFilesDtos = studentsList.stream()
                 .map(StudentMapper::mapToStudentWithFilesDto)
@@ -57,7 +69,20 @@ public class FacultyServiceImpl implements FacultyService {
         facultyDto.setStudents(studentWithFilesDtos);
         return facultyDto;
     }
+    public FacultyDto getFaculty(String hodEmail){
+        Faculty hod = facultyRepository.findById(hodEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + hodEmail));
 
+        List<Faculty> allFaculties = facultyRepository.findByDiscipline(hod.getDiscipline());
+
+        List<FacultyDto> facultyDtos = allFaculties.stream()
+                .filter(faculty -> !faculty.getEmail().equals(hod.getEmail()))
+                .map(FacultyMapper::mapToFacultyDto)
+                .collect(Collectors.toList());
+        FacultyDto facultyDto = FacultyMapper.mapToFacultyDto(hod);
+        facultyDto.setFaculties(facultyDtos);
+        return facultyDto;
+    }
     @Override
     public List<FacultyDto> getAllFaculties() {
         List<Faculty> faculties = facultyRepository.findAll();
