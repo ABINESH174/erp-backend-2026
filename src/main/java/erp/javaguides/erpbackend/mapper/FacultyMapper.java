@@ -13,6 +13,7 @@ public class FacultyMapper {
                 faculty.getDiscipline(),
                 faculty.getHandlingBatch(),
                 faculty.getHandlingClass(),
+                null,
                 null
         );
     }
