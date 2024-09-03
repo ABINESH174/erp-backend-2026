@@ -49,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
         student.setHsc1YearFilePath(saveFile(firstname, userFolderPath, "hsc1file", studentWithFilesDto.getHsc1YearFile()));
         student.setHsc2YearFilePath(saveFile(firstname, userFolderPath, "hsc2file", studentWithFilesDto.getHsc2YearFile()));
         student.setDiplomaFilePath(saveFile(firstname, userFolderPath, "diplomafile", studentWithFilesDto.getDiplomaFile()));
-
+        // Save the Student object
         // Save the Student object
         student = studentRepository.save(student);
 
@@ -122,7 +122,13 @@ public class StudentServiceImpl implements StudentService {
             return studentWithFilesDto;
         }).collect(Collectors.toList());
     }
-
+    @Override
+    public List<StudentWithFilesDto> getAllStudentsByDiscipline(String discipline) {
+        List<Student> cseStudents = studentRepository.findByDiscipline(discipline);
+        return cseStudents.stream()
+                .map(StudentMapper::mapToStudentWithFilesDto)
+                .collect(Collectors.toList());
+    }
     /*@Override
     public StudentDto updateStudent(String registerNo, StudentDto updatedStudent) {
         Student student = studentRepository.findById(registerNo)

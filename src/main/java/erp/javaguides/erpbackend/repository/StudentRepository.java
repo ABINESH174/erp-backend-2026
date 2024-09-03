@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student,String>{
     List<Student> findByDisciplineAndAcademicYear(String discipline, String academicYear);
+    List<Student> findByDiscipline(String discipline);
+
 }
