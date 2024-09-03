@@ -51,12 +51,12 @@ public class StudentWithFilesDto {
     private String emisNumber;
     private String firstGraduate;
     private String specialCategory;
-    private MultipartFile profilePhoto;
-    private MultipartFile Passbook;
-    private MultipartFile sslcFile;
-    private MultipartFile hsc1YearFile;
-    private MultipartFile hsc2YearFile;
-    private MultipartFile diplomaFile;
+    //private String profilePhoto;
+    private String Passbook;
+    private String sslcFile;
+    private String hsc1YearFile;
+    private String hsc2YearFile;
+    private String diplomaFile;
     private byte[] profilePhotoContent;
     private byte[] passbookcontent;
     private byte[] sslcFileContent;
