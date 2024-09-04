@@ -154,7 +154,7 @@ public class StudentServiceImpl implements StudentService {
 
         StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
 
-        studentWithFilesDto.setPassbookcontent(prfilePhotoContent);
+        studentWithFilesDto.setProfilePhotoContent(prfilePhotoContent);
         studentWithFilesDto.setPassbookcontent(passbookContent);
         studentWithFilesDto.setSslcFileContent(sslcFileContent);
         studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
