@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
+    private static final String FOLDERPATH = "J:\\FileSystem";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
@@ -94,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
     public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             logger.error("File not found or is empty");
-            throw new BadRequestException("File not found or is empty");
+            return "File not found";
         }
 
         // Sanitize the firstName for filename
@@ -215,7 +215,8 @@ public class StudentServiceImpl implements StudentService {
             // Determine file extension based on MIME type
             String fileExtension = getFileExtensionFromMimeType(mimeType);
             if (fileExtension == null) {
-                fileExtension = "dat"; // Fallback if extension cannot be determined
+                return null;
+//                fileExtension = "dat"; // Fallback if extension cannot be determined
             }
 
             byte[] fileBytes = Base64.getDecoder().decode(base64Data);
