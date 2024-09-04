@@ -1,6 +1,5 @@
 package erp.javaguides.erpbackend.mapper;
 
-import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
 import erp.javaguides.erpbackend.entity.Student;
 
@@ -16,6 +15,7 @@ public class StudentMapper {
                 student.getDateOfBirth(),
                 student.getGender(),
                 student.getAadharNumber(),
+                student.getBloodGroup(),
                 student.getNationality(),
                 student.getReligion(),
                 student.getCommunity(),
@@ -55,7 +55,7 @@ public class StudentMapper {
                 null,
                 null,
                 null,
-                null,
+               // null,
                 null,
                 null,
                 null,
@@ -86,6 +86,7 @@ public class StudentMapper {
                 studentWithFilesDto.getDateOfBirth(),
                 studentWithFilesDto.getGender(),
                 studentWithFilesDto.getAadharNumber(),
+                studentWithFilesDto.getBloodGroup(),
                 studentWithFilesDto.getNationality(),
                 studentWithFilesDto.getReligion(),
                 studentWithFilesDto.getCommunity(),

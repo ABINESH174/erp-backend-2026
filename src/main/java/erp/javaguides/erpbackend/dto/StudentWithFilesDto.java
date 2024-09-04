@@ -1,8 +1,11 @@
 package erp.javaguides.erpbackend.dto;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -18,6 +21,7 @@ public class StudentWithFilesDto {
     private String gender;
     @Column(unique = true)
     private String aadharNumber;
+    private String bloodGroup;
     private String nationality;
     private String religion;
     private String community;
@@ -51,12 +55,12 @@ public class StudentWithFilesDto {
     private String emisNumber;
     private String firstGraduate;
     private String specialCategory;
-    private MultipartFile profilePhoto;
-    private MultipartFile Passbook;
-    private MultipartFile sslcFile;
-    private MultipartFile hsc1YearFile;
-    private MultipartFile hsc2YearFile;
-    private MultipartFile diplomaFile;
+    //private String profilePhoto;
+    private String Passbook;
+    private String sslcFile;
+    private String hsc1YearFile;
+    private String hsc2YearFile;
+    private String diplomaFile;
     private byte[] profilePhotoContent;
     private byte[] passbookcontent;
     private byte[] sslcFileContent;

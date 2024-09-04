@@ -24,6 +24,7 @@ public class Student {
     @Column(unique = true)
     @NotNull(message = "Aadhar number cannot be null")
     private String aadharNumber;
+    private String bloodGroup;
     private String nationality;
     private String Religion;
     private String community;

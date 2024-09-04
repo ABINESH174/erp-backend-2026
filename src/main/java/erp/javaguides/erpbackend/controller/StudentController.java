@@ -39,17 +39,5 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    //Build Update Student REST API
-   /* @PutMapping("{register_No}")
-    public ResponseEntity<StudentDto>updateStudent(@PathVariable("register_No") String register_No,@RequestBody StudentDto updatedStudent){
-       StudentDto studentDto=studentService.updateStudent(register_No,updatedStudent);
-       return ResponseEntity.ok(studentDto);
-    }
 
-    //Build Delete Student REST API
-    @DeleteMapping("{register_No}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("register_No") String register_No){
-        studentService.deleteStudent(register_No);
-        return ResponseEntity.ok("Student deleted successfully");
-    }*/
 }
