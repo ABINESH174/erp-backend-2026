@@ -9,26 +9,29 @@ import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\new\\Desktop\\FileSystem";
+    private static final String FOLDERPATH = "J:\\FileSystem";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
@@ -51,6 +54,8 @@ public class StudentServiceImpl implements StudentService {
             Student student = StudentMapper.mapToStudentWithFilesDto(studentWithFilesDto);
 
             // Convert Base64 strings to MultipartFile and save files
+            student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "profilephoto",
+                    base64ToMultipartFile(studentWithFilesDto.getPassbook(), "profilephoto")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "passbook",
                     base64ToMultipartFile(studentWithFilesDto.getPassbook(), "passbook")));
             student.setSslcFilePath(saveFile(firstName, userFolderPath, "sslcfile",
@@ -89,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
     public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             logger.error("File not found or is empty");
-            throw new BadRequestException("File not found or is empty");
+            return "File not found";
         }
 
         // Sanitize the firstName for filename
@@ -140,7 +145,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentWithFilesDto getStudentByRegisterNo(String registerNo) {
         Student student = studentRepository.findById(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + registerNo));
-
+        byte[] prfilePhotoContent = readFile(student.getProfilePhotoPath());
         byte[] passbookContent = readFile(student.getPassbookPath());
         byte[] sslcFileContent = readFile(student.getSslcFilePath());
         byte[] hsc1YearFileContent = readFile(student.getHsc1YearFilePath());
@@ -149,6 +154,7 @@ public class StudentServiceImpl implements StudentService {
 
         StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
 
+        studentWithFilesDto.setProfilePhotoContent(prfilePhotoContent);
         studentWithFilesDto.setPassbookcontent(passbookContent);
         studentWithFilesDto.setSslcFileContent(sslcFileContent);
         studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
@@ -186,18 +192,55 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
     public MultipartFile base64ToMultipartFile(String base64, String fileName) {
+        if (base64 == null || base64.isEmpty()) {
+            return null;
+        }
+
         try {
-            byte[] fileBytes;
+            String mimeType = "application/octet-stream"; // Default MIME type
+            String base64Data = base64;
+
             if (base64.contains(",")) {
                 String[] parts = base64.split(",");
-                fileBytes = Base64.getDecoder().decode(parts[1]);
-            } else {
-                fileBytes = Base64.getDecoder().decode(base64);
+                base64Data = parts[1];
+
+                String dataPrefix = parts[0];
+                Pattern pattern = Pattern.compile("data:(.*?);base64");
+                Matcher matcher = pattern.matcher(dataPrefix);
+                if (matcher.find()) {
+                    mimeType = matcher.group(1);
+                }
             }
-            return new MockMultipartFile(fileName, fileName, "application/octet-stream", fileBytes);
+
+            // Determine file extension based on MIME type
+            String fileExtension = getFileExtensionFromMimeType(mimeType);
+            if (fileExtension == null) {
+                return null;
+//                fileExtension = "dat"; // Fallback if extension cannot be determined
+            }
+
+            byte[] fileBytes = Base64.getDecoder().decode(base64Data);
+            return new MockMultipartFile(fileName + "." + fileExtension, fileName + "." + fileExtension, mimeType, fileBytes);
         } catch (Exception e) {
             logger.error("Error converting Base64 string to MultipartFile: " + e.getMessage(), e);
             return null;
+        }
+    }
+
+    private String getFileExtensionFromMimeType(String mimeType) {
+        // Example of basic MIME type to file extension mapping
+        switch (mimeType) {
+            case "image/jpeg":
+                return "jpg";
+            case "image/png":
+                return "png";
+            case "application/pdf":
+                return "pdf";
+            case "text/plain":
+                return "txt";
+            // Add more mappings as needed
+            default:
+                return null;
         }
     }
 }
