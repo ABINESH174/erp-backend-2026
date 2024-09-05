@@ -41,6 +41,7 @@ public class Student {
     private String parentsStatus;
     private String income;
     private String maritalStatus;
+    private String communityCertificatePath;
     private String profilePhotoPath;
     private String mobileNumber;
     private String emailid;
@@ -64,6 +65,8 @@ public class Student {
     private String emisNumber;
     private String firstGraduate;
     private String specialCategory;
+    private String firstGraduateFilePath;
+    private String specialCategoryFilePath;
     private String programme;
     private String discipline;
     private String admissionNumber;
@@ -76,6 +79,7 @@ public class Student {
     private String courseType;
     private String regulation;
     private String fastTrack;
+
     private String cgpa;
     private String studentStatus;
 }
