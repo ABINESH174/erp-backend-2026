@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "J:\\FileSystem";
+    private static final String FOLDERPATH = "";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
@@ -54,10 +54,16 @@ public class StudentServiceImpl implements StudentService {
             Student student = StudentMapper.mapToStudentWithFilesDto(studentWithFilesDto);
 
             // Convert Base64 strings to MultipartFile and save files
+            student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "communityCertificate",
+                    base64ToMultipartFile(studentWithFilesDto.getCommunityCertificate(), "communityCertificate")));
             student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "profilephoto",
                     base64ToMultipartFile(studentWithFilesDto.getPassbook(), "profilephoto")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "passbook",
                     base64ToMultipartFile(studentWithFilesDto.getPassbook(), "passbook")));
+            student.setPassbookPath(saveFile(firstName, userFolderPath, "firstGraduateFile",
+                    base64ToMultipartFile(studentWithFilesDto.getFirstGraduateFile(), "firstGraduateFile")));
+            student.setPassbookPath(saveFile(firstName, userFolderPath, "specialCategoryFile",
+                    base64ToMultipartFile(studentWithFilesDto.getSpecialCategoryFile(), "specialCategoryFile")));
             student.setSslcFilePath(saveFile(firstName, userFolderPath, "sslcfile",
                     base64ToMultipartFile(studentWithFilesDto.getSslcFile(), "sslcfile")));
             student.setHsc1YearFilePath(saveFile(firstName, userFolderPath, "hsc1file",
@@ -145,17 +151,22 @@ public class StudentServiceImpl implements StudentService {
     public StudentWithFilesDto getStudentByRegisterNo(String registerNo) {
         Student student = studentRepository.findById(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + registerNo));
+        byte[] communityCertificateContent = readFile(student.getCommunityCertificatePath());
         byte[] prfilePhotoContent = readFile(student.getProfilePhotoPath());
         byte[] passbookContent = readFile(student.getPassbookPath());
+        byte[] firstGraduateFileContent = readFile(student.getFirstGraduateFilePath());
+        byte[] specialCategoryFileContent=readFile(student.getSpecialCategoryFilePath());
         byte[] sslcFileContent = readFile(student.getSslcFilePath());
         byte[] hsc1YearFileContent = readFile(student.getHsc1YearFilePath());
         byte[] hsc2YearFileContent = readFile(student.getHsc2YearFilePath());
         byte[] diplomaFileContent = readFile(student.getDiplomaFilePath());
 
         StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-
+        studentWithFilesDto.setCommunityCertificateContent(communityCertificateContent);
         studentWithFilesDto.setProfilePhotoContent(prfilePhotoContent);
         studentWithFilesDto.setPassbookcontent(passbookContent);
+        studentWithFilesDto.setFirstGraduateFileContent(firstGraduateFileContent);
+        studentWithFilesDto.setSpecialCategoryFileContent(specialCategoryFileContent);
         studentWithFilesDto.setSslcFileContent(sslcFileContent);
         studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
         studentWithFilesDto.setHsc2YearFileContent(hsc2YearFileContent);
