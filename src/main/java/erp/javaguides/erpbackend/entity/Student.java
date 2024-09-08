@@ -79,7 +79,6 @@ public class Student {
     private String courseType;
     private String regulation;
     private String fastTrack;
-
     private String cgpa;
     private String studentStatus;
 }

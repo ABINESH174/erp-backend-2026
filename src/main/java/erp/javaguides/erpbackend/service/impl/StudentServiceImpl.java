@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "";
+    private static final String FOLDERPATH = "J:\\FileSystem";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
