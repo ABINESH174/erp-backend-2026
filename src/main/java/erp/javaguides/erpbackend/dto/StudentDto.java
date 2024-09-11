@@ -2,19 +2,26 @@ package erp.javaguides.erpbackend.dto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class StudentDto {
+    @Id
+    @Column(unique = true)
     private String registerNo;
     private String firstName;
     private String lastName;
     private String dateOfBirth;
     private String gender;
+    @Column(unique = true)
     private String aadharNumber;
+    private String bloodGroup;
     private String nationality;
     private String religion;
     private String community;
@@ -31,7 +38,10 @@ public class StudentDto {
     private String parentsStatus;
     private String income;
     private String maritalStatus;
-    private String profilePhotoPath;
+    private String CommunityCertificate;
+    private String profilePhoto;
+    private byte[] communityCertificateContent;
+    private byte[] profilePhotoContent;
     private String mobileNumber;
     private String emailid;
     private String residentialAddress;
@@ -42,17 +52,40 @@ public class StudentDto {
     private String ifscCode;
     private String branchName;
     private String accountNumber;
-    private String passbookPath;
+    private String Passbook;
+    private byte[] passbookcontent;
     private String sslc;
     private String hsc1Year;
     private String hsc2Year;
     private String diploma;
-    private String sslcFilePath;
-    private String hsc1YearFilePath;
-    private String hsc2YearFilePath;
-    private String diplomaFilePath;
+    private String sslcFile;
+    private String hsc1YearFile;
+    private String hsc2YearFile;
+    private String diplomaFile;
+    private byte[] sslcFileContent;
+    private byte[] hsc1YearFileContent;
+    private byte[] hsc2YearFileContent;
+    private byte[] diplomaFileContent;
     private String emisNumber;
     private String firstGraduate;
     private String specialCategory;
+    private String firstGraduateFile;
+    private String specialCategoryFile;
+    private byte[] firstGraduateFileContent;
+    private byte[] specialCategoryFileContent;
+    private String programme;
+    private String discipline;
+    private String admissionNumber;
+    private String batch;
+    private String semester;
+    private String abcId;
+    private String umisId;
+    private String dateOfAdmission;
+    private String courseJoinedDate;
+    private String courseType;
+    private String regulation;
+    private String fastTrack;
+    private String cgpa;
+    private String studentStatus;
+    // Getters and setters
 }
-

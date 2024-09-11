@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -31,47 +31,47 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "J:\\FileSystem";
+    private static final String FOLDERPATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
-    public String createStudent(StudentWithFilesDto studentWithFilesDto) throws Exception {
+    public String createStudent(StudentDto studentDto) throws Exception {
         try {
-            if (studentWithFilesDto == null || studentWithFilesDto.getRegisterNo() == null) {
-                throw new IllegalArgumentException("StudentWithFilesDto or Register Number cannot be null");
+            if (studentDto == null || studentDto.getRegisterNo() == null) {
+                throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
             }
-            Optional<Student> optionalStudent = studentRepository.findById(studentWithFilesDto.getRegisterNo());
+            Optional<Student> optionalStudent = studentRepository.findById(studentDto.getRegisterNo());
             if (optionalStudent.isPresent()) {
                 throw new Exception("Register Number already exists");
             }
 
-            String firstName = studentWithFilesDto.getFirstName();
-            String registerNo = studentWithFilesDto.getRegisterNo();
+            String firstName = studentDto.getFirstName();
+            String registerNo = studentDto.getRegisterNo();
             String userFolderPath = Paths.get(FOLDERPATH, registerNo).toString();
             createFolderIfNotExist(userFolderPath);
 
-            // Map StudentWithFilesDto to Student object
-            Student student = StudentMapper.mapToStudentWithFilesDto(studentWithFilesDto);
+            // Map StudentDto to Student object
+            Student student = StudentMapper.mapToStudentWithFilesDto(studentDto);
 
             // Convert Base64 strings to MultipartFile and save files
             student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "communityCertificate",
-                    base64ToMultipartFile(studentWithFilesDto.getCommunityCertificate(), "communityCertificate")));
+                    base64ToMultipartFile(studentDto.getCommunityCertificate(), "communityCertificate")));
             student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "profilephoto",
-                    base64ToMultipartFile(studentWithFilesDto.getPassbook(), "profilephoto")));
+                    base64ToMultipartFile(studentDto.getPassbook(), "profilephoto")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "passbook",
-                    base64ToMultipartFile(studentWithFilesDto.getPassbook(), "passbook")));
+                    base64ToMultipartFile(studentDto.getPassbook(), "passbook")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "firstGraduateFile",
-                    base64ToMultipartFile(studentWithFilesDto.getFirstGraduateFile(), "firstGraduateFile")));
+                    base64ToMultipartFile(studentDto.getFirstGraduateFile(), "firstGraduateFile")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "specialCategoryFile",
-                    base64ToMultipartFile(studentWithFilesDto.getSpecialCategoryFile(), "specialCategoryFile")));
+                    base64ToMultipartFile(studentDto.getSpecialCategoryFile(), "specialCategoryFile")));
             student.setSslcFilePath(saveFile(firstName, userFolderPath, "sslcfile",
-                    base64ToMultipartFile(studentWithFilesDto.getSslcFile(), "sslcfile")));
+                    base64ToMultipartFile(studentDto.getSslcFile(), "sslcfile")));
             student.setHsc1YearFilePath(saveFile(firstName, userFolderPath, "hsc1file",
-                    base64ToMultipartFile(studentWithFilesDto.getHsc1YearFile(), "hsc1file")));
+                    base64ToMultipartFile(studentDto.getHsc1YearFile(), "hsc1file")));
             student.setHsc2YearFilePath(saveFile(firstName, userFolderPath, "hsc2file",
-                    base64ToMultipartFile(studentWithFilesDto.getHsc2YearFile(), "hsc2file")));
+                    base64ToMultipartFile(studentDto.getHsc2YearFile(), "hsc2file")));
             student.setDiplomaFilePath(saveFile(firstName, userFolderPath, "diplomafile",
-                    base64ToMultipartFile(studentWithFilesDto.getDiplomaFile(), "diplomafile")));
+                    base64ToMultipartFile(studentDto.getDiplomaFile(), "diplomafile")));
 
             // Save the Student object
             student = studentRepository.save(student);
@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // Generate a unique filename with original extension
-        String fileName = sanitizedFirstName + "" + fileType + "" + System.currentTimeMillis() + "." + originalFileExtension;
+        String fileName = sanitizedFirstName + "_" + fileType + "_" + System.currentTimeMillis() + "." + originalFileExtension;
         String filePath = Paths.get(userFolderPath, fileName).toString();
 
         // Save the file
@@ -148,7 +148,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentWithFilesDto getStudentByRegisterNo(String registerNo) {
+    public StudentDto getStudentByRegisterNo(String registerNo) {
         Student student = studentRepository.findById(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + registerNo));
         byte[] communityCertificateContent = readFile(student.getCommunityCertificatePath());
@@ -161,18 +161,18 @@ public class StudentServiceImpl implements StudentService {
         byte[] hsc2YearFileContent = readFile(student.getHsc2YearFilePath());
         byte[] diplomaFileContent = readFile(student.getDiplomaFilePath());
 
-        StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-        studentWithFilesDto.setCommunityCertificateContent(communityCertificateContent);
-        studentWithFilesDto.setProfilePhotoContent(prfilePhotoContent);
-        studentWithFilesDto.setPassbookcontent(passbookContent);
-        studentWithFilesDto.setFirstGraduateFileContent(firstGraduateFileContent);
-        studentWithFilesDto.setSpecialCategoryFileContent(specialCategoryFileContent);
-        studentWithFilesDto.setSslcFileContent(sslcFileContent);
-        studentWithFilesDto.setHsc1YearFileContent(hsc1YearFileContent);
-        studentWithFilesDto.setHsc2YearFileContent(hsc2YearFileContent);
-        studentWithFilesDto.setDiplomaFileContent(diplomaFileContent);
+        StudentDto studentDto = StudentMapper.mapToStudentWithFilesDto(student);
+        studentDto.setCommunityCertificateContent(communityCertificateContent);
+        studentDto.setProfilePhotoContent(prfilePhotoContent);
+        studentDto.setPassbookcontent(passbookContent);
+        studentDto.setFirstGraduateFileContent(firstGraduateFileContent);
+        studentDto.setSpecialCategoryFileContent(specialCategoryFileContent);
+        studentDto.setSslcFileContent(sslcFileContent);
+        studentDto.setHsc1YearFileContent(hsc1YearFileContent);
+        studentDto.setHsc2YearFileContent(hsc2YearFileContent);
+        studentDto.setDiplomaFileContent(diplomaFileContent);
 
-        return studentWithFilesDto;
+        return studentDto;
     }
 
     public byte[] readFile(String filePath) {
@@ -188,15 +188,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentWithFilesDto> getAllStudents() {
+    public List<StudentDto> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return students.stream().map(student -> {
-            StudentWithFilesDto studentWithFilesDto = StudentMapper.mapToStudentWithFilesDto(student);
-            return studentWithFilesDto;
+            StudentDto studentDto = StudentMapper.mapToStudentWithFilesDto(student);
+            return studentDto;
         }).collect(Collectors.toList());
     }
     @Override
-    public List<StudentWithFilesDto> getAllStudentsByDiscipline(String discipline) {
+    public List<StudentDto> getAllStudentsByDiscipline(String discipline) {
         List<Student> cseStudents = studentRepository.findByDiscipline(discipline);
         return cseStudents.stream()
                 .map(StudentMapper::mapToStudentWithFilesDto)

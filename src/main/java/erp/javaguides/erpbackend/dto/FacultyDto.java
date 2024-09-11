@@ -19,6 +19,6 @@ public class FacultyDto {
     private String discipline;
     private String handlingBatch;
     private String handlingClass;
-    private List<StudentWithFilesDto> students;
+    private List<StudentDto> students;
     private List<FacultyDto> faculties;
 }
