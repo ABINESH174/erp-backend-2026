@@ -54,15 +54,15 @@ public class StudentServiceImpl implements StudentService {
             Student student = StudentMapper.mapToStudentWithFilesDto(studentDto);
 
             // Convert Base64 strings to MultipartFile and save files
-            student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "communityCertificate",
+            student.setCommunityCertificatePath(saveFile(firstName, userFolderPath, "communityCertificate",
                     base64ToMultipartFile(studentDto.getCommunityCertificate(), "communityCertificate")));
             student.setProfilePhotoPath(saveFile(firstName, userFolderPath, "profilephoto",
                     base64ToMultipartFile(studentDto.getPassbook(), "profilephoto")));
             student.setPassbookPath(saveFile(firstName, userFolderPath, "passbook",
                     base64ToMultipartFile(studentDto.getPassbook(), "passbook")));
-            student.setPassbookPath(saveFile(firstName, userFolderPath, "firstGraduateFile",
+            student.setFirstGraduateFilePath(saveFile(firstName, userFolderPath, "firstGraduateFile",
                     base64ToMultipartFile(studentDto.getFirstGraduateFile(), "firstGraduateFile")));
-            student.setPassbookPath(saveFile(firstName, userFolderPath, "specialCategoryFile",
+            student.setSpecialCategoryFilePath(saveFile(firstName, userFolderPath, "specialCategoryFile",
                     base64ToMultipartFile(studentDto.getSpecialCategoryFile(), "specialCategoryFile")));
             student.setSslcFilePath(saveFile(firstName, userFolderPath, "sslcfile",
                     base64ToMultipartFile(studentDto.getSslcFile(), "sslcfile")));
@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // Generate a unique filename with original extension
-        String fileName = sanitizedFirstName + "_" + fileType + "_" + System.currentTimeMillis() + "." + originalFileExtension;
+        String fileName = sanitizedFirstName + "_" + fileType + "_" + "." + originalFileExtension;
         String filePath = Paths.get(userFolderPath, fileName).toString();
 
         // Save the file
@@ -249,7 +249,6 @@ public class StudentServiceImpl implements StudentService {
                 return "pdf";
             case "text/plain":
                 return "txt";
-            // Add more mappings as needed
             default:
                 return null;
         }
