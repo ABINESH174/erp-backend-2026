@@ -70,7 +70,7 @@ public class Student {
     private String programme;
     private String discipline;
     private String admissionNumber;
-    private String academicYear;
+    private String batch;
     private String semester;
     private String abcId;
     private String umisId;
