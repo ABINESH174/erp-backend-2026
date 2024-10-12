@@ -78,7 +78,6 @@ public class StudentMapper {
                 student.getCourseJoinedDate(),
                 student.getCourseType(),
                 student.getRegulation(),
-                student.getFastTrack(),
                 student.getCgpa(),
                 student.getStudentStatus()
         );
@@ -146,7 +145,6 @@ public class StudentMapper {
                 studentDto.getCourseJoinedDate(),
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
-                studentDto.getFastTrack(),
                 studentDto.getCgpa(),
                 studentDto.getStudentStatus()
         );
