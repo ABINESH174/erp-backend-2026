@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,24 +18,24 @@ public class StudentController {
     private StudentService studentService;
     //Build Add Student REST API
     @PostMapping
-    public ResponseEntity<String> createStudent(@ModelAttribute StudentWithFilesDto studentWithFilesDto)throws Exception {
-        String savedStudent = studentService.createStudent(studentWithFilesDto);
+    public ResponseEntity<String> createStudent(@ModelAttribute StudentDto studentDto)throws Exception {
+        String savedStudent = studentService.createStudent(studentDto);
         return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
     }
 
     //Build Get Student REST API
     @GetMapping("{register_No}")
-    public ResponseEntity<StudentWithFilesDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
+    public ResponseEntity<StudentDto> getStudentByRegisterNo(@PathVariable String register_No)throws IOException {
         // Call the service method to retrieve the student by
-        StudentWithFilesDto studentWithFilesDto = studentService.getStudentByRegisterNo(register_No);
+        StudentDto studentDto = studentService.getStudentByRegisterNo(register_No);
 
-        return ResponseEntity.ok(studentWithFilesDto);
+        return ResponseEntity.ok(studentDto);
     }
 
     //Build GetAllEmployees REST API
     @GetMapping
-    public ResponseEntity<List<StudentWithFilesDto>>getAllStudents(){
-        List<StudentWithFilesDto> students=studentService.getAllStudents();
+    public ResponseEntity<List<StudentDto>>getAllStudents(){
+        List<StudentDto> students=studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 

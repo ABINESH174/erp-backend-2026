@@ -2,7 +2,7 @@ package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.AuthenticationDto;
 import erp.javaguides.erpbackend.dto.FacultyDto;
-import erp.javaguides.erpbackend.dto.StudentWithFilesDto;
+import erp.javaguides.erpbackend.dto.StudentDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.FacultyService;
@@ -22,7 +22,6 @@ public class AuthenticationController {
     private final StudentService studentService;
     private  final FacultyService facultyService;
 
-    // Build Add Student REST API
     @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
         AuthenticationDto savedStudent = authenticationService.createAuthentication(authenticationDto);
@@ -60,8 +59,8 @@ public class AuthenticationController {
         }
         if(authentication.getRole().equalsIgnoreCase("ST")){
             try {
-                StudentWithFilesDto student = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
-                if (student == null) {
+                StudentDto studentDto = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
+                if (studentDto == null) {
                     return new ResponseEntity<>("Form not filled", HttpStatus.OK);
                 }
             } catch (Exception e) {
