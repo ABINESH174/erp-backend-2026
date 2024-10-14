@@ -84,7 +84,6 @@ public class StudentDto {
     private String courseJoinedDate;
     private String courseType;
     private String regulation;
-    private String fastTrack;
     private String cgpa;
     private String studentStatus;
     // Getters and setters

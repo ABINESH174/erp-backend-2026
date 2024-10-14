@@ -18,24 +18,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationDto createAuthentication(AuthenticationDto authenticationDto) {
-        // Create a new Authentication entity
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
-        // Encrypt the password before saving
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
-        // Save the entity to the database
         Authentication savedAuthentication = authenticationRepository.save(authentication);
-        // Return the saved entity as a DTO
         return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
     @Override
     public Authentication authenticate(AuthenticationDto authenticationDto) {
         Authentication empty=new Authentication();
-        // Retrieve the Authentication entity by email
         Authentication authentication = authenticationRepository.findByUserId(authenticationDto.getUserId());
         boolean ismatched;
         if (authentication != null) {
-            // Compare the provided password with the stored hashed password
             ismatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
             if(ismatched){
                return authentication;

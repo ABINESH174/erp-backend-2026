@@ -22,7 +22,6 @@ public class AuthenticationController {
     private final StudentService studentService;
     private  final FacultyService facultyService;
 
-    // Build Add Student REST API
     @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
         AuthenticationDto savedStudent = authenticationService.createAuthentication(authenticationDto);

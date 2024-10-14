@@ -129,7 +129,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public String sanitizeForFilename(String input) {
-        return input.replaceAll("[^a-zA-Z0-9\\.\\-]", "_"); // Replace illegal characters with underscores
+        return input.replaceAll("[^a-zA-Z0-9.\\-]", "_"); // Replace illegal characters with underscores
     }
 
     public String getFileExtension(String originalFileName) {
@@ -176,7 +176,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public byte[] readFile(String filePath) {
-        if (filePath != null) {
+        if (filePath != null&& !filePath.equals("File not found")) {
             try {
                 Path path = Paths.get(filePath);
                 return Files.readAllBytes(path);
@@ -190,10 +190,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentDto> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students.stream().map(student -> {
-            StudentDto studentDto = StudentMapper.mapToStudentWithFilesDto(student);
-            return studentDto;
-        }).collect(Collectors.toList());
+        return students.stream().map(StudentMapper::mapToStudentWithFilesDto).collect(Collectors.toList());
     }
     @Override
     public List<StudentDto> getAllStudentsByDiscipline(String discipline) {
@@ -227,7 +224,6 @@ public class StudentServiceImpl implements StudentService {
             String fileExtension = getFileExtensionFromMimeType(mimeType);
             if (fileExtension == null) {
                 return null;
-//                fileExtension = "dat"; // Fallback if extension cannot be determined
             }
 
             byte[] fileBytes = Base64.getDecoder().decode(base64Data);
@@ -240,17 +236,12 @@ public class StudentServiceImpl implements StudentService {
 
     private String getFileExtensionFromMimeType(String mimeType) {
         // Example of basic MIME type to file extension mapping
-        switch (mimeType) {
-            case "image/jpeg":
-                return "jpg";
-            case "image/png":
-                return "png";
-            case "application/pdf":
-                return "pdf";
-            case "text/plain":
-                return "txt";
-            default:
-                return null;
-        }
+        return switch (mimeType) {
+            case "image/jpeg" -> "jpg";
+            case "image/png" -> "png";
+            case "application/pdf" -> "pdf";
+            case "text/plain" -> "txt";
+            default -> null;
+        };
     }
 }
