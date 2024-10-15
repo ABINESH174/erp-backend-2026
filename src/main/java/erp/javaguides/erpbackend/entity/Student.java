@@ -69,6 +69,7 @@ public class Student {
     private String specialCategoryFilePath;
     private String programme;
     private String discipline;
+    private String section;
     private String admissionNumber;
     private String batch;
     private String semester;
