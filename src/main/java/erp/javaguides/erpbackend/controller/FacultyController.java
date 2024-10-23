@@ -63,5 +63,15 @@ public class FacultyController {
         List<FacultyDto> faculties=facultyService.getAllFaculties();
         return ResponseEntity.ok(faculties);
     }
+    @PutMapping("/update/{email}")
+    public ResponseEntity<FacultyDto> updateFaculty(@PathVariable String email, @RequestBody FacultyDto facultyDto) {
+        try {
+            FacultyDto updatedFaculty = facultyService.updateFaculty(email, facultyDto);
+            return new ResponseEntity<>(updatedFaculty, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
