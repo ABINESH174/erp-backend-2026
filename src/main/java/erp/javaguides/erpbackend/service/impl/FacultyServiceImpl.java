@@ -94,7 +94,6 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyDto updateFaculty(String email, FacultyDto facultyDto) {
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
-
         // Update the fields with the new data from facultyDto
 //        existingFaculty.setFirstName(facultyDto.getFirstName());
 //        existingFaculty.setLastName(facultyDto.getLastName());
@@ -105,12 +104,9 @@ public class FacultyServiceImpl implements FacultyService {
         existingFaculty.setHandlingSemester(facultyDto.getHandlingSemester());
         existingFaculty.setHandlingDept(facultyDto.getHandlingDept());
         existingFaculty.setBatch(facultyDto.getBatch());
-
         // Save the updated faculty entity
         Faculty updatedFaculty = facultyRepository.save(existingFaculty);
-
         // Convert the updated entity to DTO and return
         return FacultyMapper.mapToFacultyDto(updatedFaculty);  // Assuming you have a mapper for entity-DTO conversion
     }
-
 }
