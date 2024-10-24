@@ -94,18 +94,53 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyDto updateFaculty(String email, FacultyDto facultyDto) {
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
-        // Update the fields with the new data from facultyDto
+
+        // Update other fields directly if needed
+
 //        existingFaculty.setFirstName(facultyDto.getFirstName());
 //        existingFaculty.setLastName(facultyDto.getLastName());
 //        existingFaculty.setMobileNumber(facultyDto.getMobileNumber());
 //        existingFaculty.setDiscipline(facultyDto.getDiscipline());
 //        existingFaculty.setHandlingBatch(facultyDto.getHandlingBatch());
-        existingFaculty.setSubject(facultyDto.getSubject());
-        existingFaculty.setHandlingSemester(facultyDto.getHandlingSemester());
-        existingFaculty.setHandlingDept(facultyDto.getHandlingDept());
-        existingFaculty.setBatch(facultyDto.getBatch());
+
+
+        if (facultyDto.getSubject() != null) {
+            if (existingFaculty.getSubject()!= null){
+                existingFaculty.setSubject(existingFaculty.getSubject() + "#" + facultyDto.getSubject());
+            }
+            else {
+                existingFaculty.setSubject(facultyDto.getSubject());
+            }
+        }
+        if (facultyDto.getHandlingSemester() != null) {
+            if (existingFaculty.getHandlingSemester()!=null){
+                existingFaculty.setHandlingSemester(existingFaculty.getHandlingSemester() + "#" + facultyDto.getHandlingSemester());
+            }
+            else{
+                existingFaculty.setHandlingSemester(facultyDto.getHandlingSemester());
+            }
+        }
+        if (facultyDto.getHandlingDept() != null) {
+            if (existingFaculty.getHandlingDept()!=null){
+                existingFaculty.setHandlingDept(existingFaculty.getHandlingDept() + "#" + facultyDto.getHandlingDept());
+            }
+            else{
+                existingFaculty.setHandlingDept(facultyDto.getHandlingDept());
+
+            }
+        }
+        if (facultyDto.getBatch() != null) {
+            if (existingFaculty.getBatch()!= null){
+                existingFaculty.setBatch(existingFaculty.getBatch() + "#" + facultyDto.getBatch());
+            }
+            else {
+                existingFaculty.setBatch(facultyDto.getBatch());
+            }
+        }
+
         // Save the updated faculty entity
         Faculty updatedFaculty = facultyRepository.save(existingFaculty);
+
         // Convert the updated entity to DTO and return
         return FacultyMapper.mapToFacultyDto(updatedFaculty);  // Assuming you have a mapper for entity-DTO conversion
     }
