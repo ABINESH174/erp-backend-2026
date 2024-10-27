@@ -10,6 +10,6 @@ public interface StudentService {
     StudentDto getStudentByRegisterNo(String register_No) ;
     List<StudentDto> getAllStudents();
     List<StudentDto> getAllStudentsByDiscipline(String discipline);
-   /* StudentDto updateStudent(String register_No, StudentDto updatedStudent);
-    void deleteStudent(String register_No);*/
+    String updateStudent(String registerNo, StudentDto studentDto) throws Exception;
+   /* void deleteStudent(String register_No);*/
 }
