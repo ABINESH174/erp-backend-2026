@@ -22,5 +22,8 @@ public class Faculty {
     private String mobileNumber;
     private String discipline;
     private String handlingBatch;
-    private String handlingClass;
+    private String subject;
+    private String handlingSemester;
+    private String handlingDept;
+    private String batch;
 }

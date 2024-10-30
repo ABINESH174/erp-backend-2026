@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // Generate a unique filename with original extension
-        String fileName = sanitizedFirstName + "_" + fileType + "_" + "." + originalFileExtension;
+        String fileName = sanitizedFirstName + "_" + fileType + "." + originalFileExtension;
         String filePath = Paths.get(userFolderPath, fileName).toString();
 
         // Save the file
@@ -243,5 +243,19 @@ public class StudentServiceImpl implements StudentService {
             case "text/plain" -> "txt";
             default -> null;
         };
+    }
+
+    public String updateStudent(String registerNo, StudentDto studentDto) throws Exception {
+        // Find the existing student by register number
+        Student existingStudent = studentRepository.findById(registerNo)
+                .orElseThrow(() -> new Exception("Student not found with register number: " + registerNo));
+        existingStudent.setIncome(studentDto.getIncome());
+        existingStudent.setParentsStatus(studentDto.getParentsStatus());
+        existingStudent.setSemester(studentDto.getSemester());
+        existingStudent.setStudentStatus(studentDto.getStudentStatus());
+        // Save updated student back to the database
+        studentRepository.save(existingStudent);
+
+        return "Student updated successfully";
     }
 }

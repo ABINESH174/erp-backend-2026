@@ -39,5 +39,13 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    // Build Update Student REST API
+    @PutMapping("update/{registerNo}")
+    public ResponseEntity<String> updateStudent(
+            @PathVariable String registerNo,
+            @ModelAttribute StudentDto studentDto) throws Exception {
+        String updatedStudent = studentService.updateStudent(registerNo, studentDto);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedStudent);
+    }
 
 }

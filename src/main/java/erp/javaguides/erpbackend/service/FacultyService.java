@@ -9,6 +9,7 @@ public interface FacultyService {
     FacultyDto getFacultyByEmail(String email);
     FacultyDto getFacultyByEmail(String email, String className, String batch);
     FacultyDto getFacultyWithStudent(String email);
+    FacultyDto updateFaculty(String email, FacultyDto facultyDto) ;
     FacultyDto getFaculty(String hodEmail);
     List<FacultyDto> getAllFaculties();
 }

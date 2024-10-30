@@ -12,7 +12,10 @@ public class FacultyMapper {
                 faculty.getMobileNumber(),
                 faculty.getDiscipline(),
                 faculty.getHandlingBatch(),
-                faculty.getHandlingClass(),
+                faculty.getSubject(),
+                faculty.getHandlingSemester(),
+                faculty.getHandlingDept(),
+                faculty.getBatch(),
                 null,
                 null
         );
@@ -25,7 +28,10 @@ public class FacultyMapper {
                 facultyDto.getMobileNumber(),
                 facultyDto.getDiscipline(),
                 facultyDto.getHandlingBatch(),
-                facultyDto.getHandlingClass()
+                facultyDto.getSubject(),
+                facultyDto.getHandlingSemester(),
+                facultyDto.getHandlingDept(),
+                facultyDto.getBatch()
         );
     }
 }
