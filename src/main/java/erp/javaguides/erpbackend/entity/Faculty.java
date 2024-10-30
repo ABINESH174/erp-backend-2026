@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,8 +25,9 @@ public class Faculty {
     private String mobileNumber;
     private String discipline;
     private String handlingBatch;
-    private String subject;
-    private String handlingSemester;
-    private String handlingDept;
-    private String batch;
+
+    private List<String> subjects = new ArrayList<>();
+    private List<String> handlingSemesters = new ArrayList<>();
+    private List<String> handlingDepartments = new ArrayList<>();
+    private List<String> batches = new ArrayList<>();
 }

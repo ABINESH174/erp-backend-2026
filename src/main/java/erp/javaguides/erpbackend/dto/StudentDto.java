@@ -87,5 +87,4 @@ public class StudentDto {
     private String regulation;
     private String cgpa;
     private String studentStatus;
-    // Getters and setters
 }

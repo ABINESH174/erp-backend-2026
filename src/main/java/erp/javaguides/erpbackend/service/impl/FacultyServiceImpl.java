@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -94,58 +93,59 @@ public class FacultyServiceImpl implements FacultyService {
     }
     @Override
     public FacultyDto addClassFaculty(String email, FacultyDto facultyDto) {
+        // Fetch existing faculty
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
 
-        // Update other fields directly if needed
+        // Update basic fields if needed
+//        if (facultyDto.getFirstName() != null) {
+//            existingFaculty.setFirstName(facultyDto.getFirstName());
+//        }
+//        if (facultyDto.getLastName() != null) {
+//            existingFaculty.setLastName(facultyDto.getLastName());
+//        }
+//        if (facultyDto.getMobileNumber() != null) {
+//            existingFaculty.setMobileNumber(facultyDto.getMobileNumber());
+//        }
+        // Add additional fields as necessary...
 
-//        existingFaculty.setFirstName(facultyDto.getFirstName());
-//        existingFaculty.setLastName(facultyDto.getLastName());
-//        existingFaculty.setMobileNumber(facultyDto.getMobileNumber());
-//        existingFaculty.setDiscipline(facultyDto.getDiscipline());
-//        existingFaculty.setHandlingBatch(facultyDto.getHandlingBatch());
-
-
-        if (facultyDto.getSubject() != null) {
-            if (existingFaculty.getSubject()!= null){
-                existingFaculty.setSubject(existingFaculty.getSubject() + "#" + facultyDto.getSubject());
+        // Ensure lists are initialized and add elements
+        if (facultyDto.getSubjects() != null) {
+            if (existingFaculty.getSubjects() == null) {
+                existingFaculty.setSubjects(new ArrayList<>()); // Initialize the list if it's null
             }
-            else {
-                existingFaculty.setSubject(facultyDto.getSubject());
-            }
+            existingFaculty.getSubjects().addAll(facultyDto.getSubjects());
         }
-        if (facultyDto.getHandlingSemester() != null) {
-            if (existingFaculty.getHandlingSemester()!=null){
-                existingFaculty.setHandlingSemester(existingFaculty.getHandlingSemester() + "#" + facultyDto.getHandlingSemester());
-            }
-            else{
-                existingFaculty.setHandlingSemester(facultyDto.getHandlingSemester());
-            }
-        }
-        if (facultyDto.getHandlingDept() != null) {
-            if (existingFaculty.getHandlingDept()!=null){
-                existingFaculty.setHandlingDept(existingFaculty.getHandlingDept() + "#" + facultyDto.getHandlingDept());
-            }
-            else{
-                existingFaculty.setHandlingDept(facultyDto.getHandlingDept());
 
+        if (facultyDto.getHandlingSemesters() != null) {
+            if (existingFaculty.getHandlingSemesters() == null) {
+                existingFaculty.setHandlingSemesters(new ArrayList<>()); // Initialize the list if it's null
             }
+            existingFaculty.getHandlingSemesters().addAll(facultyDto.getHandlingSemesters());
         }
-        if (facultyDto.getBatch() != null) {
-            if (existingFaculty.getBatch()!= null){
-                existingFaculty.setBatch(existingFaculty.getBatch() + "#" + facultyDto.getBatch());
+
+        if (facultyDto.getHandlingDepartments() != null) {
+            if (existingFaculty.getHandlingDepartments() == null) {
+                existingFaculty.setHandlingDepartments(new ArrayList<>()); // Initialize the list if it's null
             }
-            else {
-                existingFaculty.setBatch(facultyDto.getBatch());
+            existingFaculty.getHandlingDepartments().addAll(facultyDto.getHandlingDepartments());
+        }
+
+        if (facultyDto.getBatches() != null) {
+            if (existingFaculty.getBatches() == null) {
+                existingFaculty.setBatches(new ArrayList<>()); // Initialize the list if it's null
             }
+            existingFaculty.getBatches().addAll(facultyDto.getBatches());
         }
 
         // Save the updated faculty entity
         Faculty updatedFaculty = facultyRepository.save(existingFaculty);
 
         // Convert the updated entity to DTO and return
-        return FacultyMapper.mapToFacultyDto(updatedFaculty);  // Assuming you have a mapper for entity-DTO conversion
+        return FacultyMapper.mapToFacultyDto(updatedFaculty);
     }
+
+    @Override
     public FacultyDto removeClassFaculty(String email, String index) {
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
@@ -158,58 +158,22 @@ public class FacultyServiceImpl implements FacultyService {
             throw new RuntimeException("Invalid index format: " + index);
         }
 
-        // Check if batchYear is present in the batch string
-        if (existingFaculty.getBatch() != null) {
-            String[] batches = existingFaculty.getBatch().split("#");
-            List<String> batchList = new ArrayList<>(Arrays.asList(batches));
-
-            // Remove the batchYear at the specified index if it exists
-            if (idx >= 0 && idx < batchList.size()) {
-                batchList.remove(idx);
-                existingFaculty.setBatch(batchList.isEmpty() ? null : String.join("#", batchList));
-            }
-        }
-
-        // Now remove the corresponding subject if it exists
-        if (existingFaculty.getSubject() != null) {
-            String[] subjects = existingFaculty.getSubject().split("#");
-            List<String> subjectList = new ArrayList<>(Arrays.asList(subjects));
-
-            // Remove the subject at the specified index if it exists
-            if (idx >= 0 && idx < subjectList.size()) {
-                subjectList.remove(idx);
-                existingFaculty.setSubject(subjectList.isEmpty() ? null : String.join("#", subjectList));
-            }
-        }
-
-        // Similarly handle handlingDept
-        if (existingFaculty.getHandlingDept() != null) {
-            String[] departments = existingFaculty.getHandlingDept().split("#");
-            List<String> departmentList = new ArrayList<>(Arrays.asList(departments));
-
-            // Remove the department at the specified index if it exists
-            if (idx >= 0 && idx < departmentList.size()) {
-                departmentList.remove(idx);
-                existingFaculty.setHandlingDept(departmentList.isEmpty() ? null : String.join("#", departmentList));
-            }
-        }
-
-        // Similarly handle handlingSemester
-        if (existingFaculty.getHandlingSemester() != null) {
-            String[] semesters = existingFaculty.getHandlingSemester().split("#");
-            List<String> semesterList = new ArrayList<>(Arrays.asList(semesters));
-
-            // Remove the semester at the specified index if it exists
-            if (idx >= 0 && idx < semesterList.size()) {
-                semesterList.remove(idx);
-                existingFaculty.setHandlingSemester(semesterList.isEmpty() ? null : String.join("#", semesterList));
-            }
-        }
+        // Remove from batches, subjects, handlingDepts, and handlingSemesters if they exist
+        removeFromList(existingFaculty.getBatches(), idx);
+        removeFromList(existingFaculty.getSubjects(), idx);
+        removeFromList(existingFaculty.getHandlingDepartments(), idx);
+        removeFromList(existingFaculty.getHandlingSemesters(), idx);
 
         // Save the updated faculty entity
         facultyRepository.save(existingFaculty);
 
         // Convert to DTO and return
-        return FacultyMapper.mapToFacultyDto(existingFaculty);  // Assuming you have a mapper for entity-DTO conversion
+        return FacultyMapper.mapToFacultyDto(existingFaculty);
+    }
+
+    private void removeFromList(List<String> list, int index) {
+        if (index >= 0 && index < list.size()) {
+            list.remove(index);
+        }
     }
 }

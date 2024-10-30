@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,35 +25,30 @@ public class FacultyController {
         }
     }
     @GetMapping("/hod/{email}")
-    public ResponseEntity<FacultyDto> getHodByEmail(@PathVariable String email)throws IOException {
-        // Call the service method to retrieve the student by
+    public ResponseEntity<FacultyDto> getHodByEmail(@PathVariable String email) {
         FacultyDto facultyDto = facultyService.getFacultyByEmail(email);
         return ResponseEntity.ok(facultyDto);
     }
     @GetMapping("/hod/student/{email}")
-    public ResponseEntity<FacultyDto> getHodWithStudentEmail(@PathVariable String email)throws IOException {
-        // Call the service method to retrieve the student by
+    public ResponseEntity<FacultyDto> getHodWithStudentEmail(@PathVariable String email) {
         FacultyDto facultyDto = facultyService.getFacultyWithStudent(email);
         return ResponseEntity.ok(facultyDto);
     }
     @GetMapping("/hod/faculty/{email}")
-    public ResponseEntity<FacultyDto> getHodWithFaculty(@PathVariable String email)throws IOException {
-        // Call the service method to retrieve the student by
+    public ResponseEntity<FacultyDto> getHodWithFaculty(@PathVariable String email) {
         FacultyDto facultyDto = facultyService.getFaculty(email);
         return ResponseEntity.ok(facultyDto);
     }
 
     @GetMapping("{email}")
-    public ResponseEntity<FacultyDto> getFacultyByEmail(@PathVariable String email)throws IOException {
-        // Call the service method to retrieve the student by
+    public ResponseEntity<FacultyDto> getFacultyByEmail(@PathVariable String email) {
         FacultyDto facultyDto = facultyService.getFacultyByEmail(email);
         return ResponseEntity.ok(facultyDto);
     }
     @GetMapping("/filter")
     public ResponseEntity<FacultyDto> getFacultyByEmailAndClass(@RequestParam String email,
                                                                 @RequestParam String className,
-                                                                @RequestParam String batchYear )throws IOException {
-        // Call the service method to retrieve the student by
+                                                                @RequestParam String batchYear ) {
         FacultyDto facultyDto = facultyService.getFacultyByEmail(email,className,batchYear);
         return ResponseEntity.ok(facultyDto);
     }
