@@ -13,6 +13,8 @@ import erp.javaguides.erpbackend.service.FacultyService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +93,7 @@ public class FacultyServiceImpl implements FacultyService {
                 .collect(Collectors.toList());
     }
     @Override
-    public FacultyDto updateFaculty(String email, FacultyDto facultyDto) {
+    public FacultyDto addClassFaculty(String email, FacultyDto facultyDto) {
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
 
@@ -143,5 +145,71 @@ public class FacultyServiceImpl implements FacultyService {
 
         // Convert the updated entity to DTO and return
         return FacultyMapper.mapToFacultyDto(updatedFaculty);  // Assuming you have a mapper for entity-DTO conversion
+    }
+    public FacultyDto removeClassFaculty(String email, String index) {
+        Faculty existingFaculty = facultyRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
+
+        // Convert index to integer
+        int idx;
+        try {
+            idx = Integer.parseInt(index);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid index format: " + index);
+        }
+
+        // Check if batchYear is present in the batch string
+        if (existingFaculty.getBatch() != null) {
+            String[] batches = existingFaculty.getBatch().split("#");
+            List<String> batchList = new ArrayList<>(Arrays.asList(batches));
+
+            // Remove the batchYear at the specified index if it exists
+            if (idx >= 0 && idx < batchList.size()) {
+                batchList.remove(idx);
+                existingFaculty.setBatch(batchList.isEmpty() ? null : String.join("#", batchList));
+            }
+        }
+
+        // Now remove the corresponding subject if it exists
+        if (existingFaculty.getSubject() != null) {
+            String[] subjects = existingFaculty.getSubject().split("#");
+            List<String> subjectList = new ArrayList<>(Arrays.asList(subjects));
+
+            // Remove the subject at the specified index if it exists
+            if (idx >= 0 && idx < subjectList.size()) {
+                subjectList.remove(idx);
+                existingFaculty.setSubject(subjectList.isEmpty() ? null : String.join("#", subjectList));
+            }
+        }
+
+        // Similarly handle handlingDept
+        if (existingFaculty.getHandlingDept() != null) {
+            String[] departments = existingFaculty.getHandlingDept().split("#");
+            List<String> departmentList = new ArrayList<>(Arrays.asList(departments));
+
+            // Remove the department at the specified index if it exists
+            if (idx >= 0 && idx < departmentList.size()) {
+                departmentList.remove(idx);
+                existingFaculty.setHandlingDept(departmentList.isEmpty() ? null : String.join("#", departmentList));
+            }
+        }
+
+        // Similarly handle handlingSemester
+        if (existingFaculty.getHandlingSemester() != null) {
+            String[] semesters = existingFaculty.getHandlingSemester().split("#");
+            List<String> semesterList = new ArrayList<>(Arrays.asList(semesters));
+
+            // Remove the semester at the specified index if it exists
+            if (idx >= 0 && idx < semesterList.size()) {
+                semesterList.remove(idx);
+                existingFaculty.setHandlingSemester(semesterList.isEmpty() ? null : String.join("#", semesterList));
+            }
+        }
+
+        // Save the updated faculty entity
+        facultyRepository.save(existingFaculty);
+
+        // Convert to DTO and return
+        return FacultyMapper.mapToFacultyDto(existingFaculty);  // Assuming you have a mapper for entity-DTO conversion
     }
 }

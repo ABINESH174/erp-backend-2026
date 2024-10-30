@@ -58,15 +58,24 @@ public class FacultyController {
         FacultyDto facultyDto = facultyService.getFacultyByEmail(email,className,batchYear);
         return ResponseEntity.ok(facultyDto);
     }
-    @GetMapping("/getall")
+    @GetMapping("/get-all")
     public ResponseEntity<List<FacultyDto>>getAllFaculties(){
         List<FacultyDto> faculties=facultyService.getAllFaculties();
         return ResponseEntity.ok(faculties);
     }
-    @PutMapping("/update/{email}")
-    public ResponseEntity<FacultyDto> updateFaculty(@PathVariable String email, @RequestBody FacultyDto facultyDto) {
+    @PutMapping("/add-class/{email}")
+    public ResponseEntity<FacultyDto> addClassFaculty(@PathVariable String email, @RequestBody FacultyDto facultyDto) {
         try {
-            FacultyDto updatedFaculty = facultyService.updateFaculty(email, facultyDto);
+            FacultyDto updatedFaculty = facultyService.addClassFaculty(email, facultyDto);
+            return new ResponseEntity<>(updatedFaculty, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/remove-class/{email}")
+    public ResponseEntity<FacultyDto> removeClassFaculty(@PathVariable String email, @RequestParam String index ) {
+        try {
+            FacultyDto updatedFaculty = facultyService.removeClassFaculty(email, index);
             return new ResponseEntity<>(updatedFaculty, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
