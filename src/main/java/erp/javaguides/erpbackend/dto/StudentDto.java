@@ -1,11 +1,14 @@
 package erp.javaguides.erpbackend.dto;
 
+
+import erp.javaguides.erpbackend.enums.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import erp.javaguides.erpbackend.enums.Gender;
 
 @Getter
 @Setter
@@ -18,7 +21,7 @@ public class StudentDto {
     private String firstName;
     private String lastName;
     private String dateOfBirth;
-    private String gender;
+    private Gender gender;
     @Column(unique = true)
     private String aadharNumber;
     private String bloodGroup;
@@ -37,7 +40,7 @@ public class StudentDto {
     private String guardiansMobileNumber;
     private String parentsStatus;
     private String income;
-    private String maritalStatus;
+    private MaritalStatus maritalStatus;
     private String CommunityCertificate;
     private String profilePhoto;
     private byte[] communityCertificateContent;
@@ -46,8 +49,8 @@ public class StudentDto {
     private String emailid;
     private String residentialAddress;
     private String communicationAddress;
-    private String hosteller;
-    private String hostelType;
+    private Hosteller hosteller;
+    private HostelType hostelType;
     private String bankName;
     private String ifscCode;
     private String branchName;
@@ -67,7 +70,7 @@ public class StudentDto {
     private byte[] hsc2YearFileContent;
     private byte[] diplomaFileContent;
     private String emisNumber;
-    private String firstGraduate;
+    private FirstGraduate firstGraduate;
     private String specialCategory;
     private String firstGraduateFile;
     private String specialCategoryFile;
@@ -75,7 +78,6 @@ public class StudentDto {
     private byte[] specialCategoryFileContent;
     private String programme;
     private String discipline;
-    private String section;
     private String admissionNumber;
     private String batch;
     private String semester;
@@ -83,8 +85,23 @@ public class StudentDto {
     private String umisId;
     private String dateOfAdmission;
     private String courseJoinedDate;
-    private String courseType;
+    private CourseType courseType;
     private String regulation;
     private String cgpa;
-    private String studentStatus;
+    private StudentStatus studentStatus;
+    private String labourWelfareId;
+    private String smartCard;
+    private String studentIdCard;
+    private String provisionalAllotment;
+    private String aadharCard;
+    private String centralCommunityCertificate;
+    private String collegeFeeReceipt;
+    private byte[] labourWelfareIdContent;
+    private byte[] smartCardContent;
+    private byte[] studentIdCardContent;
+    private byte[] provisionalAllotmentContent;
+    private byte[] aadharCardContent;
+    private byte[] centralCommunityCertificateContent;
+    private byte[] collegeFeeReceiptContent;
+
 }
