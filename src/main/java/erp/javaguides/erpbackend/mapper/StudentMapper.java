@@ -69,7 +69,6 @@ public class StudentMapper {
                 null,
                 student.getProgramme(),
                 student.getDiscipline(),
-                student.getSection(),
                 student.getAdmissionNumber(),
                 student.getBatch(),
                 student.getSemester(),
@@ -80,7 +79,21 @@ public class StudentMapper {
                 student.getCourseType(),
                 student.getRegulation(),
                 student.getCgpa(),
-                student.getStudentStatus()
+                student.getStudentStatus(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
     }
 
@@ -137,7 +150,6 @@ public class StudentMapper {
                 null,
                 studentDto.getProgramme(),
                 studentDto.getDiscipline(),
-                studentDto.getSection(),
                 studentDto.getAdmissionNumber(),
                 studentDto.getBatch(),
                 studentDto.getSemester(),
@@ -148,7 +160,14 @@ public class StudentMapper {
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),
-                studentDto.getStudentStatus()
+                studentDto.getStudentStatus(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
     }
 }
