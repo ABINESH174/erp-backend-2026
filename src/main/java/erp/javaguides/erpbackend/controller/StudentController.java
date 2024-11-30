@@ -19,6 +19,15 @@ public class StudentController {
         String savedStudent = studentService.createStudent(studentDto);
         return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
     }
+    @PostMapping("/{registerNo}/update-files")
+    public ResponseEntity<String> updateStudentFiles(@PathVariable String registerNo, @RequestBody StudentDto updatedFilesDto) {
+        try {
+            String message = studentService.updateStudentFiles(registerNo, updatedFilesDto);
+            return ResponseEntity.ok(message);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating files: " + e.getMessage());
+        }
+    }
 
     @GetMapping("{register_No}")
     public ResponseEntity<StudentDto> getStudentByRegisterNo(@PathVariable String register_No) {

@@ -8,5 +8,4 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student,String>{
     List<Student> findByDisciplineAndBatch(String discipline, String batch);
     List<Student> findByDiscipline(String discipline);
-
 }
