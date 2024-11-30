@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\New\\Desktop\\FileSystem";
+    private static final String FOLDERPATH = "C:\\Users\\m.uvasri\\Desktop\\FileSystem";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
@@ -244,81 +244,6 @@ public class StudentServiceImpl implements StudentService {
             default -> null;
         };
     }
-
-    public String updateStudentFiles(String registerNo, StudentDto updatedFilesDto) throws Exception {
-        // Validate student existence
-        Student existingStudent = studentRepository.findById(registerNo)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with register number: " + registerNo));
-
-        String userFolderPath = Paths.get(FOLDERPATH, registerNo).toString();
-        createFolderIfNotExist(userFolderPath);
-
-        // Update files if provided in the DTO
-        if (updatedFilesDto.getLabourWelfareId() != null) {
-            MultipartFile labourWelfareIdFile = base64ToMultipartFile(updatedFilesDto.getLabourWelfareId(), "labourWelfareId");
-            String labourWelfareIdPath = saveFile(existingStudent.getFirstName(), userFolderPath, "labourWelfareId", labourWelfareIdFile);
-            existingStudent.setLabourWelfareId(labourWelfareIdPath);
-        }
-        if (updatedFilesDto.getSmartCard() != null) {
-            MultipartFile smartCardFile = base64ToMultipartFile(updatedFilesDto.getSmartCard(), "smartCard");
-            String smartCardPath = saveFile(existingStudent.getFirstName(), userFolderPath, "smartCard", smartCardFile);
-            existingStudent.setSmartCard(smartCardPath);
-        }
-        if (updatedFilesDto.getStudentIdCard() != null) {
-            MultipartFile studentIdCardFile = base64ToMultipartFile(updatedFilesDto.getStudentIdCard(), "studentIdCard");
-            String studentIdCardPath = saveFile(existingStudent.getFirstName(), userFolderPath, "studentIdCard", studentIdCardFile);
-            existingStudent.setStudentIdCard(studentIdCardPath);
-        }
-        if (updatedFilesDto.getProvisionalAllotment() != null) {
-            MultipartFile provisionalAllotmentFile = base64ToMultipartFile(updatedFilesDto.getProvisionalAllotment(), "provisionalAllotment");
-            String provisionalAllotmentPath = saveFile(existingStudent.getFirstName(), userFolderPath, "provisionalAllotment", provisionalAllotmentFile);
-            existingStudent.setProvisionalAllotment(provisionalAllotmentPath);
-        }
-//        if (updatedFilesDto.getAadharCard() != null) {
-//            MultipartFile aadharCardFile = base64ToMultipartFile(updatedFilesDto.getAadharCard(), "aadharCard");
-//            String aadharCardPath = saveFile(existingStudent.getFirstName(), userFolderPath, "aadharCard", aadharCardFile);
-//            existingStudent.setAadharCard(aadharCardPath);
-//        }
-        String aadharCardBase64 = updatedFilesDto.getAadharCard();
-        if (aadharCardBase64 != null && !aadharCardBase64.trim().isEmpty()) {
-            try {
-                MultipartFile aadharCardFile = base64ToMultipartFile(aadharCardBase64, "aadharcard");
-                if (aadharCardFile == null || aadharCardFile.isEmpty()) {
-                    throw new Exception("Aadhar card file is null or empty after conversion.");
-                }
-
-                String aadharCardPath = saveFile(existingStudent.getFirstName(), userFolderPath, "aadharcard", aadharCardFile);
-                if (aadharCardPath == null || aadharCardPath.isEmpty()) {
-                    throw new Exception("Failed to save Aadhar card file.");
-                }
-
-                existingStudent.setAadharCard(aadharCardPath);
-            } catch (Exception e) {
-                System.err.println("Error processing Aadhar Card: " + e.getMessage());
-                // You may want to handle this further, e.g., rethrowing or logging
-            }
-        } else {
-            System.out.println("Aadhar card data is not provided.");
-        }
-        if (updatedFilesDto.getCentralCommunityCertificate() != null) {
-            MultipartFile centralCommunityCertificateFile = base64ToMultipartFile(updatedFilesDto.getCentralCommunityCertificate(), "centralCommunityCertificate");
-            String centralCommunityCertificatePath = saveFile(existingStudent.getFirstName(), userFolderPath, "centralCommunityCertificate", centralCommunityCertificateFile);
-            existingStudent.setCentralCommunityCertificate(centralCommunityCertificatePath);
-        }
-        if (updatedFilesDto.getCollegeFeeReceipt() != null) {
-            MultipartFile collegeFeeReceiptFile = base64ToMultipartFile(updatedFilesDto.getCollegeFeeReceipt(), "collegeFeeReceipt");
-            String collegeFeeReceiptPath = saveFile(existingStudent.getFirstName(), userFolderPath, "collegeFeeReceipt", collegeFeeReceiptFile);
-            existingStudent.setCollegeFeeReceipt(collegeFeeReceiptPath);
-        }
-
-
-
-        // Save updated student to the database
-        studentRepository.save(existingStudent);
-
-        return "Student files updated successfully for RegisterNo: " + registerNo;
-    }
-
 
     public String updateStudent(String registerNo, StudentDto studentDto) throws Exception {
         // Find the existing student by register number

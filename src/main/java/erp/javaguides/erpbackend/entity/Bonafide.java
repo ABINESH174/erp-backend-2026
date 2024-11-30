@@ -18,9 +18,24 @@ import lombok.Setter;
 @Table(name="Bonafide")
 public class Bonafide {
     @Id
-    @Column(unique = true)
-    @Size(max = 20)
+    @Column(length = 100)
     private String registerNo;
+    @Column(length = 50)
     private String purpose;
+    @Column(length = 50)
     private String status;
+    @Column(length = 150)
+    private String labourWelfareId;
+    @Column(length = 150)
+    private String smartCard;
+    @Column(length = 150)
+    private String studentIdCard;
+    @Column(length = 150)
+    private String provisionalAllotment;
+    @Column(length = 150)
+    private String aadharCard;
+    @Column(length = 150)
+    private String centralCommunityCertificate;
+    @Column(length = 150)
+    private String collegeFeeReceipt;
 }

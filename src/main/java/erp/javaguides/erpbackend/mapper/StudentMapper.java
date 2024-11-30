@@ -79,21 +79,7 @@ public class StudentMapper {
                 student.getCourseType(),
                 student.getRegulation(),
                 student.getCgpa(),
-                student.getStudentStatus(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                student.getStudentStatus()
         );
     }
 
@@ -160,14 +146,7 @@ public class StudentMapper {
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),
-                studentDto.getStudentStatus(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                studentDto.getStudentStatus()
         );
     }
 }

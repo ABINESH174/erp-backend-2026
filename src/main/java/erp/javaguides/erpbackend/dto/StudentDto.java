@@ -89,19 +89,5 @@ public class StudentDto {
     private String regulation;
     private String cgpa;
     private StudentStatus studentStatus;
-    private String labourWelfareId;
-    private String smartCard;
-    private String studentIdCard;
-    private String provisionalAllotment;
-    private String aadharCard;
-    private String centralCommunityCertificate;
-    private String collegeFeeReceipt;
-    private byte[] labourWelfareIdContent;
-    private byte[] smartCardContent;
-    private byte[] studentIdCardContent;
-    private byte[] provisionalAllotmentContent;
-    private byte[] aadharCardContent;
-    private byte[] centralCommunityCertificateContent;
-    private byte[] collegeFeeReceiptContent;
 
 }

@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bonafides")
+@RequestMapping("/api/bonafide")
 public class BonafideController {
 
     @Autowired
     private BonafideService bonafideService;
 
     @PostMapping
-    public ResponseEntity<BonafideDto> createBonafide(@RequestBody BonafideDto bonafideDto) {
+    public ResponseEntity<BonafideDto> createBonafide(@RequestBody BonafideDto bonafideDto) throws Exception {
         BonafideDto createdBonafide = bonafideService.createBonafide(bonafideDto);
         return new ResponseEntity<>(createdBonafide, HttpStatus.CREATED);
     }

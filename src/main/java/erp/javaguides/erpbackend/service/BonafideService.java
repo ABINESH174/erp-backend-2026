@@ -5,7 +5,7 @@ import erp.javaguides.erpbackend.dto.BonafideDto;
 import java.util.List;
 
 public interface BonafideService {
-    BonafideDto createBonafide(BonafideDto bonafideDto);
+    BonafideDto createBonafide(BonafideDto bonafideDto) throws  Exception;
     BonafideDto getBonafideByRegisterNo(String registerNo);
     List<BonafideDto> getAllBonafides();
     BonafideDto updateBonafide(String registerNo, BonafideDto bonafideDto);

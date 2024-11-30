@@ -10,7 +10,21 @@ public class BonafideMapper {
         return new BonafideDto(
                 bonafide.getRegisterNo(),
                 bonafide.getPurpose(),
-                bonafide.getStatus()
+                bonafide.getStatus(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
     }
 
@@ -18,7 +32,14 @@ public class BonafideMapper {
         return new Bonafide(
                 bonafideDto.getRegisterNo(),
                 bonafideDto.getPurpose(),
-                bonafideDto.getStatus()
+                bonafideDto.getStatus(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
     }
 }
