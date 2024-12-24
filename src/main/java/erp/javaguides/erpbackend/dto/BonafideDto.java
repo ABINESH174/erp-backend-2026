@@ -16,7 +16,7 @@ public class BonafideDto {
     @NotEmpty(message = "Purpose cannot be empty")
     private String purpose;
     private String status;
-    private String labourWelfareId;
+    private String welfareId;
     private String smartCard;
     private String studentIdCard;
     private String provisionalAllotment;

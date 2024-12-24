@@ -25,7 +25,7 @@ public class Bonafide {
     @Column(length = 50)
     private String status;
     @Column(length = 150)
-    private String labourWelfareId;
+    private String welfareId;
     @Column(length = 150)
     private String smartCard;
     @Column(length = 150)
