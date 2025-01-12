@@ -16,8 +16,10 @@ public class Authentication {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(length = 100,unique = true)
     private String userId;
+    @Column(length = 50)
     private String password;
+    @Column(length = 10)
     private String role;
 }

@@ -13,6 +13,7 @@ import erp.javaguides.erpbackend.service.FacultyService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,57 +92,88 @@ public class FacultyServiceImpl implements FacultyService {
                 .collect(Collectors.toList());
     }
     @Override
-    public FacultyDto updateFaculty(String email, FacultyDto facultyDto) {
+    public FacultyDto addClassFaculty(String email, FacultyDto facultyDto) {
+        // Fetch existing faculty
         Faculty existingFaculty = facultyRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
 
-        // Update other fields directly if needed
+        // Update basic fields if needed
+//        if (facultyDto.getFirstName() != null) {
+//            existingFaculty.setFirstName(facultyDto.getFirstName());
+//        }
+//        if (facultyDto.getLastName() != null) {
+//            existingFaculty.setLastName(facultyDto.getLastName());
+//        }
+//        if (facultyDto.getMobileNumber() != null) {
+//            existingFaculty.setMobileNumber(facultyDto.getMobileNumber());
+//        }
+        // Add additional fields as necessary...
 
-//        existingFaculty.setFirstName(facultyDto.getFirstName());
-//        existingFaculty.setLastName(facultyDto.getLastName());
-//        existingFaculty.setMobileNumber(facultyDto.getMobileNumber());
-//        existingFaculty.setDiscipline(facultyDto.getDiscipline());
-//        existingFaculty.setHandlingBatch(facultyDto.getHandlingBatch());
-
-
-        if (facultyDto.getSubject() != null) {
-            if (existingFaculty.getSubject()!= null){
-                existingFaculty.setSubject(existingFaculty.getSubject() + "#" + facultyDto.getSubject());
+        // Ensure lists are initialized and add elements
+        if (facultyDto.getSubjects() != null) {
+            if (existingFaculty.getSubjects() == null) {
+                existingFaculty.setSubjects(new ArrayList<>()); // Initialize the list if it's null
             }
-            else {
-                existingFaculty.setSubject(facultyDto.getSubject());
-            }
+            existingFaculty.getSubjects().addAll(facultyDto.getSubjects());
         }
-        if (facultyDto.getHandlingSemester() != null) {
-            if (existingFaculty.getHandlingSemester()!=null){
-                existingFaculty.setHandlingSemester(existingFaculty.getHandlingSemester() + "#" + facultyDto.getHandlingSemester());
-            }
-            else{
-                existingFaculty.setHandlingSemester(facultyDto.getHandlingSemester());
-            }
-        }
-        if (facultyDto.getHandlingDept() != null) {
-            if (existingFaculty.getHandlingDept()!=null){
-                existingFaculty.setHandlingDept(existingFaculty.getHandlingDept() + "#" + facultyDto.getHandlingDept());
-            }
-            else{
-                existingFaculty.setHandlingDept(facultyDto.getHandlingDept());
 
+        if (facultyDto.getHandlingSemesters() != null) {
+            if (existingFaculty.getHandlingSemesters() == null) {
+                existingFaculty.setHandlingSemesters(new ArrayList<>()); // Initialize the list if it's null
             }
+            existingFaculty.getHandlingSemesters().addAll(facultyDto.getHandlingSemesters());
         }
-        if (facultyDto.getBatch() != null) {
-            if (existingFaculty.getBatch()!= null){
-                existingFaculty.setBatch(existingFaculty.getBatch() + "#" + facultyDto.getBatch());
+
+        if (facultyDto.getHandlingDepartments() != null) {
+            if (existingFaculty.getHandlingDepartments() == null) {
+                existingFaculty.setHandlingDepartments(new ArrayList<>()); // Initialize the list if it's null
             }
-            else {
-                existingFaculty.setBatch(facultyDto.getBatch());
+            existingFaculty.getHandlingDepartments().addAll(facultyDto.getHandlingDepartments());
+        }
+
+        if (facultyDto.getBatches() != null) {
+            if (existingFaculty.getBatches() == null) {
+                existingFaculty.setBatches(new ArrayList<>()); // Initialize the list if it's null
             }
+            existingFaculty.getBatches().addAll(facultyDto.getBatches());
         }
 
         // Save the updated faculty entity
         Faculty updatedFaculty = facultyRepository.save(existingFaculty);
 
         // Convert the updated entity to DTO and return
-        return FacultyMapper.mapToFacultyDto(updatedFaculty);  // Assuming you have a mapper for entity-DTO conversion
+        return FacultyMapper.mapToFacultyDto(updatedFaculty);
+    }
+
+    @Override
+    public FacultyDto removeClassFaculty(String email, String index) {
+        Faculty existingFaculty = facultyRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
+
+        // Convert index to integer
+        int idx;
+        try {
+            idx = Integer.parseInt(index);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid index format: " + index);
+        }
+
+        // Remove from batches, subjects, handlingDepts, and handlingSemesters if they exist
+        removeFromList(existingFaculty.getBatches(), idx);
+        removeFromList(existingFaculty.getSubjects(), idx);
+        removeFromList(existingFaculty.getHandlingDepartments(), idx);
+        removeFromList(existingFaculty.getHandlingSemesters(), idx);
+
+        // Save the updated faculty entity
+        facultyRepository.save(existingFaculty);
+
+        // Convert to DTO and return
+        return FacultyMapper.mapToFacultyDto(existingFaculty);
+    }
+
+    private void removeFromList(List<String> list, int index) {
+        if (index >= 0 && index < list.size()) {
+            list.remove(index);
+        }
     }
 }
