@@ -112,7 +112,7 @@ public class Student {
     private String firstGraduateFilePath;
     @Column(length = 150)
     private String specialCategoryFilePath;
-    @Column(length = 10)
+    @Column(length = 100)
     private String programme;
     @Column(length = 50)
     private String discipline;
