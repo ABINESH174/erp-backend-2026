@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\allErpLocalData\\fileSystem1";
+    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\TempERPData\\fileSystem2";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
@@ -40,7 +40,7 @@ public class StudentServiceImpl implements StudentService {
             if (studentDto == null || studentDto.getRegisterNo() == null) {
                 throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
             }
-            Optional<Student> optionalStudent = studentRepository.findById(studentDto.getRegisterNo());
+            Optional<Student> optionalStudent = studentRepository.findById(studentDto.getStudentId());
             if (optionalStudent.isPresent()) {
                 throw new Exception("Register Number already exists");
             }
@@ -66,9 +66,9 @@ public class StudentServiceImpl implements StudentService {
                     base64ToMultipartFile(studentDto.getSpecialCategoryFile(), "specialCategoryFile")));
             student.setSslcFilePath(saveFile(firstName, userFolderPath, "sslcfile",
                     base64ToMultipartFile(studentDto.getSslcFile(), "sslcfile")));
-            student.setHsc1YearFilePath(saveFile(firstName, userFolderPath, "hsc1file",
+            student.setHscFirstYearFilePath(saveFile(firstName, userFolderPath, "hsc1file",
                     base64ToMultipartFile(studentDto.getHsc1YearFile(), "hsc1file")));
-            student.setHsc2YearFilePath(saveFile(firstName, userFolderPath, "hsc2file",
+            student.setHscSecondYearFilePath(saveFile(firstName, userFolderPath, "hsc2file",
                     base64ToMultipartFile(studentDto.getHsc2YearFile(), "hsc2file")));
             student.setDiplomaFilePath(saveFile(firstName, userFolderPath, "diplomafile",
                     base64ToMultipartFile(studentDto.getDiplomaFile(), "diplomafile")));
@@ -149,7 +149,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDto getStudentByRegisterNo(String registerNo) {
-        Student student = studentRepository.findById(registerNo)
+        Student student = studentRepository.findByRegisterNo(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + registerNo));
         byte[] communityCertificateContent = readFile(student.getCommunityCertificatePath());
         byte[] prfilePhotoContent = readFile(student.getProfilePhotoPath());
@@ -157,8 +157,8 @@ public class StudentServiceImpl implements StudentService {
         byte[] firstGraduateFileContent = readFile(student.getFirstGraduateFilePath());
         byte[] specialCategoryFileContent=readFile(student.getSpecialCategoryFilePath());
         byte[] sslcFileContent = readFile(student.getSslcFilePath());
-        byte[] hsc1YearFileContent = readFile(student.getHsc1YearFilePath());
-        byte[] hsc2YearFileContent = readFile(student.getHsc2YearFilePath());
+        byte[] hsc1YearFileContent = readFile(student.getHscFirstYearFilePath());
+        byte[] hsc2YearFileContent = readFile(student.getHscSecondYearFilePath());
         byte[] diplomaFileContent = readFile(student.getDiplomaFilePath());
 
         StudentDto studentDto = StudentMapper.mapToStudentWithFilesDto(student);
@@ -247,10 +247,10 @@ public class StudentServiceImpl implements StudentService {
 
     public String updateStudent(String registerNo, StudentDto studentDto) throws Exception {
         // Find the existing student by register number
-        Student existingStudent = studentRepository.findById(registerNo)
+        Student existingStudent = studentRepository.findByRegisterNo(registerNo)
                 .orElseThrow(() -> new Exception("Student not found with register number: " + registerNo));
         existingStudent.setIncome(studentDto.getIncome());
-        existingStudent.setParentsStatus(studentDto.getParentsStatus());
+        existingStudent.setParentStatus(studentDto.getParentsStatus());
         existingStudent.setSemester(studentDto.getSemester());
         existingStudent.setStudentStatus(studentDto.getStudentStatus());
         // Save updated student back to the database

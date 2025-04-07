@@ -34,26 +34,28 @@ public class BonafideServiceImpl implements BonafideService {
             throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
         }
 
-        Student student = studentRepository.findById(bonafideDto.getRegisterNo())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register Number: " + bonafideDto.getRegisterNo()));
+        Student student = studentRepository.findById(bonafideDto.getBonafideId())
+                .orElseThrow(()->
+                        new ResourceNotFoundException("The student is not found...!!!")
+                );
 
         String userFolderPath = Paths.get(FOLDERPATH, bonafideDto.getRegisterNo()).toString();
 
         Bonafide bonafide = BonafideMapper.mapToBonafide(bonafideDto);
 
-        bonafide.setWelfareId(studentService.saveFile(student.getFirstName(), userFolderPath, "labourWelfareId",
+        bonafide.setWelfareIdFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "labourWelfareId",
                 studentService.base64ToMultipartFile(bonafideDto.getWelfareId(), "labourWelfareId")));
-        bonafide.setSmartCard(studentService.saveFile(student.getFirstName(), userFolderPath, "smartCard",
+        bonafide.setSmartCardFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "smartCard",
                 studentService.base64ToMultipartFile(bonafideDto.getSmartCard(), "smartCard")));
-        bonafide.setStudentIdCard(studentService.saveFile(student.getFirstName(), userFolderPath, "studentIdCard",
+        bonafide.setStudentIdCardFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "studentIdCard",
                 studentService.base64ToMultipartFile(bonafideDto.getStudentIdCard(), "studentIdCard")));
-        bonafide.setProvisionalAllotment(studentService.saveFile(student.getFirstName(), userFolderPath, "provisionalAllotment",
+        bonafide.setProvisionalAllotmentFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "provisionalAllotment",
                 studentService.base64ToMultipartFile(bonafideDto.getProvisionalAllotment(), "provisionalAllotment")));
-        bonafide.setAadharCard(studentService.saveFile(student.getFirstName(), userFolderPath, "aadharCard",
+        bonafide.setAadharCardFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "aadharCard",
                 studentService.base64ToMultipartFile(bonafideDto.getAadharCard(), "aadharCard")));
-        bonafide.setCentralCommunityCertificate(studentService.saveFile(student.getFirstName(), userFolderPath, "centralCommunityCertificate",
+        bonafide.setCentralCommunityCertificateFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "centralCommunityCertificate",
                 studentService.base64ToMultipartFile(bonafideDto.getCentralCommunityCertificate(), "centralCommunityCertificate")));
-        bonafide.setCollegeFeeReceipt(studentService.saveFile(student.getFirstName(), userFolderPath, "collegeFeeReceipt",
+        bonafide.setCollegeFeeReceiptFilePath(studentService.saveFile(student.getFirstName(), userFolderPath, "collegeFeeReceipt",
                 studentService.base64ToMultipartFile(bonafideDto.getCollegeFeeReceipt(), "collegeFeeReceipt")));
 
         Bonafide savedBonafide = bonafideRepository.save(bonafide);

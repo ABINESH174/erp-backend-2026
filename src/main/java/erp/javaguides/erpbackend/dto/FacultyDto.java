@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FacultyDto {
+    private Long facultyId;
     private String firstName;
     private String lastName;
     private String email;

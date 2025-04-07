@@ -26,7 +26,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDto createFaculty(FacultyDto facultyDto) throws Exception {
-        Optional<Faculty> optionalFaculty = facultyRepository.findById(facultyDto.getEmail());
+        Optional<Faculty> optionalFaculty = facultyRepository.findById(facultyDto.getFacultyId());
         if (optionalFaculty.isPresent()) {
             throw new Exception("Email already exists");
         }
@@ -36,20 +36,20 @@ public class FacultyServiceImpl implements FacultyService {
     }
     @Override
     public FacultyDto getFacultyByEmail(String email) {
-        Faculty faculty = facultyRepository.findById(email)
+        Faculty faculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
         return getFacultyWithStudent(faculty, faculty.getDiscipline(), faculty.getHandlingBatch());
     }
 
     @Override
     public FacultyDto getFacultyByEmail(String email, String className, String batch) {
-        Faculty faculty = facultyRepository.findById(email)
+        Faculty faculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
         return getFacultyWithStudent(faculty, className, batch);
     }
     @Override
     public FacultyDto getFacultyWithStudent(String email){
-        Faculty faculty = facultyRepository.findById(email)
+        Faculty faculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
         List<Student> studentsList = studentRepository.findByDiscipline(faculty.getDiscipline());
         List<StudentDto> studentDtos = studentsList.stream()
@@ -71,7 +71,7 @@ public class FacultyServiceImpl implements FacultyService {
         return facultyDto;
     }
     public FacultyDto getFaculty(String hodEmail){
-        Faculty hod = facultyRepository.findById(hodEmail)
+        Faculty hod = facultyRepository.findByEmail(hodEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + hodEmail));
 
         List<Faculty> allFaculties = facultyRepository.findByDiscipline(hod.getDiscipline());
@@ -94,7 +94,7 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public FacultyDto addClassFaculty(String email, FacultyDto facultyDto) {
         // Fetch existing faculty
-        Faculty existingFaculty = facultyRepository.findById(email)
+        Faculty existingFaculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
 
         // Update basic fields if needed
@@ -147,7 +147,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDto removeClassFaculty(String email, String index) {
-        Faculty existingFaculty = facultyRepository.findById(email)
+        Faculty existingFaculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + email));
 
         // Convert index to integer

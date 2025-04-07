@@ -6,6 +6,7 @@ import erp.javaguides.erpbackend.entity.Faculty;
 public class FacultyMapper {
     public static FacultyDto mapToFacultyDto(Faculty faculty){
         return new FacultyDto(
+                faculty.getFacultyId(),
                 faculty.getFirstName(),
                 faculty.getLastName(),
                 faculty.getEmail(),
@@ -22,6 +23,7 @@ public class FacultyMapper {
     }
     public static Faculty mapToFaculty(FacultyDto facultyDto){
         return new Faculty(
+                facultyDto.getFacultyId(),
                 facultyDto.getFirstName(),
                 facultyDto.getLastName(),
                 facultyDto.getEmail(),

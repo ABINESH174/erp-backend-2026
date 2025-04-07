@@ -28,10 +28,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Authentication authenticate(AuthenticationDto authenticationDto) {
         Authentication empty=new Authentication();
         Authentication authentication = authenticationRepository.findByUserId(authenticationDto.getUserId());
-        boolean ismatched;
+        boolean isMatched;
         if (authentication != null) {
-            ismatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
-            if(ismatched){
+            isMatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
+            if(isMatched){
                return authentication;
             }
         }
