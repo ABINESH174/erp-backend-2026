@@ -1,8 +1,6 @@
-package erp.javaguides.erpbackend.dto;
+package erp.javaguides.erpbackend.dto.requestDto;
 
 import erp.javaguides.erpbackend.enums.BonafideStatus;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

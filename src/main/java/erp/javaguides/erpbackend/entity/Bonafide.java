@@ -24,9 +24,6 @@ public class Bonafide {
     private Long bonafideId;
 
     @Column(length = 100)
-    private String registerNo;
-
-    @Column(length = 100)
     private String purpose;
 
     @Enumerated(value = EnumType.STRING)
@@ -55,8 +52,8 @@ public class Bonafide {
     @Column(length = 150)
     private String collegeFeeReceiptFilePath;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_id")
+    @ManyToOne
+    @JoinColumn(name = "registerNo")
     private Student student;
 
 

@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.mapper;
 
-import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.entity.Student;
 
 
@@ -9,7 +9,6 @@ public class StudentMapper {
 
     public static StudentDto mapToStudentWithFilesDto(Student student){
         return new StudentDto(
-                student.getStudentId(),
                 student.getRegisterNo(),
                 student.getFirstName(),
                 student.getLastName(),
@@ -86,7 +85,6 @@ public class StudentMapper {
 
     public static Student mapToStudentWithFilesDto(StudentDto studentDto){
         return new Student(
-                studentDto.getStudentId(),
                 studentDto.getRegisterNo(),
                 studentDto.getFirstName(),
                 studentDto.getLastName(),

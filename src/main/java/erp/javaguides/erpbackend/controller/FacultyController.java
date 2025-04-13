@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.service.FacultyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class FacultyController {
             FacultyDto savedFaculty = facultyService.createFaculty(facultyDto);
             return new ResponseEntity<>(savedFaculty, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

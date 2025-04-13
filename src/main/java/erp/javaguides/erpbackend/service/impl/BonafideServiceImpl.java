@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.BonafideDto;
+import erp.javaguides.erpbackend.dto.requestDto.BonafideDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -10,11 +10,8 @@ import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BonafideServiceImpl implements BonafideService {

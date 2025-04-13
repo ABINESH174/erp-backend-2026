@@ -1,15 +1,13 @@
 package erp.javaguides.erpbackend.mapper;
 
-import erp.javaguides.erpbackend.dto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.BonafideDto;
-import erp.javaguides.erpbackend.entity.Authentication;
+import erp.javaguides.erpbackend.dto.requestDto.BonafideDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
 
 public class BonafideMapper {
     public static BonafideDto mapToBonafideDto(Bonafide bonafide){
         return new BonafideDto(
                 bonafide.getBonafideId(),
-                bonafide.getRegisterNo(),
+                bonafide.getStudent().getRegisterNo(),
                 bonafide.getPurpose(),
                 bonafide.getBonafideStatus(),
                 null,

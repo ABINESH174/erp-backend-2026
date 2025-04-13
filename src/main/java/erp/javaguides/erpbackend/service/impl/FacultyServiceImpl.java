@@ -1,7 +1,8 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.FacultyDto;
-import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -26,12 +27,15 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDto createFaculty(FacultyDto facultyDto) throws Exception {
-        Optional<Faculty> optionalFaculty = facultyRepository.findById(facultyDto.getFacultyId());
+        Optional<Faculty> optionalFaculty = facultyRepository.findByEmail(facultyDto.getEmail());
         if (optionalFaculty.isPresent()) {
             throw new Exception("Email already exists");
         }
         Faculty faculty = FacultyMapper.mapToFaculty(facultyDto);
+        System.out.println(faculty.getEmail());
         Faculty savedFaculty = facultyRepository.save(faculty);
+        System.out.println(savedFaculty.getFirstName());
+//        return FacultyMapper.mapToFacultyResponseDto(savedFaculty);
         return FacultyMapper.mapToFacultyDto(savedFaculty);
     }
     @Override

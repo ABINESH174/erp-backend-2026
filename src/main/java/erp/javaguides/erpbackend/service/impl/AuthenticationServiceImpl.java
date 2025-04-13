@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;

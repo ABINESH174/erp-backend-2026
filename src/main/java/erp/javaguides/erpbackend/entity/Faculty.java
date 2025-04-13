@@ -21,7 +21,6 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facultyId;
 
-    @Column(nullable = false)
     private String firstName;
 
     private String lastName;
@@ -50,6 +49,16 @@ public class Faculty {
     private HOD hod;
 
 
-    public Faculty(Long facultyId, String firstName, String lastName, String email, String mobileNumber, String discipline, String handlingBatch, List<String> subjects, List<String> handlingSemesters, List<String> handlingDepartments, List<String> batches) {
+    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline, String handlingBatch, List<String> subjects, List<String> handlingSemesters, List<String> handlingDepartments, List<String> batches) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.discipline = discipline;
+        this.handlingBatch = handlingBatch;
+        this.subjects = subjects;
+        this.handlingSemesters = handlingSemesters;
+        this.handlingDepartments = handlingDepartments;
+        this.batches = batches;
     }
 }

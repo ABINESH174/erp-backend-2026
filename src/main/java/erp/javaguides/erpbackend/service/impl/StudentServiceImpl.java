@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -40,7 +40,7 @@ public class StudentServiceImpl implements StudentService {
             if (studentDto == null || studentDto.getRegisterNo() == null) {
                 throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
             }
-            Optional<Student> optionalStudent = studentRepository.findById(studentDto.getStudentId());
+            Optional<Student> optionalStudent = studentRepository.findByRegisterNo(studentDto.getRegisterNo());
             if (optionalStudent.isPresent()) {
                 throw new Exception("Register Number already exists");
             }

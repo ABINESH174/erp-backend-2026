@@ -1,4 +1,4 @@
-package erp.javaguides.erpbackend.dto;
+package erp.javaguides.erpbackend.dto.requestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
