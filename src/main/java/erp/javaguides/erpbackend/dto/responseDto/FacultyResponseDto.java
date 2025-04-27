@@ -1,19 +1,18 @@
-package erp.javaguides.erpbackend.dto;
+package erp.javaguides.erpbackend.dto.responseDto;
 
-import jakarta.persistence.Table;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class FacultyDto {
+@NoArgsConstructor
+public class FacultyResponseDto {
+    private Long facultyId;
     private String firstName;
     private String lastName;
     private String email;

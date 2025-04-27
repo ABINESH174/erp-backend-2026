@@ -1,8 +1,8 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.FacultyDto;
-import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.FacultyService;

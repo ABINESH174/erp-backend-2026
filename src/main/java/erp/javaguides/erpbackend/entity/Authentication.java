@@ -18,7 +18,7 @@ public class Authentication {
     private Long id;
     @Column(length = 100,unique = true)
     private String userId;
-    @Column(length = 50)
+    @Column(length = 255)
     private String password;
     @Column(length = 10)
     private String role;

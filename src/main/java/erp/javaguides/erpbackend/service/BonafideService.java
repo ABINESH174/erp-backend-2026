@@ -1,8 +1,6 @@
 package erp.javaguides.erpbackend.service;
 
-import erp.javaguides.erpbackend.dto.BonafideDto;
-
-import java.util.List;
+import erp.javaguides.erpbackend.dto.requestDto.BonafideDto;
 
 public interface BonafideService {
     BonafideDto createBonafide(BonafideDto bonafideDto) throws  Exception;

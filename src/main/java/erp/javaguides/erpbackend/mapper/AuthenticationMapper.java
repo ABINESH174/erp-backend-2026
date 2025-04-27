@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.mapper;
 
-import erp.javaguides.erpbackend.dto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 
 public class AuthenticationMapper {

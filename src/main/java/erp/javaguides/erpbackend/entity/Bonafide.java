@@ -1,14 +1,15 @@
 package erp.javaguides.erpbackend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import erp.javaguides.erpbackend.enums.BonafideStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Blob;
 
 @Getter
 @Setter
@@ -17,25 +18,45 @@ import lombok.Setter;
 @Entity
 @Table(name="Bonafide")
 public class Bonafide {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long bonafideId;
+
     @Column(length = 100)
-    private String registerNo;
-    @Column(length = 50)
     private String purpose;
-    @Column(length = 50)
-    private String status;
+
+    @Enumerated(value = EnumType.STRING)
+    private BonafideStatus bonafideStatus;
+
+    private String date;
+
     @Column(length = 150)
-    private String welfareId;
+    private String welfareIdFilePath;
+
     @Column(length = 150)
-    private String smartCard;
+    private String smartCardFilePath;
+
     @Column(length = 150)
-    private String studentIdCard;
+    private String studentIdCardFilePath;
+
     @Column(length = 150)
-    private String provisionalAllotment;
+    private String provisionalAllotmentFilePath;
+
     @Column(length = 150)
-    private String aadharCard;
+    private String aadharCardFilePath;
+
     @Column(length = 150)
-    private String centralCommunityCertificate;
+    private String centralCommunityCertificateFilePath;
+
     @Column(length = 150)
-    private String collegeFeeReceipt;
+    private String collegeFeeReceiptFilePath;
+
+    @ManyToOne
+    @JoinColumn(name = "registerNo")
+    private Student student;
+
+
+    public Bonafide(Long bonafideId, String registerNo, String purpose, BonafideStatus bonafideStatus, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
+    }
 }

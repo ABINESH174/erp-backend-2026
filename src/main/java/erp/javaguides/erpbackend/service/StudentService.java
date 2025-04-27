@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service;
 
-import erp.javaguides.erpbackend.dto.StudentDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 
 import java.util.List;
 

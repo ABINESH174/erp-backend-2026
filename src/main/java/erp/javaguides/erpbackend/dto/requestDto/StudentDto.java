@@ -1,9 +1,7 @@
-package erp.javaguides.erpbackend.dto;
+package erp.javaguides.erpbackend.dto.requestDto;
 
 
 import erp.javaguides.erpbackend.enums.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,14 +13,12 @@ import erp.javaguides.erpbackend.enums.Gender;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentDto {
-    @Id
-    @Column(unique = true)
+//    private Long studentId;
     private String registerNo;
     private String firstName;
     private String lastName;
     private String dateOfBirth;
     private Gender gender;
-    @Column(unique = true)
     private String aadharNumber;
     private String bloodGroup;
     private String nationality;

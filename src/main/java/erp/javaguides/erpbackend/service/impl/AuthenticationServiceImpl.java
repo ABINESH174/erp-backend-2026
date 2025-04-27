@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
@@ -28,10 +28,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Authentication authenticate(AuthenticationDto authenticationDto) {
         Authentication empty=new Authentication();
         Authentication authentication = authenticationRepository.findByUserId(authenticationDto.getUserId());
-        boolean ismatched;
+        boolean isMatched;
         if (authentication != null) {
-            ismatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
-            if(ismatched){
+            isMatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
+            if(isMatched){
                return authentication;
             }
         }

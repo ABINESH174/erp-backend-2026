@@ -1,13 +1,12 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.BonafideDto;
+import erp.javaguides.erpbackend.dto.requestDto.BonafideDto;
 import erp.javaguides.erpbackend.service.BonafideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/bonafide")
