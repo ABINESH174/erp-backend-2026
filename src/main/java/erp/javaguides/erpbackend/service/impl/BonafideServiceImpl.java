@@ -8,19 +8,21 @@ import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class BonafideServiceImpl implements BonafideService {
 
     @Autowired
     private BonafideRepository bonafideRepository;
     @Autowired
     private StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\New\\Desktop\\FileSystem";
+    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\TempERPData\\fileSystem";
     @Autowired
     private StudentServiceImpl studentService;
 
@@ -31,7 +33,7 @@ public class BonafideServiceImpl implements BonafideService {
             throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
         }
 
-        Student student = studentRepository.findById(bonafideDto.getBonafideId())
+        Student student = studentRepository.findByRegisterNo(bonafideDto.getRegisterNo())
                 .orElseThrow(()->
                         new ResourceNotFoundException("The student is not found...!!!")
                 );
