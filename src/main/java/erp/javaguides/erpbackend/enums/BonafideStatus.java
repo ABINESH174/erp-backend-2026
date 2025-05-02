@@ -8,7 +8,7 @@ public enum BonafideStatus {
 
     @JsonCreator
     public static BonafideStatus fromValue(String value){
-        return BonafideStatus.valueOf(value);
+        return BonafideStatus.valueOf(value.toUpperCase());
     }
 
     @JsonValue

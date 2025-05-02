@@ -2,7 +2,7 @@ package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
-import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
+// import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;

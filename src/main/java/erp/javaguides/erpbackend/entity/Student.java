@@ -2,9 +2,9 @@ package erp.javaguides.erpbackend.entity;
 
 import erp.javaguides.erpbackend.enums.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+// import jakarta.validation.constraints.Size;
 import lombok.*;
-import jakarta.validation.constraints.NotNull;
+// import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
