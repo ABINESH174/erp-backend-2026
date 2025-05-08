@@ -46,12 +46,10 @@ public class FacultyMapper {
                 faculty.getMobileNumber(),
                 faculty.getDiscipline(),
                 faculty.getHandlingBatch(),
-                faculty.getSubjects(),
-                faculty.getHandlingSemesters(),
-                faculty.getHandlingDepartments(),
-                faculty.getBatches(),
-                null,
-                null
+                faculty.getStudents()
+                        .stream()
+                        .map(StudentMapper::mapToStudentResponseDto)
+                        .toList() // Added a comment to clarify the purpose of toList()
         );
     }
 }

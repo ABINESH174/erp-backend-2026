@@ -22,7 +22,7 @@ public class Hod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hodId;
 
-    @Column(length = 20)
+    @Column(length = 100)
     private String discipline;
 
     @Column(nullable = false)

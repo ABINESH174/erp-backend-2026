@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.mapper;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
 
 
@@ -147,6 +148,23 @@ public class StudentMapper {
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),
                 studentDto.getStudentStatus()
+        );
+    }
+
+    public static StudentResponseDto mapToStudentResponseDto(Student student) {
+        return new StudentResponseDto(
+                student.getRegisterNo(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getGender(),
+                student.getEmailId(),
+                student.getMobileNumber(),
+                student.getDateOfBirth(),
+                student.getProgramme(),
+                student.getDiscipline(),
+                student.getSemester(),
+                student.getBatch(),
+                student.getCgpa()
         );
     }
 }

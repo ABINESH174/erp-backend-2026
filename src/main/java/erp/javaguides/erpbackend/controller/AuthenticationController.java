@@ -1,8 +1,9 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+// import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.FacultyService;
@@ -37,8 +38,8 @@ public class AuthenticationController {
         }
         if(authentication.getRole().equalsIgnoreCase("HOD")){
             try {
-                FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
-                if (facultyDto==null) {
+                FacultyResponseDto facultyResponseDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
+                if (facultyResponseDto==null) {
                     return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
                 }
             } catch (Exception e) {
@@ -48,8 +49,8 @@ public class AuthenticationController {
         }
         if(authentication.getRole().equalsIgnoreCase("FA")){
             try {
-                FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
-                if (facultyDto==null) {
+                FacultyResponseDto facultyResponseDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
+                if (facultyResponseDto==null) {
                     return new ResponseEntity<>("Faculty Registration Not Successful", HttpStatus.OK);
                 }
             } catch (Exception e) {
