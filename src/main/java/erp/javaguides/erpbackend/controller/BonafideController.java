@@ -28,7 +28,7 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> createBonafide(@ModelAttribute CreateBonafideRequestDto requestDto) throws ResourceNotFoundException{
         try {
             BonafideResponseDto createdBonafide = bonafideService.saveBonafide(requestDto);
-            return ResponseEntity.ok(new ApiResponse("Bonafide created successfully",createdBonafide));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Bonafide created successfully",createdBonafide));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to create Bonafide",null));
         }
@@ -58,6 +58,9 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> getAllBonafidesByRegisterNo(@RequestParam String registerNo) {
         try {
             List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getAllBonafidesByRegisterNo(registerNo);
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Bonafides found for the given register number", null));
+            }
             return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully", bonafideResponseDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
@@ -68,6 +71,9 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> getAllBonafidesByRegisterNoAndBonafideStatus(@RequestParam String registerNo, @RequestParam String status) {
         try {
             List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getAllBonafidesByRegisterNoAndBonafideStatus(registerNo, status);
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Bonafides found for the given register number and status", null));
+            }
             return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully", bonafideResponseDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
@@ -78,6 +84,9 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> getAllBonafides() {
         try {
             List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getAllBonafides();
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Bonafides found", null));
+            }
             return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully", bonafideResponseDtos));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
@@ -104,7 +113,7 @@ public class BonafideController {
         }
     }
     
-
+}
 //    @GetMapping("/{registerNo}")
 //    public ResponseEntity<BonafideDto> getBonafideByRegisterNo(@PathVariable String registerNo) {
 //        BonafideDto bonafideDto = bonafideService.getBonafideByRegisterNo(registerNo);
@@ -128,4 +137,4 @@ public class BonafideController {
 //        bonafideService.deleteBonafide(registerNo);
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-}
+// }

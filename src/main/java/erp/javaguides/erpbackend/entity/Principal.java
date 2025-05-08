@@ -30,7 +30,7 @@ public class Principal {
     private String mobileNumber;
 
     @OneToMany(mappedBy = "principal",cascade = CascadeType.ALL)
-    private List<HOD> hods;
+    private List<Hod> hods;
 
 
 

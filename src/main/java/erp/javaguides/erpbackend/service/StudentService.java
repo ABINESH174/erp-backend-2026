@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 
 import java.util.List;
 
@@ -11,5 +12,12 @@ public interface StudentService {
     List<StudentDto> getAllStudents();
     List<StudentDto> getAllStudentsByDiscipline(String discipline);
     String updateStudent(String registerNo, StudentDto studentDto) throws Exception;
+    List<StudentResponseDto> getAllStudentsBySemesterAndDiscipline(String semester, String discipline);
+    List<StudentResponseDto> getAllStudentsByBatchAndDiscipline(String batch, String discipline);
+
+    //Faculty neccessities
+
    /* void deleteStudent(String register_No);*/
+
+   //faculty neccessities
 }
