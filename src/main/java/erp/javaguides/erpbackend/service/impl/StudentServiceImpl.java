@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -259,4 +260,51 @@ public class StudentServiceImpl implements StudentService {
         return "Student updated successfully";
     }
 
+    @Override
+    public List<StudentResponseDto> getAllStudentsBySemesterAndDiscipline(String semester, String discipline) {
+        List<Student> students = studentRepository.findBySemesterAndDiscipline(semester, discipline);
+        return students.stream()
+                .map(student -> new StudentResponseDto(
+                        student.getRegisterNo(),
+                        student.getFirstName(),
+                        student.getLastName(),
+                        student.getGender(),
+                        student.getEmailId(),
+                        student.getMobileNumber(),
+                        student.getDateOfBirth(),
+                        student.getProgramme(),
+                        student.getDiscipline(),
+                        student.getSemester(),
+                        student.getBatch(),
+                        student.getCgpa()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentResponseDto> getAllStudentsByBatchAndDiscipline(String batch, String discipline) {
+        List<Student> students = studentRepository.findByDisciplineAndBatch(discipline, batch);
+        return students.stream()
+                .map(student -> new StudentResponseDto(
+                        student.getRegisterNo(),
+                        student.getFirstName(),
+                        student.getLastName(),
+                        student.getGender(),
+                        student.getEmailId(),
+                        student.getMobileNumber(),
+                        student.getDateOfBirth(),
+                        student.getProgramme(),
+                        student.getDiscipline(),
+                        student.getSemester(),
+                        student.getBatch(),
+                        student.getCgpa()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    //Faculty neccessities
+    
+    
+
+    //Getting students by batch , required for faculty and hod
 }

@@ -25,6 +25,6 @@ public class OfficeBearer {
     private String email;
 
     @OneToMany(mappedBy = "officeBearer", cascade = CascadeType.ALL)
-    private List<HOD> hods;
+    private List<Hod> hods;
 
 }

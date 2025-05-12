@@ -2,14 +2,15 @@ package erp.javaguides.erpbackend.entity;
 
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+// import jakarta.validation.constraints.NotEmpty;
+// import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Blob;
+// import java.sql.Blob;
 
 @Getter
 @Setter
@@ -26,6 +27,7 @@ public class Bonafide {
     @Column(length = 100)
     private String purpose;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private BonafideStatus bonafideStatus;
 
@@ -52,11 +54,14 @@ public class Bonafide {
     @Column(length = 150)
     private String collegeFeeReceiptFilePath;
 
-    @ManyToOne
-    @JoinColumn(name = "registerNo")
+    @ManyToOne(fetch=FetchType.LAZY, optional = false)
+    @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
     private Student student;
 
 
-    public Bonafide(Long bonafideId, String registerNo, String purpose, BonafideStatus bonafideStatus, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
+    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date) {
+        this.purpose = purpose;
+        this.bonafideStatus = bonafideStatus;
+        this.date = date;
     }
 }

@@ -2,11 +2,14 @@ package erp.javaguides.erpbackend.entity;
 
 import erp.javaguides.erpbackend.enums.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+// import jakarta.validation.constraints.Size;
 import lombok.*;
-import jakarta.validation.constraints.NotNull;
+// import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+
+// import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -198,6 +201,7 @@ public class Student {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="faculty_id")
+    @JsonIgnore  // to avoid infinite recursion
     private Faculty faculty;
 
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)

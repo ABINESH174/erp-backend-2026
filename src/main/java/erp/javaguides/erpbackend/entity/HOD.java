@@ -16,13 +16,13 @@ import java.util.List;
 @Entity
 @Table(name="HOD")
 
-public class HOD {
+public class Hod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hodId;
 
-    @Column(length = 20)
+    @Column(length = 100)
     private String discipline;
 
     @Column(nullable = false)
