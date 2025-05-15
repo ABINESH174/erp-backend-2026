@@ -15,7 +15,7 @@ public interface BonafideService {
     BonafideResponseDto updateBonafideWithBonafideStatus(Long bonafideId, String registerNo, String status);
     void deleteBonafide(Long bonafideId, String registerNo);
 
-
+    
 //    List<BonafideDto> getAllBonafides();
 //    BonafideDto updateBonafide(String registerNo, BonafideDto bonafideDto);
 //    void deleteBonafide(String registerNo);

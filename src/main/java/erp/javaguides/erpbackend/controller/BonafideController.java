@@ -6,14 +6,18 @@ import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.BonafideService;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @CrossOrigin
@@ -112,6 +116,33 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to delete Bonafide", null));
         }
     }
+
+    @GetMapping("/downloadFile")
+    public ResponseEntity<Resource> downloadBonafide(@RequestParam String filePath) {
+        try {
+            filePath = filePath.trim(); // important: remove \n or spaces
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            Path path = file.toPath(); // create Path from File
+            Resource resource = new UrlResource(path.toUri());
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"")
+                    .contentLength(file.length())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // helpful for debugging
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    
     
 }
 //    @GetMapping("/{registerNo}")

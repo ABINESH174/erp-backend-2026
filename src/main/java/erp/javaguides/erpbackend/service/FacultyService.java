@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.service;
 
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 // import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
@@ -9,7 +9,7 @@ import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import java.util.List;
 
 public interface FacultyService {
-    FacultyDto createFaculty(FacultyDto facultyDto)throws Exception;
+    FacultyResponseDto createFaculty(FacultyRequestDto facultyRequestDto)throws Exception;
     FacultyResponseDto getFacultyByEmail(String email);
     // FacultyDto getFacultyByEmail(String email, String className, String batch);
     // FacultyDto getFacultyWithStudent(String email);
@@ -34,5 +34,8 @@ public interface FacultyService {
     
     //Bonafide neccessities
     List<BonafideResponseDto> getPendingBonafidesByFacultyId(Long facultyId);
+
+    //hod neccessities
+    List<FacultyResponseDto> getAllUnassignedFaculties();
     
 }

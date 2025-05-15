@@ -49,7 +49,8 @@ public class BonafideServiceImpl implements BonafideService {
 
         Bonafide bonafide = BonafideMapper.mapToBonafide(requestDto);
 
-        bonafide.setStudent(student);
+        // bonafide.setStudent(student);
+        student.addBonafide(bonafide); // Add the bonafide to the student's list of bonafides
 
         Files.createDirectories(Paths.get(userFolderPath)); // Create the directory if it doesn't exist
 

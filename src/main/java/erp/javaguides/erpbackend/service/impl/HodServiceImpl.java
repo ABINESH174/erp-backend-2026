@@ -2,14 +2,19 @@ package erp.javaguides.erpbackend.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.dto.requestDto.HodRequestDto;
+import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
 import erp.javaguides.erpbackend.entity.Hod;
+import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
+import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.mapper.HodMapper;
+import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.HodRepository;
 import erp.javaguides.erpbackend.service.HodService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class HodServiceImpl implements HodService {
     
     private final HodRepository hodRepository;
+
+    private final BonafideRepository bonafideRepository;
     
 
     @Override
@@ -40,9 +47,9 @@ public class HodServiceImpl implements HodService {
     }
 
     @Override
-    public void deleteHod(Long id) {
-        Hod hod = hodRepository.findById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException("HOD not found with id: " + id));
+    public void deleteHod(Long hodId) {
+        Hod hod = hodRepository.findById(hodId)
+                            .orElseThrow(() -> new ResourceNotFoundException("HOD not found with id: " + hodId));
         hodRepository.delete(hod);
     }
 
@@ -62,16 +69,23 @@ public class HodServiceImpl implements HodService {
     }
 
     @Override
-    public List<HodResponseDto> getHodByDiscipline(String discipline) {
-        List<Hod> hods = hodRepository.findByDiscipline(discipline);
-        if (hods.isEmpty()) {
-            throw new ResourceNotFoundException("No HOD found with discipline: " + discipline);
-        }
-        return hods.stream()
-                .map(HodMapper::toHodResponseDto)
-                .toList();
+    public HodResponseDto getHodByDiscipline(String discipline) {
+        Hod hod = hodRepository.findByDiscipline(discipline)
+                .orElseThrow(()->new ResourceNotFoundException("Hod not found with discipline:"+discipline));
+        return HodMapper.toHodResponseDto(hod);
     }
-    
-    
+    @Override
+    public List<BonafideResponseDto> getFacultyApprovedBonafidesByHodId(Long hodId) {
+        Hod hod = hodRepository.findById(hodId)
+                .orElseThrow(() -> new ResourceNotFoundException("HOD not found with id: " + hodId));
+        List<BonafideResponseDto> bonafideResponseDtos = bonafideRepository.findByBonafideStatusAndStudentDiscipline(
+                BonafideStatus.FACULTY_APPROVED, hod.getDiscipline())
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .collect((Collectors.toList()));
+        
+        return bonafideResponseDtos;
+    }
+        
     
 }
