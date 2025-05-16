@@ -47,6 +47,9 @@ public class AuthenticationController {
             }
             return new ResponseEntity<>("HOD Authentication Successful", HttpStatus.OK);
         }
+        if (authentication.getRole().equalsIgnoreCase("PRINCIPAL")) {
+            return new ResponseEntity<>("Principal Authentication Successful", HttpStatus.OK);
+        }
         if(authentication.getRole().equalsIgnoreCase("FA")){
             try {
                 FacultyResponseDto facultyResponseDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());

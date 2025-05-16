@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\TempERPData\\fileSystem2";
+    private static final String FOLDERPATH = "C:\\Users\\Abinaya\\Desktop\\ERP Student Details";
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
