@@ -77,4 +77,13 @@ public class Faculty {
         this.handlingDepartments = handlingDepartments;
         this.batches = batches;
     }
+
+
+    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline) {
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.email=email;
+        this.mobileNumber=mobileNumber;
+        this.discipline=discipline;
+    }
 }

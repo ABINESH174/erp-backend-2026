@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FacultyRequestDto {
-    private String firstName;
-    private String lastName;
+public class OBRequestDto {
+    private String name;
     private String email;
-    private String mobileNumber;
-    private String discipline;
-    // private String handlingBatch;
+    private String phone;
+
 }

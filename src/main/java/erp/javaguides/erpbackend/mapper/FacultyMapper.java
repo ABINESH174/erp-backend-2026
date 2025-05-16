@@ -1,8 +1,14 @@
 package erp.javaguides.erpbackend.mapper;
 
 import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
+import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Faculty;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class FacultyMapper {
     public static FacultyDto mapToFacultyDto(Faculty faculty){
@@ -17,7 +23,6 @@ public class FacultyMapper {
                 faculty.getHandlingSemesters(),
                 faculty.getHandlingDepartments(),
                 faculty.getBatches(),
-                null,
                 null
         );
     }
@@ -38,6 +43,15 @@ public class FacultyMapper {
 
     // faculty to faculty response dto
     public static FacultyResponseDto mapToFacultyResponseDto(Faculty faculty){
+
+        // to add the student dto list to the faculty response send
+        // in case the students list is null, thats why the optional class came into action...!!!
+        List<StudentResponseDto> studentDtos = Optional.ofNullable(faculty.getStudents())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(StudentMapper::mapToStudentResponseDto)
+                .toList();
+
         return new FacultyResponseDto(
                 faculty.getFacultyId(),
                 faculty.getFirstName(),
@@ -46,10 +60,16 @@ public class FacultyMapper {
                 faculty.getMobileNumber(),
                 faculty.getDiscipline(),
                 faculty.getHandlingBatch(),
-                faculty.getStudents()
-                        .stream()
-                        .map(StudentMapper::mapToStudentResponseDto)
-                        .toList() // Added a comment to clarify the purpose of toList()
+                studentDtos
+        );
+    }
+    public static Faculty mapToFaculty(FacultyRequestDto facultyRequestDto){
+        return new Faculty(
+            facultyRequestDto.getFirstName(),
+            facultyRequestDto.getLastName(),
+            facultyRequestDto.getEmail(),
+            facultyRequestDto.getMobileNumber(),
+            facultyRequestDto.getDiscipline()
         );
     }
 }
