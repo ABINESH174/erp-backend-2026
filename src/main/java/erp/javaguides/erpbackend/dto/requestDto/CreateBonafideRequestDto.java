@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateBonafideRequestDto {
     private String registerNo;
+
     private String date;
     private String purpose;
     private BonafideStatus bonafideStatus;
+    private String welfareId;
 
-    private MultipartFile welfareId;
     private MultipartFile smartCardFile;
     private MultipartFile studentIdCardFile;
     private MultipartFile provisionalAllotmentFile;

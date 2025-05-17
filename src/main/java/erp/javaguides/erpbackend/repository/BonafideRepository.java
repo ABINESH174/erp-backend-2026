@@ -21,6 +21,8 @@ public interface BonafideRepository extends JpaRepository<Bonafide, Long> {
 
     // This is an auto generated query by spring data jpa for the above query
     List<Bonafide> findByBonafideStatusAndStudentFacultyFacultyId(BonafideStatus bonafideStatus, Long facultyId);
+    List<Bonafide> findByBonafideStatusAndStudentDiscipline(BonafideStatus bonafideStatus, String discipline);
 
+    List<Bonafide> findByBonafideStatus(BonafideStatus bonafideStatus);
 }
 

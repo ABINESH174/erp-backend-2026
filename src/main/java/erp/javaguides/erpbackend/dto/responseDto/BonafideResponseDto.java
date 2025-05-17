@@ -15,4 +15,11 @@ public class BonafideResponseDto {
     private BonafideStatus bonafideStatus;
     private String date;
     
+    private String welfareIdFilePath;
+    private String smartCardFilePath;
+    private String studentIdCardFilePath;
+    private String provisionalAllotmentFilePath;
+    private String aadharCardFilePath;
+    private String centralCommunityCertificateFilePath;
+    private String collegeFeeReceiptFilePath;
 }

@@ -11,7 +11,14 @@ public class BonafideMapper {
                 bonafide.getStudent().getRegisterNo(),
                 bonafide.getPurpose(),
                 bonafide.getBonafideStatus(),
-                bonafide.getDate()
+                bonafide.getDate(),
+                bonafide.getWelfareIdFilePath(),
+                bonafide.getSmartCardFilePath(),
+                bonafide.getStudentIdCardFilePath(),
+                bonafide.getProvisionalAllotmentFilePath(),
+                bonafide.getAadharCardFilePath(),
+                bonafide.getCentralCommunityCertificateFilePath(),
+                bonafide.getCollegeFeeReceiptFilePath()
         );
     }
 

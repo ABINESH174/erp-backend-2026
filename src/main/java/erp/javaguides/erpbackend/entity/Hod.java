@@ -48,4 +48,17 @@ public class Hod {
     @JoinColumn(name = "officeBearer_id")
     private OfficeBearer officeBearer;
 
+    public void addFaculty(Faculty faculty) {
+        if(faculties.isEmpty()){
+            faculties = new ArrayList<>();
+        }
+        this.faculties.add(faculty);
+        faculty.setHod(this);
+    }
+
+    public void removeFaculty(Faculty faculty) {
+        this.faculties.remove(faculty);
+        faculty.setHod(null);
+    }
+
 }

@@ -1,6 +1,6 @@
 package erp.javaguides.erpbackend.controller;
 
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
@@ -24,12 +24,12 @@ public class FacultyController {
     // private final StudentService studentService;
 
     @PostMapping("/post")
-    public ResponseEntity<ApiResponse> createFaculty(@RequestBody FacultyDto facultyDto) {
+    public ResponseEntity<ApiResponse> createFaculty(@RequestBody FacultyRequestDto facultyDto) {
         try {
-            FacultyDto savedFaculty = facultyService.createFaculty(facultyDto);
+            FacultyResponseDto savedFaculty = facultyService.createFaculty(facultyDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Faculty created successfully", savedFaculty));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating faculty", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating faculty: " + e.getMessage(), null));
         }
     }
     // @GetMapping("/hod/{email}")
@@ -94,30 +94,7 @@ public class FacultyController {
     //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error removing class", null));
     //     }
     // }
-
-    @GetMapping("/discipline")
-    public ResponseEntity<ApiResponse> getAllFacultiesByDiscipline(@RequestParam String discipline) {
-        try {
-            List<FacultyResponseDto> faculties = facultyService.getAllFacultiesByDiscipline(discipline);
-            if (faculties.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No faculties found", null));
-            }
-            return ResponseEntity.ok(new ApiResponse("Faculties fetched successfully", faculties));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching faculties", null));
-        }
-    }
-
-    @PutMapping("/update-assign/{batch}")
-    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
-        try {
-            FacultyResponseDto updatedFaculty = facultyService.assignFacultyWithStudents(email, batch);
-            return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
-        }
-    }
-
+    
     @GetMapping("/get-faculty/{facultyId}")
     public ResponseEntity<ApiResponse> getFacultyByFacultyId(@PathVariable Long facultyId) {
         try {
@@ -125,25 +102,6 @@ public class FacultyController {
             return ResponseEntity.ok(new ApiResponse("Faculty fetched successfully", facultyResponseDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching faculty", null));
-        }
-    }
-    @GetMapping("/get-faculty-by-discipline-and-batch")
-    public ResponseEntity<ApiResponse> getFacultyByDisciplineAndBatch(@RequestParam String discipline, @RequestParam String handlingBatch) {
-        try {
-            FacultyResponseDto facultyResponseDto = facultyService.getFacultyByDisciplineAndBatch(discipline, handlingBatch);
-            return ResponseEntity.ok(new ApiResponse("Faculty fetched successfully", facultyResponseDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching faculty", null));
-        }
-    }
-
-    @PutMapping("/update-dismiss/{batch}")
-    public ResponseEntity<ApiResponse> dismissFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
-        try {
-            FacultyResponseDto updatedFaculty = facultyService.dismissFacultyWithStudents(email, batch);
-            return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
         }
     }
 
@@ -174,4 +132,63 @@ public class FacultyController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching pending bonafides", null));
         }
     }
+
+    // hod neccessities
+
+    @GetMapping("/discipline")
+    public ResponseEntity<ApiResponse> getAllFacultiesByDiscipline(@RequestParam String discipline) {
+        try {
+            List<FacultyResponseDto> faculties = facultyService.getAllFacultiesByDiscipline(discipline);
+            if (faculties.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No faculties found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Faculties fetched successfully", faculties));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching faculties", null));
+        }
+    }
+    
+    @GetMapping("/get-faculty-by-discipline-and-batch")
+    public ResponseEntity<ApiResponse> getFacultyByDisciplineAndBatch(@RequestParam String discipline, @RequestParam String handlingBatch) {
+        try {
+            FacultyResponseDto facultyResponseDto = facultyService.getFacultyByDisciplineAndBatch(discipline, handlingBatch);
+            return ResponseEntity.ok(new ApiResponse("Faculty fetched successfully", facultyResponseDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching faculty", null));
+        }
+    }
+    
+    @PutMapping("/update-assign/{batch}")
+    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
+        try {
+            FacultyResponseDto updatedFaculty = facultyService.assignFacultyWithStudents(email, batch);
+            return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
+        }
+    }
+
+    @PutMapping("/update-dismiss/{batch}")
+    public ResponseEntity<ApiResponse> dismissFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
+        try {
+            FacultyResponseDto updatedFaculty = facultyService.dismissFacultyWithStudents(email, batch);
+            return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
+        }
+    }
+
+    @GetMapping("/unassigned-faculties")
+    public ResponseEntity<ApiResponse> getAllUnassignedFaculties() {
+        try {
+            List<FacultyResponseDto> faculties = facultyService.getAllUnassignedFaculties();
+            if (faculties.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No unassigned faculties found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Unassigned faculties fetched successfully", faculties));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching unassigned faculties", null));
+        }
+    }
+
 }

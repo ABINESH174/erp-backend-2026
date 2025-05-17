@@ -1,10 +1,11 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Faculty;
+import erp.javaguides.erpbackend.entity.Hod;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import erp.javaguides.erpbackend.mapper.FacultyMapper;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.FacultyRepository;
+import erp.javaguides.erpbackend.repository.HodRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.FacultyService;
 import lombok.AllArgsConstructor;
@@ -30,17 +32,33 @@ public class FacultyServiceImpl implements FacultyService {
     private final FacultyRepository facultyRepository;
     private final StudentRepository studentRepository;
     private final BonafideRepository bonafideRepository;
+    private final HodRepository hodRepository;
 
     @Override
-    public FacultyDto createFaculty(FacultyDto facultyDto) throws Exception {
-        Optional<Faculty> optionalFaculty = facultyRepository.findByEmail(facultyDto.getEmail());
+    public FacultyResponseDto createFaculty(FacultyRequestDto facultyRequestDto) throws Exception {
+        System.out.println("facultyRequestDto: " + facultyRequestDto);
+        System.out.println("Email: " + facultyRequestDto.getEmail());
+        System.out.println("Discipline: " + facultyRequestDto.getDiscipline());
+
+        Optional<Faculty> optionalFaculty = facultyRepository.findByEmail(facultyRequestDto.getEmail());
         if (optionalFaculty.isPresent()) {
             throw new Exception("Email already exists");
         }
-        Faculty faculty = FacultyMapper.mapToFaculty(facultyDto);
-        Faculty savedFaculty = facultyRepository.save(faculty);
-//        return FacultyMapper.mapToFacultyResponseDto(savedFaculty);
-        return FacultyMapper.mapToFacultyDto(savedFaculty);
+        Faculty savedFaculty;
+        try {
+            System.out.println("Discipline from request: " + facultyRequestDto.getDiscipline());
+            Hod hod = hodRepository.findByDiscipline(facultyRequestDto.getDiscipline())
+                    .orElseThrow(()->new ResourceNotFoundException("Hod not found with discipline:"));
+
+            System.out.println("Fetched Hod: " + hod.getHodId() + " - " + hod.getDiscipline());
+            Faculty faculty = FacultyMapper.mapToFaculty(facultyRequestDto);
+            hod.addFaculty(faculty);
+            savedFaculty = facultyRepository.save(faculty);
+        } catch (Exception e) {
+            throw new Exception("Error creating faculty: " + e.getMessage());
+        }
+
+        return FacultyMapper.mapToFacultyResponseDto(savedFaculty);
     }
 
     @Override
@@ -219,6 +237,7 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyResponseDto assignFacultyWithStudents(String email, String batch) {
         Faculty faculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
+        faculty.setHandlingBatch(batch);
         List<Student> studentsList = studentRepository.findByDisciplineAndBatch(faculty.getDiscipline(), batch);
         for (Student student : studentsList) {
             faculty.addStudent(student);
@@ -260,6 +279,14 @@ public class FacultyServiceImpl implements FacultyService {
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .collect(Collectors.toList());
         return bonafideResponseDtos;
+    }
+
+    @Override
+    public List<FacultyResponseDto> getAllUnassignedFaculties() {
+        List<Faculty> faculties = facultyRepository.findByStudentsIsEmpty();
+        return faculties.stream()
+                .map(FacultyMapper::mapToFacultyResponseDto)
+                .collect(Collectors.toList());
     }
 
 }

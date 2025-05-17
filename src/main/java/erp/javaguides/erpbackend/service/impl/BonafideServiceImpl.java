@@ -49,7 +49,8 @@ public class BonafideServiceImpl implements BonafideService {
 
         Bonafide bonafide = BonafideMapper.mapToBonafide(requestDto);
 
-        bonafide.setStudent(student);
+        // bonafide.setStudent(student);
+        student.addBonafide(bonafide); // Add the bonafide to the student's list of bonafides
 
         Files.createDirectories(Paths.get(userFolderPath)); // Create the directory if it doesn't exist
 
@@ -193,6 +194,15 @@ public class BonafideServiceImpl implements BonafideService {
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Bonafide: " + e.getMessage(), e);
         }
+    }
+
+    //office bearer neccessities
+    @Override
+    public List<BonafideResponseDto> getHodApprovedBonafides() {
+        return bonafideRepository.findByBonafideStatus(BonafideStatus.HOD_APPROVED)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
     }
 
 }

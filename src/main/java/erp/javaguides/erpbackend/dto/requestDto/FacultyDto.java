@@ -26,5 +26,5 @@ public class FacultyDto {
     private List<String> handlingDepartments;
     private List<String> batches;
     private List<StudentDto> students;
-    private List<FacultyDto> faculties;
+    // private List<FacultyDto> faculties;
 }
