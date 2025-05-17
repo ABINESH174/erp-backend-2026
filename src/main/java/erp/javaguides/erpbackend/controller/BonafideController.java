@@ -31,8 +31,11 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Bonafide created successfully",createdBonafide));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to create Bonafide",null));
+
         }
     }
+
+
 
     @GetMapping("/getBonafideById/{bonafideId}")
     public ResponseEntity<ApiResponse> getBonafideById(@PathVariable Long bonafideId) {

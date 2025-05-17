@@ -54,6 +54,9 @@ public class Bonafide {
     @Column(length = 150)
     private String collegeFeeReceiptFilePath;
 
+    @Column(length = 150)
+    private String labourWelfareFilePath;
+
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
     private Student student;
