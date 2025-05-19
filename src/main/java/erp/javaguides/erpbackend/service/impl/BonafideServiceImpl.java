@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -157,6 +158,7 @@ public class BonafideServiceImpl implements BonafideService {
             throw new RuntimeException("Error retrieving Bonafides: " + e.getMessage(), e);
         }
     }
+
 
     @Override
     public List<BonafideResponseDto> getAllBonafides() {

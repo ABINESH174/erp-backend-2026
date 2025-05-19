@@ -14,6 +14,7 @@ public interface BonafideRepository extends JpaRepository<Bonafide, Long> {
     Optional<Bonafide> findByBonafideIdAndStudentRegisterNo(Long bonafideId, String registerNo);
     List<Bonafide> findAllByStudentRegisterNo(String registerNo);
 
+
     // custom query for retrieving bonafides by bonafide status and faculty id from student in bonafide
     // this will be used in the ui of the entities to view specific bonafides depending on the status
     // @Query("SELECT b FROM Bonafide b WHERE b.bonafideStatus = :bonafideStatus AND b.student.facultyId = :facultyId")
