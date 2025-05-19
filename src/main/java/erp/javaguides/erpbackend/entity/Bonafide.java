@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -54,8 +55,12 @@ public class Bonafide {
     @Column(length = 150)
     private String collegeFeeReceiptFilePath;
 
+    @Column(length = 150)
+    private String labourWelfareFilePath;
+
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
+    @JsonBackReference
     private Student student;
 
 

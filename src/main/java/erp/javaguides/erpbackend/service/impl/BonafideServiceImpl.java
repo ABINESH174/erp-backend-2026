@@ -198,6 +198,15 @@ public class BonafideServiceImpl implements BonafideService {
         }
     }
 
+    //office bearer neccessities
+    @Override
+    public List<BonafideResponseDto> getHodApprovedBonafides() {
+        return bonafideRepository.findByBonafideStatus(BonafideStatus.HOD_APPROVED)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
+
 }
 
 //

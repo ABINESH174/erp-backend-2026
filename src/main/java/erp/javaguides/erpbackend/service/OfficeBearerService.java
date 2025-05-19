@@ -1,9 +1,10 @@
 package erp.javaguides.erpbackend.service;
 
-import java.util.List;
-
-import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
+import erp.javaguides.erpbackend.entity.OfficeBearer;
 
 public interface OfficeBearerService {
-    List<BonafideResponseDto> getHodApprovedBonafides();
+
+    OfficeBearer saveOfficeBearer(OfficeBearer officeBearer) throws Exception;
+
+    OfficeBearer getOfficeBearerByEmail(String email);
 }

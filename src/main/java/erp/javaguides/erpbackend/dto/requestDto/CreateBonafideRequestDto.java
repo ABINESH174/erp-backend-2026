@@ -16,9 +16,7 @@ public class CreateBonafideRequestDto {
     private String date;
     private String purpose;
     private BonafideStatus bonafideStatus;
-    
-    
-    private MultipartFile welfareId;
+    private String welfareId;
 
     private MultipartFile smartCardFile;
     private MultipartFile studentIdCardFile;

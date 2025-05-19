@@ -35,8 +35,11 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Bonafide created successfully",createdBonafide));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to create Bonafide",null));
+
         }
     }
+
+
 
     @GetMapping("/getBonafideById/{bonafideId}")
     public ResponseEntity<ApiResponse> getBonafideById(@PathVariable Long bonafideId) {
@@ -139,6 +142,21 @@ public class BonafideController {
             e.printStackTrace(); // helpful for debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    // ob neccessities
+    @GetMapping("/getHodApproved")
+    public ResponseEntity<ApiResponse> getHodApprovedBonafides(){
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getHodApprovedBonafides();
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No bonafides found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Bonafides found", bonafideResponseDtos));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("An error occured, failed to retrive bonafides",null));
+        }
+
     }
 
     
