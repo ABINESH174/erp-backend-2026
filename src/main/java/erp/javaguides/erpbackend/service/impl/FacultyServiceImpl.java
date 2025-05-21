@@ -1,9 +1,9 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
-import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Hod;
 import erp.javaguides.erpbackend.entity.Student;
@@ -239,6 +239,9 @@ public class FacultyServiceImpl implements FacultyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
         faculty.setHandlingBatch(batch);
         List<Student> studentsList = studentRepository.findByDisciplineAndBatch(faculty.getDiscipline(), batch);
+        if (studentsList.isEmpty()) {
+            throw new ResourceNotFoundException("No students found with discipline: " + faculty.getDiscipline() + " and batch: " + batch);
+        }
         for (Student student : studentsList) {
             faculty.addStudent(student);
         }
@@ -260,11 +263,11 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public List<StudentResponseDto> getAllStudentsByFacultyId(Long facultyId) {
+    public List<StudentDto> getAllStudentsByFacultyId(Long facultyId) {
         List<Student> students = studentRepository.findByFacultyFacultyId(facultyId);
-        List<StudentResponseDto> studentResponseDtos = students
+        List<StudentDto> studentResponseDtos = students
                     .stream()
-                    .map(StudentMapper::mapToStudentResponseDto) 
+                    .map(StudentMapper::mapToStudentWithFilesDto) 
                     .collect(Collectors.toList());
         return studentResponseDtos;
     }
