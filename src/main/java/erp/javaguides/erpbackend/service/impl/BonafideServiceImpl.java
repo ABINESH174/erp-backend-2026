@@ -31,7 +31,7 @@ public class BonafideServiceImpl implements BonafideService {
     private BonafideRepository bonafideRepository;
     @Autowired
     private StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\Abinaya\\Desktop\\ERP Student Details";
+    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\allErpLocalData\\fileSystem2";
     // @Autowired
     // private StudentServiceImpl studentService;
 

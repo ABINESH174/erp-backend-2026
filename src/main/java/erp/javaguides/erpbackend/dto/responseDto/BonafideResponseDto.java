@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BonafideResponseDto {
     private Long bonafideId;
+    private String name;
     private String registerNo;
     private String purpose;
     private BonafideStatus bonafideStatus;
