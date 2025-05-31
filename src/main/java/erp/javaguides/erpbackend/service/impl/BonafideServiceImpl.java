@@ -31,7 +31,7 @@ public class BonafideServiceImpl implements BonafideService {
     private BonafideRepository bonafideRepository;
     @Autowired
     private StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\projects\\erp-data\\bonafideFileSystem";
+    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\allErpLocalData\\fileSystem2";
     // @Autowired
     // private StudentServiceImpl studentService;
 
@@ -157,6 +157,7 @@ public class BonafideServiceImpl implements BonafideService {
             throw new RuntimeException("Error retrieving Bonafides: " + e.getMessage(), e);
         }
     }
+
 
     @Override
     public List<BonafideResponseDto> getAllBonafides() {

@@ -10,10 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BonafideResponseDto {
     private Long bonafideId;
+    private String name;
     private String registerNo;
     private String purpose;
     private BonafideStatus bonafideStatus;
     private String date;
+
+    //Student details like mobile number and email
+    private String mobileNumber;
+    private String emailId;
     
     private String welfareIdFilePath;
     private String smartCardFilePath;

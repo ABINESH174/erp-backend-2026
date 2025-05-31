@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service;
 
 import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 // import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
@@ -30,7 +31,7 @@ public interface FacultyService {
     FacultyResponseDto dismissFacultyWithStudents(String email, String batch);
 
     
-    List<StudentResponseDto> getAllStudentsByFacultyId(Long facultyId);
+    List<StudentDto> getAllStudentsByFacultyId(Long facultyId);
     
     //Bonafide neccessities
     List<BonafideResponseDto> getPendingBonafidesByFacultyId(Long facultyId);

@@ -1,9 +1,10 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
+import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
-import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
+import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.FacultyService;
 // import erp.javaguides.erpbackend.service.StudentService;
@@ -108,7 +109,7 @@ public class FacultyController {
     @GetMapping("/get-students/byFacultyId/{facultyId}")
     public ResponseEntity<ApiResponse> getAllStudentsByFacultyId(@PathVariable Long facultyId) {
         try {
-            List<StudentResponseDto> students = facultyService.getAllStudentsByFacultyId(facultyId);
+            List<StudentDto> students = facultyService.getAllStudentsByFacultyId(facultyId);
             if (students.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No students found", null));
             }
@@ -159,7 +160,7 @@ public class FacultyController {
     }
     
     @PutMapping("/update-assign/{batch}")
-    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
+    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email) throws ResourceNotFoundException{
         try {
             FacultyResponseDto updatedFaculty = facultyService.assignFacultyWithStudents(email, batch);
             return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));

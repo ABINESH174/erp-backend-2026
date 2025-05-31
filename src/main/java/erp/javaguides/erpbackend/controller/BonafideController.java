@@ -99,7 +99,6 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
         }
     }
-
     @PutMapping("/updateBonafideWithBonafideStatus")
     public ResponseEntity<ApiResponse> updateBonafideWithBonafideStatus(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam String status) {
         try {

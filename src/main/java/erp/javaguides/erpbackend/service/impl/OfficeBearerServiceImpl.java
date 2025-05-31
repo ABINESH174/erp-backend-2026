@@ -5,7 +5,6 @@ import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.repository.OfficeBearerRepository;
 import org.springframework.stereotype.Service;
 
-import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.service.OfficeBearerService;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class OfficeBearerServiceImpl implements OfficeBearerService{
 
     private final OfficeBearerRepository officeBearerRepository;
-    private final BonafideRepository bonafideRepository;
 
     @Override
     public OfficeBearer saveOfficeBearer(OfficeBearer officeBearer) throws Exception {

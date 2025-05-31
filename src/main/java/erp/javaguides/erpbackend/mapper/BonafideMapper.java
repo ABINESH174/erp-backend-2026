@@ -5,13 +5,17 @@ import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
 
 public class BonafideMapper {
+
     public static BonafideResponseDto mapToBonafideResponseDto(Bonafide bonafide){
         return new BonafideResponseDto(
                 bonafide.getBonafideId(),
+                bonafide.getStudent().getFirstName()+bonafide.getStudent().getLastName(),
                 bonafide.getStudent().getRegisterNo(),
                 bonafide.getPurpose(),
                 bonafide.getBonafideStatus(),
                 bonafide.getDate(),
+                bonafide.getStudent().getMobileNumber(),
+                bonafide.getStudent().getEmailId(),
                 bonafide.getWelfareIdFilePath(),
                 bonafide.getSmartCardFilePath(),
                 bonafide.getStudentIdCardFilePath(),
