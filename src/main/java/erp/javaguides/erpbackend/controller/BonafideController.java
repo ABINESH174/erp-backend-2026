@@ -103,7 +103,7 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> updateBonafideWithBonafideStatus(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam String status) {
         try {
             BonafideResponseDto updatedBonafide = bonafideService.updateBonafideWithBonafideStatus(bonafideId, registerNo, status);
-            return ResponseEntity.ok(new ApiResponse("Bonafide updated successfully", updatedBonafide));
+            return ResponseEntity.ok(new ApiResponse("Bonafide " + status + " successfully", updatedBonafide));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to update Bonafide", null));
         }
@@ -120,7 +120,8 @@ public class BonafideController {
     }
 
     @GetMapping("/downloadFile")
-    public ResponseEntity<Resource> downloadBonafide(@RequestParam String filePath) {
+    public ResponseEntity<Resource> downloadFileUsingFilePath(@RequestParam String filePath) {
+        
         try {
             filePath = filePath.trim(); // important: remove \n or spaces
             File file = new File(filePath);
@@ -141,6 +142,63 @@ public class BonafideController {
         } catch (Exception e) {
             e.printStackTrace(); // helpful for debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/previewFile")
+    public ResponseEntity<Resource> previewFile(@RequestParam String filePath) {
+        try {
+            // Sanitize file path
+            filePath = filePath.trim();// important: remove \n or spaces
+            File file = new File(filePath);
+
+            // Check if file exists
+            if (!file.exists()) {
+                return ResponseEntity.status(404).body(null);
+            }
+
+            // Validate file path to prevent directory traversal
+            // if (!file.getCanonicalPath().startsWith("/path/to/allowed/directory")) {
+            //     return ResponseEntity.status(403).body(null);
+            // }
+
+            // Create resource
+            Path path = file.toPath(); // create Path from File
+            Resource resource = new UrlResource(path.toUri());
+
+            // Determine content type dynamically
+            String contentType = determineContentType(file.getName());
+            
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"")
+                    .contentLength(file.length())
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    };
+        
+
+    // Helper method to determine content type based on file extension
+    private String determineContentType(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        switch (extension) {
+            case "pdf":
+                return "application/pdf";
+            case "png":
+                return "image/png";
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "txt":
+                return "text/plain";
+            case "html":
+                return "text/html";
+            default:
+                return "application/octet-stream"; // Fallback for unknown types
         }
     }
 

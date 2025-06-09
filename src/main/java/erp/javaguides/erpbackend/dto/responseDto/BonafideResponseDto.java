@@ -19,6 +19,8 @@ public class BonafideResponseDto {
     //Student details like mobile number and email
     private String mobileNumber;
     private String emailId;
+    private String semester;
+    private String discipline;
     
     private String welfareIdFilePath;
     private String smartCardFilePath;
