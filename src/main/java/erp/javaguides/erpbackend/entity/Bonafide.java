@@ -34,6 +34,8 @@ public class Bonafide {
 
     private String date;
 
+    private String rejectionMessage;
+
     @Column(length = 150)
     private String welfareIdFilePath;
 

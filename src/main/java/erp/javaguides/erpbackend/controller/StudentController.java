@@ -22,14 +22,27 @@ public class StudentController {
     private StudentService studentService;
     @PostMapping
     public ResponseEntity<String> createStudent(@ModelAttribute StudentDto studentDto) throws Exception {
-        String savedStudent = studentService.createStudent(studentDto);
-        return ResponseEntity.status(HttpStatus.OK).body(savedStudent);
+        try{
+            String createdStudent = studentService.createStudent(studentDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating student: " + e.getMessage());
+        }
     }
 
     @GetMapping("{register_No}")
     public ResponseEntity<StudentDto> getStudentByRegisterNo(@PathVariable String register_No) {
-        StudentDto studentDto = studentService.getStudentByRegisterNo(register_No);
-        return ResponseEntity.ok(studentDto);
+        try{
+            StudentDto studentDto = studentService.getStudentByRegisterNo(register_No);
+            if (studentDto == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(studentDto);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping

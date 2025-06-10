@@ -18,6 +18,7 @@ public class BonafideMapper {
                 bonafide.getStudent().getEmailId(),
                 bonafide.getStudent().getSemester(),
                 bonafide.getStudent().getDiscipline(),
+                bonafide.getRejectionMessage(),
                 bonafide.getWelfareIdFilePath(),
                 bonafide.getSmartCardFilePath(),
                 bonafide.getStudentIdCardFilePath(),

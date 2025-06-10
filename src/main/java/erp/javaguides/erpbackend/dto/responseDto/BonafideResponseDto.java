@@ -21,6 +21,8 @@ public class BonafideResponseDto {
     private String emailId;
     private String semester;
     private String discipline;
+
+    private String rejectionMessage;
     
     private String welfareIdFilePath;
     private String smartCardFilePath;
