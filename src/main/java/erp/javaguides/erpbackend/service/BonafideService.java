@@ -18,7 +18,9 @@ public interface BonafideService {
 
     List<BonafideResponseDto> getHodApprovedBonafides();
 
-    
+    BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage);
+    // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);
+
 //    List<BonafideDto> getAllBonafides();
 //    BonafideDto updateBonafide(String registerNo, BonafideDto bonafideDto);
 //    void deleteBonafide(String registerNo);

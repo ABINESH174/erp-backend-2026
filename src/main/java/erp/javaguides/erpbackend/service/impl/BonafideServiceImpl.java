@@ -12,6 +12,7 @@ import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +32,9 @@ public class BonafideServiceImpl implements BonafideService {
     private BonafideRepository bonafideRepository;
     @Autowired
     private StudentRepository studentRepository;
-    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\allErpLocalData\\fileSystem2";
+
+    @Value("${bonafide.details.base-path}")
+    private String FOLDERPATH;
     // @Autowired
     // private StudentServiceImpl studentService;
 
@@ -42,60 +45,37 @@ public class BonafideServiceImpl implements BonafideService {
             throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
         }
 
+        // System.out.println("\n\nRegister No: " + requestDto.getRegisterNo());
+
         Student student = studentRepository.findByRegisterNo(requestDto.getRegisterNo())
                 .orElseThrow(() -> new ResourceNotFoundException("The student is not found...!!!"));
 
-        String userFolderPath = Paths.get(FOLDERPATH, requestDto.getRegisterNo()).toString();
+        // System.out.println("\n\nStudent: " + student.getFirstName() + " with Register No: " + student.getRegisterNo());
 
         Bonafide bonafide = BonafideMapper.mapToBonafide(requestDto);
 
         // bonafide.setStudent(student);
         student.addBonafide(bonafide); // Add the bonafide to the student's list of bonafides
 
+        Bonafide savedBonafide = bonafideRepository.save(bonafide);
+
+        // Folder Path with structure: "/basepath/registerNo/bonafideId"
+        String userFolderPath = Paths.get(FOLDERPATH, requestDto.getRegisterNo(), savedBonafide.getBonafideId().toString()).toString();
+
         Files.createDirectories(Paths.get(userFolderPath)); // Create the directory if it doesn't exist
 
-        bonafide.setSmartCardFilePath(saveFile(requestDto.getSmartCardFile(), userFolderPath, "smartCard"));
-        bonafide.setStudentIdCardFilePath(saveFile(requestDto.getStudentIdCardFile(), userFolderPath, "studentIdCard"));
-        bonafide.setProvisionalAllotmentFilePath(
+        savedBonafide.setSmartCardFilePath(saveFile(requestDto.getSmartCardFile(), userFolderPath, "smartCard"));
+        savedBonafide.setStudentIdCardFilePath(saveFile(requestDto.getStudentIdCardFile(), userFolderPath, "studentIdCard"));
+        savedBonafide.setProvisionalAllotmentFilePath(
                 saveFile(requestDto.getProvisionalAllotmentFile(), userFolderPath, "provisionalAllotment"));
-        bonafide.setAadharCardFilePath(saveFile(requestDto.getAadharCardFile(), userFolderPath, "aadharCard"));
-        bonafide.setCentralCommunityCertificateFilePath(saveFile(requestDto.getCentralCommunityCertificateFile(),
+        savedBonafide.setAadharCardFilePath(saveFile(requestDto.getAadharCardFile(), userFolderPath, "aadharCard"));
+        savedBonafide.setCentralCommunityCertificateFilePath(saveFile(requestDto.getCentralCommunityCertificateFile(),
                 userFolderPath, "centralCommunityCertificate"));
-        bonafide.setCollegeFeeReceiptFilePath(
+        savedBonafide.setCollegeFeeReceiptFilePath(
                 saveFile(requestDto.getCollegeFeeReceiptFile(), userFolderPath, "collegeFeeReceipt"));
-        bonafide.setWelfareIdFilePath(saveFile(requestDto.getLabourWelfareFile(), userFolderPath, "labourWelfareId"));
+        savedBonafide.setWelfareIdFilePath(saveFile(requestDto.getLabourWelfareFile(), userFolderPath, "labourWelfareId"));
 
-        // bonafide.setWelfareIdFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "labourWelfareId",
-        // studentService.base64ToMultipartFile(requestDto.getWelfareId(),
-        // "labourWelfareId")));
-        // bonafide.setSmartCardFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "smartCard",
-        // studentService.base64ToMultipartFile(requestDto.getSmartCard(),
-        // "smartCard")));
-        // bonafide.setStudentIdCardFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "studentIdCard",
-        // studentService.base64ToMultipartFile(requestDto.getStudentIdCard(),
-        // "studentIdCard")));
-        // bonafide.setProvisionalAllotmentFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "provisionalAllotment",
-        // studentService.base64ToMultipartFile(requestDto.getProvisionalAllotment(),
-        // "provisionalAllotment")));
-        // bonafide.setAadharCardFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "aadharCard",
-        // studentService.base64ToMultipartFile(requestDto.getAadharCard(),
-        // "aadharCard")));
-        // bonafide.setCentralCommunityCertificateFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "centralCommunityCertificate",
-        // studentService.base64ToMultipartFile(requestDto.getCentralCommunityCertificate(),
-        // "centralCommunityCertificate")));
-        // bonafide.setCollegeFeeReceiptFilePath(studentService.saveFile(student.getFirstName(),
-        // userFolderPath, "collegeFeeReceipt",
-        // studentService.base64ToMultipartFile(requestDto.getCollegeFeeReceipt(),
-        // "collegeFeeReceipt")));
-
-        Bonafide savedBonafide = bonafideRepository.save(bonafide);
-        return BonafideMapper.mapToBonafideResponseDto(savedBonafide);
+        return BonafideMapper.mapToBonafideResponseDto(bonafideRepository.save(savedBonafide));
     }
 
     private String saveFile(MultipartFile file, String directory, String namePrefix) throws IOException {
@@ -186,11 +166,79 @@ public class BonafideServiceImpl implements BonafideService {
     }
 
     @Override
+    public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage) {
+        try {
+            Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
+            bonafide.setBonafideStatus(BonafideStatus.OB_REJECTED);
+            bonafide.setRejectionMessage(rejectionMessage);
+
+            // Deleting the files associated with the Bonafide
+            if (bonafide.getSmartCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getSmartCardFilePath()));
+                bonafide.setSmartCardFilePath(null); // Clear the path after deletion
+            }
+            if (bonafide.getStudentIdCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getStudentIdCardFilePath()));
+                bonafide.setStudentIdCardFilePath(null);
+            }
+            if (bonafide.getProvisionalAllotmentFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getProvisionalAllotmentFilePath()));
+                bonafide.setProvisionalAllotmentFilePath(null);
+            }
+            if (bonafide.getAadharCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getAadharCardFilePath()));
+                bonafide.setAadharCardFilePath(null);
+            }
+            if (bonafide.getCentralCommunityCertificateFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getCentralCommunityCertificateFilePath()));
+                bonafide.setCentralCommunityCertificateFilePath(null);
+            }
+            if (bonafide.getCollegeFeeReceiptFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getCollegeFeeReceiptFilePath()));
+                bonafide.setCollegeFeeReceiptFilePath(null);
+            }
+            if (bonafide.getWelfareIdFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getWelfareIdFilePath()));
+                bonafide.setWelfareIdFilePath(null);
+            }
+
+            return BonafideMapper.mapToBonafideResponseDto(bonafideRepository.save(bonafide));
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating Bonafide: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void deleteBonafide(Long bonafideId, String registerNo) {
         try {
             Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
+
+            // Deleting the files associated with the Bonafide
+            if (bonafide.getSmartCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getSmartCardFilePath()));
+            }
+            if (bonafide.getStudentIdCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getStudentIdCardFilePath()));
+            }
+            if (bonafide.getProvisionalAllotmentFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getProvisionalAllotmentFilePath()));
+            }
+            if (bonafide.getAadharCardFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getAadharCardFilePath()));
+            }
+            if (bonafide.getCentralCommunityCertificateFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getCentralCommunityCertificateFilePath()));
+            }
+            if (bonafide.getCollegeFeeReceiptFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getCollegeFeeReceiptFilePath()));
+            }
+            if (bonafide.getWelfareIdFilePath() != null) {
+                Files.deleteIfExists(Paths.get(bonafide.getWelfareIdFilePath()));
+            }
             bonafideRepository.delete(bonafide);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Bonafide: " + e.getMessage(), e);
