@@ -64,7 +64,7 @@ public class AuthenticationController {
             }
             return new ResponseEntity<>("Faculty Authentication Successful", HttpStatus.OK);
         }
-        if(authentication.getRole().equalsIgnoreCase("ST")){
+        if(authentication.getRole().equalsIgnoreCase("STUDENT")){
             try {
                 StudentDto studentDto = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
                 if (studentDto == null) {
@@ -84,6 +84,7 @@ public class AuthenticationController {
 
                 }
             }catch(Exception e) {
+                e.printStackTrace();
                 return new ResponseEntity<>("Office bearer login unsuccessful", HttpStatus.OK);
             }
             return new ResponseEntity<>("Office Bearer Authentication Successful", HttpStatus.OK);
