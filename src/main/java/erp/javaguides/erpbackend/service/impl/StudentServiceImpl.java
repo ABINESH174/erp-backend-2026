@@ -1,17 +1,16 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
-import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.StudentService;
-import lombok.RequiredArgsConstructor;
-
+import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,12 +28,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-
-    @Value("${student.details.base-path}")
-    private String FOLDERPATH;
+    private static final String FOLDERPATH = "C:\\Users\\Acer\\Documents\\TempERPData\\fileSystem2";
+    private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Override
     public String createStudent(StudentDto studentDto) throws Exception {
@@ -49,8 +47,6 @@ public class StudentServiceImpl implements StudentService {
 
             String firstName = studentDto.getFirstName();
             String registerNo = studentDto.getRegisterNo();
-
-            // Folder Path with structure: "/basepath/registerNo"
             String userFolderPath = Paths.get(FOLDERPATH, registerNo).toString();
             createFolderIfNotExist(userFolderPath);
 
@@ -82,10 +78,13 @@ public class StudentServiceImpl implements StudentService {
 
             return "Student created successfully with RegisterNo: " + student.getRegisterNo();
         } catch (IllegalArgumentException ex) {
+            logger.error("Invalid input data: " + ex.getMessage());
             throw new BadRequestException("Invalid input data", ex);
         } catch (IOException ex) {
+            logger.error("File handling error: " + ex.getMessage());
             throw new BadRequestException("File handling error", ex);
         } catch (Exception ex) {
+            logger.error("Unexpected error: " + ex.getMessage());
             throw new InternalServerErrorException("An unexpected error occurred", ex);
         }
     }
@@ -100,6 +99,7 @@ public class StudentServiceImpl implements StudentService {
 
     public String saveFile(String firstName, String userFolderPath, String fileType, MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
+            logger.error("File not found or is empty");
             return "File not found";
         }
 
@@ -109,6 +109,7 @@ public class StudentServiceImpl implements StudentService {
         // Determine the file extension
         String originalFileExtension = getFileExtension(file.getOriginalFilename());
         if (originalFileExtension.isEmpty()) {
+            logger.warn("File extension is missing, defaulting to 'dat'");
             originalFileExtension = "dat"; // default extension if missing
         }
 
@@ -119,8 +120,10 @@ public class StudentServiceImpl implements StudentService {
         // Save the file
         try {
             Files.write(Paths.get(filePath), file.getBytes());
+            logger.info("File saved successfully at: " + filePath);
             return filePath;
         } catch (IOException e) {
+            logger.error("Error saving file at: " + filePath, e);
             throw e;
         }
     }
@@ -131,6 +134,7 @@ public class StudentServiceImpl implements StudentService {
 
     public String getFileExtension(String originalFileName) {
         if (originalFileName == null || originalFileName.isEmpty()) {
+            logger.error("Filename is null or empty");
             return "";
         }
 
@@ -139,6 +143,7 @@ public class StudentServiceImpl implements StudentService {
             return originalFileName.substring(lastDotIndex + 1).toLowerCase(); // Ensure the extension is lowercase
         }
 
+        logger.warn("No file extension found in filename: " + originalFileName);
         return ""; // Return empty if no extension found
     }
 
@@ -176,7 +181,7 @@ public class StudentServiceImpl implements StudentService {
                 Path path = Paths.get(filePath);
                 return Files.readAllBytes(path);
             } catch (IOException e) {
-                throw new InternalServerErrorException("Error reading file: " + filePath, e);
+                logger.error("Error reading file at: " + filePath, e);
             }
         }
         return null;
@@ -224,7 +229,8 @@ public class StudentServiceImpl implements StudentService {
             byte[] fileBytes = Base64.getDecoder().decode(base64Data);
             return new MockMultipartFile(fileName + "." + fileExtension, fileName + "." + fileExtension, mimeType, fileBytes);
         } catch (Exception e) {
-            throw new InternalServerErrorException("Error converting Base64 string to MultipartFile", e);
+            logger.error("Error converting Base64 string to MultipartFile: " + e.getMessage(), e);
+            return null;
         }
     }
 
@@ -253,51 +259,4 @@ public class StudentServiceImpl implements StudentService {
         return "Student updated successfully";
     }
 
-    @Override
-    public List<StudentResponseDto> getAllStudentsBySemesterAndDiscipline(String semester, String discipline) {
-        List<Student> students = studentRepository.findBySemesterAndDiscipline(semester, discipline);
-        return students.stream()
-                .map(student -> new StudentResponseDto(
-                        student.getRegisterNo(),
-                        student.getFirstName(),
-                        student.getLastName(),
-                        student.getGender(),
-                        student.getEmailId(),
-                        student.getMobileNumber(),
-                        student.getDateOfBirth(),
-                        student.getProgramme(),
-                        student.getDiscipline(),
-                        student.getSemester(),
-                        student.getBatch(),
-                        student.getCgpa()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<StudentResponseDto> getAllStudentsByBatchAndDiscipline(String batch, String discipline) {
-        List<Student> students = studentRepository.findByDisciplineAndBatch(discipline, batch);
-        return students.stream()
-                .map(student -> new StudentResponseDto(
-                        student.getRegisterNo(),
-                        student.getFirstName(),
-                        student.getLastName(),
-                        student.getGender(),
-                        student.getEmailId(),
-                        student.getMobileNumber(),
-                        student.getDateOfBirth(),
-                        student.getProgramme(),
-                        student.getDiscipline(),
-                        student.getSemester(),
-                        student.getBatch(),
-                        student.getCgpa()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    //Faculty neccessities
-    
-    
-
-    //Getting students by batch , required for faculty and hod
 }
