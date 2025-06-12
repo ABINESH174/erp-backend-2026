@@ -60,6 +60,7 @@ public class Bonafide {
     @Column(length = 150)
     private String labourWelfareFilePath;
 
+
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
     @JsonBackReference
@@ -71,4 +72,5 @@ public class Bonafide {
         this.bonafideStatus = bonafideStatus;
         this.date = date;
     }
+
 }
