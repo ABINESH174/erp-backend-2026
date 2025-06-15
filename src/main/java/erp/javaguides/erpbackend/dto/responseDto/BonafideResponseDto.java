@@ -15,6 +15,7 @@ public class BonafideResponseDto {
     private String purpose;
     private BonafideStatus bonafideStatus;
     private String date;
+    private String academicYear;
 
     //Student details like mobile number and email
     private String mobileNumber;

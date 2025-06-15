@@ -34,6 +34,8 @@ public class Bonafide {
 
     private String date;
 
+    private String academicYear;
+
     private String rejectionMessage;
 
     @Column(length = 150)
