@@ -130,6 +130,22 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to delete Bonafide", null));
         }
     }
+    @GetMapping("/getCertificate/{bonafideId}")
+    public ResponseEntity<byte[]> downloadBonafideCertificate(@PathVariable Long bonafideId, @RequestParam String registerNo){
+        try {
+            byte[] certificate = bonafideService.generateBonafideCertificate(bonafideId,registerNo);
+//            ByteArrayResource byteArrayResource = new ByteArrayResource(certificate);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=bonafide_"+bonafideId+".pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(certificate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
+    }
+
 
     @GetMapping("/downloadFile")
     public ResponseEntity<Resource> downloadFileUsingFilePath(@RequestParam String filePath) {

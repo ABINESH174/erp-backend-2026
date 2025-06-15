@@ -199,6 +199,7 @@ public class Student {
     @Column(length = 10)
     private String cgpa;
 
+
     private StudentStatus studentStatus;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -271,6 +272,7 @@ public class Student {
         this.regulation = regulation;
         this.cgpa = cgpa;
         this.studentStatus = studentStatus;
+
 
     }
 }
