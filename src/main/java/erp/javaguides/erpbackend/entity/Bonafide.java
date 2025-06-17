@@ -68,9 +68,10 @@ public class Bonafide {
     private Student student;
 
 
-    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date) {
+    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date, String academicYear) {
         this.purpose = purpose;
         this.bonafideStatus = bonafideStatus;
         this.date = date;
+        this.academicYear = academicYear;
     }
 }

@@ -34,7 +34,8 @@ public class BonafideMapper {
         return new Bonafide(
                 bonafideDto.getPurpose(),
                 bonafideDto.getBonafideStatus(),
-                bonafideDto.getDate()
+                bonafideDto.getDate(),
+                bonafideDto.getAcademicYear()
         );
     }
 }
