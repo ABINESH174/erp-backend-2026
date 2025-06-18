@@ -13,7 +13,6 @@ public interface StudentRepository extends JpaRepository<Student,String>{
     List<Student> findByDiscipline(String discipline);
 
     Optional<Student> findByRegisterNo(String registerNo);
-
     List<Student> findBySemesterAndDiscipline(String semester, String discipline);
     List<Student> findByFacultyFacultyId(Long facultyId);
 

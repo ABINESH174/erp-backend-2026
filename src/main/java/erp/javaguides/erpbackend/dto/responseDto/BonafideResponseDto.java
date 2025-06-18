@@ -17,6 +17,9 @@ public class BonafideResponseDto {
     private String date;
     private String academicYear;
 
+    private String companyName;
+    private String bankNameForEducationalLoan;
+
     //Student details like mobile number and email
     private String mobileNumber;
     private String emailId;

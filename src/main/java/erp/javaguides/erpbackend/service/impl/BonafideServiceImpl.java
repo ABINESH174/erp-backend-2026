@@ -271,6 +271,32 @@ public class BonafideServiceImpl implements BonafideService {
                 .toList();
     }
 
+    @Override
+    public String getYearFromSemester(String registerNo){
+        Student student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
+        String semesterRoman = student.getSemester();
+        int semesterNumber = switch (semesterRoman){
+            case "I" -> 1;
+            case "II" -> 2;
+            case "III" -> 3;
+            case "IV" -> 4;
+            case "V" -> 5;
+            case "VI" -> 6;
+            case "VII" -> 7;
+            case "VIII" -> 8;
+            default -> 0;
+        };
+        int yearNumber = (semesterNumber + 1) / 2;
+        return switch (yearNumber){
+            case 1 -> "First";
+            case 2 -> "Second";
+            case 3 -> "Third";
+            case 4 -> "Fourth";
+            default -> "Invalid Year";
+        };
+    }
+
     //generate bonafide pdf
     @Override
     public byte[] generateBonafideCertificate(Long bonafideId,String registerNo) throws Exception{
@@ -330,18 +356,36 @@ public class BonafideServiceImpl implements BonafideService {
                 .setMarginTop(20);
         document.add(title);
 
+        String companyName = bonafide.getCompanyName();
+        String bankNameForEducationalLoan = bonafide.getBankNameForEducationalLoan();
+        String purpose = bonafide.getPurpose();
+        String additionalPurpose = purpose;
+
+
+        if(purpose.trim().equalsIgnoreCase("Bonafide for Internship") && companyName != null && !companyName.isBlank()){
+            additionalPurpose = purpose + " at " + companyName;
+        }else if(purpose.trim().equalsIgnoreCase("Educational Support") && bankNameForEducationalLoan != null && !bankNameForEducationalLoan.isBlank()){
+            additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
+        }
+
+        System.out.println("Purpose: " + purpose);
+        System.out.println("Company Name: " + companyName);
+        System.out.println("Bank Name: " + bankNameForEducationalLoan);
+        System.out.println("Final Purpose: " + additionalPurpose);
+
         // Body
         String body = String.format(
-                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s in this institution. " +
+                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s (Semester:%s) in this institution. " +
                 "He is a bonafide student of our college during the academic year %s.\n\n" +
                 "This certificate is issued to enable him to apply for %s.",
                 student.getFirstName().toUpperCase(),
                 student.getLastName().toUpperCase(),
                 student.getRegisterNo(),
-                student.getBatch(),
+                getYearFromSemester(student.getRegisterNo()),
                 student.getDiscipline(),
-                student.getBatch(),
-                bonafide.getPurpose()
+                student.getSemester(),
+                bonafide.getAcademicYear(),
+                additionalPurpose
         );
 
         document.add(new Paragraph(body)
