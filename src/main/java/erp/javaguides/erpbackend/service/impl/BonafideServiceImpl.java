@@ -1,5 +1,18 @@
 package erp.javaguides.erpbackend.service.impl;
 
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.properties.TabAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
@@ -18,12 +31,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itextpdf.layout.Document;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -367,6 +384,112 @@ public class BonafideServiceImpl implements BonafideService {
                 .stream()
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .toList();
+    }
+
+    //generate bonafide pdf
+    @Override
+    public byte[] generateBonafideCertificate(Long bonafideId,String registerNo) throws Exception{
+        Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId,registerNo).orElseThrow(() -> new ResourceNotFoundException(
+                "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
+
+        Student student = bonafide.getStudent();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        Document document = new Document(pdfDocument);
+        // Fonts
+        PdfFont bold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        PdfFont normal = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+        document.setMargins(50,50,50,50);
+
+        ImageData leftLogo = ImageDataFactory.create("src/main/resources/Images/TN_GOVERN.png");
+        ImageData rightLogo = ImageDataFactory.create("src/main/resources/Images/acgcetlogo.png");
+        Image leftImage = new Image(leftLogo).scaleToFit(70,70);
+        Image rightImage = new Image(rightLogo).scaleToFit(70,70);
+
+
+        // Header
+        Table headerTable = new Table(UnitValue.createPercentArray(new float[]{1, 4, 1}))
+                .useAllAvailableWidth();
+
+        headerTable.addCell(new Cell().add(leftImage).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+        Paragraph collegeHeader = new Paragraph()
+                .add("Department of Technical Education, Tamilnadu\n")
+                .add("Alagappa Chettiar Government College of Engineering & Technology,(AUTONOMOUS) Karaikudi - 630 003.\n")
+                .add("(T.P.No:04565-224535, Fax No:04565-224528)\n")
+                .add("AICTE and Permanently Affiliated to Anna University, Chennai - 600 025")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFont(normal)
+                .setFontSize(10);
+        headerTable.addCell(new Cell().add(collegeHeader).setBorder(Border.NO_BORDER));
+        headerTable.addCell(new Cell().add(rightImage).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+        document.add(headerTable);
+        document.add(new LineSeparator(new SolidLine()));
+
+        // Certificate number and date
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        Paragraph certInfo = new Paragraph()
+                .add(new Text("CERTIFICATE NO: 1804/S1/2024").setFont(normal))
+                .add(new Tab())
+                .addTabStops(new TabStop(450, TabAlignment.RIGHT))
+                .add(new Text("DATED: "+currentDate).setFont(normal))
+                .setMarginTop(10);
+        document.add(certInfo);
+
+        // Title
+        Paragraph title = new Paragraph("BONAFIDE CERTIFICATE")
+                .setFont(bold)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(12)
+                .setUnderline()
+                .setMarginTop(20);
+        document.add(title);
+
+        // Body
+        String body = String.format(
+                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s in this institution. " +
+                "He is a bonafide student of our college during the academic year %s.\n\n" +
+                "This certificate is issued to enable him to apply for %s.",
+                student.getFirstName().toUpperCase(),
+                student.getLastName().toUpperCase(),
+                student.getRegisterNo(),
+                student.getBatch(),
+                student.getDiscipline(),
+                student.getBatch(),
+                bonafide.getPurpose()
+        );
+
+        document.add(new Paragraph(body)
+                .setFont(normal)
+                .setTextAlignment(TextAlignment.JUSTIFIED)
+                .setFontSize(11)
+                .setMarginTop(20));
+
+        // Footer
+        Table footerTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}))
+                .useAllAvailableWidth()
+                .setMarginTop(50);
+
+        footerTable.addCell(new Cell().add(new Paragraph("College Seal"))
+                .setFont(normal).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+        footerTable.addCell(new Cell().add(new Paragraph("VICE PRINCIPAL"))
+                .setFont(normal).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+        document.add(footerTable);
+
+        document.add(new Paragraph("\nTo\nThe above Student")
+                .setFont(normal).setTextAlignment(TextAlignment.LEFT));
+
+        document.close();
+
+       Bonafide savedBonafide = bonafideRepository.save(bonafide);
+       String userFolderPath = Paths.get(FOLDERPATH ,savedBonafide.getStudent().getRegisterNo() , savedBonafide.getBonafideId().toString()).toString();
+       Files.createDirectories(Paths.get(userFolderPath));
+       String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() +"_"+ savedBonafide.getStudent().getLastName() + ".pdf";
+       String bonafidePdfPath = Paths.get(userFolderPath,fileName).toString();
+       savedBonafide.setGeneratedBonafideFilePath(bonafidePdfPath);
+       bonafideRepository.save(savedBonafide);
+       Files.write(Paths.get(bonafidePdfPath),byteArrayOutputStream.toByteArray());
+       return byteArrayOutputStream.toByteArray();
     }
 
 }

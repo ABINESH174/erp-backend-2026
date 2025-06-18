@@ -296,8 +296,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     //Faculty neccessities
-    
-    
+
+
 
     //Getting students by batch , required for faculty and hod
 }
