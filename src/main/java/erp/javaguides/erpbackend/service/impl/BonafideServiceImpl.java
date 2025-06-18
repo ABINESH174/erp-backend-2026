@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.sql.Struct;
 import java.util.List;
 import java.util.Optional;
 
@@ -294,49 +294,51 @@ public class BonafideServiceImpl implements BonafideService {
 
         // Validate constraints directly by accessing DTO fields
         // Constraint for BC MBC DNS
-        if (Boolean.TRUE.equals(purposeCheck.getBcMbcDncPostMetricScholarship())) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getBcMbcDncPostMetricScholarship()))) {
             String income = student.getIncome();
-            String caste = student.getCaste();
+            BigDecimal incomeDecimal = new BigDecimal(income.trim());
+            String community = student.getCommunity();
 
-            boolean isCasteEligible = caste != null && (
-                    caste.equalsIgnoreCase("bc") ||
-                            caste.equalsIgnoreCase("mbc") ||
-                            caste.equalsIgnoreCase("dns")
+            boolean isCasteEligible = community != null && (
+                    community.equalsIgnoreCase("bc") ||
+                            community.equalsIgnoreCase("mbc") ||
+                            community.equalsIgnoreCase("dnc")
             );
 
-            boolean isIncomeEligible = income != null && income.compareTo("250000") <= 0;
-
+            boolean isIncomeEligible = incomeDecimal.compareTo(BigDecimal.valueOf(250000)) <= 0;
             purposeCheck.setBcMbcDncPostMetricScholarship(isCasteEligible && isIncomeEligible);
         }
         // Constraint for SC ST
-        if (Boolean.TRUE.equals(purposeCheck.getScStScaPostMetricScholarship())) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getScStScaPostMetricScholarship()))) {
             String income = student.getIncome();
-            String caste = student.getCaste();
+            BigDecimal incomeDecimal = new BigDecimal(income.trim());
+            String community = student.getCommunity();
 
-            boolean isCasteEligible = caste != null && (
-                    caste.equalsIgnoreCase("sc") ||
-                            caste.equalsIgnoreCase("st")
+            boolean isCasteEligible = community != null && (
+                    community.equalsIgnoreCase("sc") ||
+                            community.equalsIgnoreCase("st") ||
+                            community.equalsIgnoreCase("sca")
             );
 
-            boolean isIncomeEligible = income != null && income.compareTo("250000") <= 0;
+            boolean isIncomeEligible = incomeDecimal.compareTo(BigDecimal.valueOf(250000)) <= 0;
 
             purposeCheck.setScStScaPostMetricScholarship(isCasteEligible && isIncomeEligible);
         }
 
         // Constraint for TAMILPUDHALVAN
-        if (Boolean.TRUE.equals(purposeCheck.getTamilPudhalvanScholarship())) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getTamilPudhalvanScholarship()))) {
             Boolean isGovtSchool = student.getIsGovtSchool(); // Boolean field
             Gender gender = student.getGender();
 
-            purposeCheck.setTamilPudhalvanScholarship(Boolean.TRUE.equals(isGovtSchool) && Gender.MALE.equals(gender));
+            purposeCheck.setTamilPudhalvanScholarship(Boolean.TRUE.equals(isGovtSchool) && Gender.Male.equals(gender));
         }
 
         // Constraint for PUDHUMAIPENN
-        if (Boolean.TRUE.equals(purposeCheck.getPudhumaiPennScholarship())) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getPudhumaiPennScholarship()))) {
             Boolean isGovtSchool = student.getIsGovtSchool();
             Gender gender = student.getGender();
 
-            purposeCheck.setPudhumaiPennScholarship(Boolean.TRUE.equals(isGovtSchool) && Gender.FEMALE.equals(gender));
+            purposeCheck.setPudhumaiPennScholarship(Boolean.TRUE.equals(isGovtSchool) && Gender.Female.equals(gender));
         }
 
 //        // Constraint for labourwelfare
