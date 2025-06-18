@@ -62,6 +62,9 @@ public class Bonafide {
     @Column(length = 150)
     private String labourWelfareFilePath;
 
+    @Column(length = 150)
+    private String generatedBonafideFilePath;
+
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
     @JsonBackReference
