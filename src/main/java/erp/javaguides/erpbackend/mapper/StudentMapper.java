@@ -80,7 +80,9 @@ public class StudentMapper {
                 student.getCourseType(),
                 student.getRegulation(),
                 student.getCgpa(),
+                student.getIsGovtSchool(),
                 student.getStudentStatus()
+
         );
     }
 
@@ -147,7 +149,9 @@ public class StudentMapper {
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),
+                studentDto.getIsGovtSchool(),
                 studentDto.getStudentStatus()
+
         );
     }
 

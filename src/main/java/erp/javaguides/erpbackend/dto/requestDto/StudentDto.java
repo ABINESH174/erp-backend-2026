@@ -84,6 +84,8 @@ public class StudentDto {
     private CourseType courseType;
     private String regulation;
     private String cgpa;
+    private Boolean isGovtSchool;
     private StudentStatus studentStatus;
+
 
 }

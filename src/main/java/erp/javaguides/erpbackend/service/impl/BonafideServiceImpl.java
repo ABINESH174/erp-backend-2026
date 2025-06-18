@@ -1,10 +1,12 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
+import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafiedResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.Gender;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.sql.Struct;
 import java.util.List;
 import java.util.Optional;
 
@@ -244,6 +247,132 @@ public class BonafideServiceImpl implements BonafideService {
             throw new RuntimeException("Error deleting Bonafide: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public ApplicableBonafiedResponseDto getApplicableBonafied(String registerNo) {
+        Student student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException("The student is not found...!!!"));
+
+        ApplicableBonafiedResponseDto purposeCheck = new ApplicableBonafiedResponseDto();
+
+        List<Bonafide> bonafides = bonafideRepository.findAllByStudentRegisterNo(registerNo);
+
+        for (Bonafide bonafide : bonafides) {
+            String purpose = bonafide.getPurpose();
+
+            switch (purpose) {
+                case "bonafide for bc/mbc/dns post metric scholarship":
+                    purposeCheck.setBcmbcPostMetricScholorship(false);
+                    break;
+                case "bonafide for sc/st post metric scholorship":
+                    purposeCheck.setScstPostMetricScholorship(false);
+                    break;
+                case "bonafide for tamilpudhalvan scholorship":
+                    purposeCheck.setTamilPudhalvanScholorship(false);
+                    break;
+                case "bonafide for pudhumaipenn scholorship":
+                    purposeCheck.setPudhumaiPennScholorship(false);
+                    break;
+                case "bonafide for labourwelfare":
+                    purposeCheck.setLabourWelfareScholorship(false);
+                    break;
+                case "bonafide for tailorwelfare":
+                    purposeCheck.setTailorWelfareScholorship(false);
+                    break;
+                case "bonafide for internship":
+                    purposeCheck.setApplyInternship(true);
+                    break;
+                case "bonafide for education support":
+                    purposeCheck.setApplyEducationSupport(true);
+                    break;
+                case "bonafide for passport":
+                    purposeCheck.setApplyPassport(true);
+                    break;
+                case "bonafide for buspass":
+                    purposeCheck.setApplyBusPass(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Validate constraints directly by accessing DTO fields
+        // Constraint for BC MBC DNS
+        if (Boolean.TRUE.equals(purposeCheck.getBcmbcPostMetricScholorship())) {
+            String income = student.getIncome();
+            String caste = student.getCaste();
+
+            boolean isCasteEligible = caste != null && (
+                    caste.equalsIgnoreCase("bc") ||
+                            caste.equalsIgnoreCase("mbc") ||
+                            caste.equalsIgnoreCase("dns")
+            );
+
+            boolean isIncomeEligible = income != null && income.compareTo("250000") <= 0;
+
+            if (!isCasteEligible || !isIncomeEligible) {
+                purposeCheck.setBcmbcPostMetricScholorship(false);
+            } else {
+                purposeCheck.setBcmbcPostMetricScholorship(true);
+            }
+        }
+        // Constraint for SC ST
+        if (Boolean.TRUE.equals(purposeCheck.getScstPostMetricScholorship())) {
+            String income = student.getIncome();
+            String caste = student.getCaste();
+
+            boolean isCasteEligible = caste != null && (
+                    caste.equalsIgnoreCase("sc") ||
+                            caste.equalsIgnoreCase("st")
+            );
+
+            boolean isIncomeEligible = income != null && income.compareTo("250000") <= 0;
+
+            if (!isCasteEligible || !isIncomeEligible) {
+                purposeCheck.setScstPostMetricScholorship(false);
+            } else {
+               purposeCheck.setScstPostMetricScholorship(true);
+            }
+        }
+
+        // Constraint for TAMILPUDHALVAN
+        if (Boolean.TRUE.equals(purposeCheck.getTamilPudhalvanScholorship())) {
+            Boolean isGovtSchool = student.getIsGovtSchool(); // Boolean field
+            Gender gender = student.getGender();
+
+            if (Boolean.TRUE.equals(isGovtSchool) && Gender.MALE.equals(gender)) {
+                purposeCheck.setTamilPudhalvanScholorship(true);
+            } else {
+                purposeCheck.setTamilPudhalvanScholorship(false);
+            }
+        }
+
+        // Constraint for PUDHUMAIPENN
+        if (Boolean.TRUE.equals(purposeCheck.getPudhumaiPennScholorship())) {
+            Boolean isGovtSchool = student.getIsGovtSchool();
+            Gender gender = student.getGender();
+
+            if (Boolean.TRUE.equals(isGovtSchool) && Gender.FEMALE.equals(gender)) {
+                purposeCheck.setPudhumaiPennScholorship(true);
+            } else {
+                purposeCheck.setPudhumaiPennScholorship(false);
+            }
+        }
+
+        // Constraint for labourwelfare
+        if (Boolean.TRUE.equals(purposeCheck.getLabourWelfareScholorship())) {
+            // Constraint
+        }
+
+        // Constraint for tailorwelfare
+        if (Boolean.TRUE.equals(purposeCheck.getTailorWelfareScholorship())) {
+            // Constraint
+        }
+
+        return purposeCheck;
+    }
+
+
 
     //office bearer neccessities
     @Override
