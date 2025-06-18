@@ -410,11 +410,15 @@ public class BonafideServiceImpl implements BonafideService {
 
         document.close();
 
-        String filePath = "bonafide_" + registerNo + ".pdf";
-        Path path = Paths.get(filePath);
-        Files.write(path, byteArrayOutputStream.toByteArray());
-
-        return byteArrayOutputStream.toByteArray();
+       Bonafide savedBonafide = bonafideRepository.save(bonafide);
+       String userFolderPath = Paths.get(FOLDERPATH ,savedBonafide.getStudent().getRegisterNo() , savedBonafide.getBonafideId().toString()).toString();
+       Files.createDirectories(Paths.get(userFolderPath));
+       String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() +"_"+ savedBonafide.getStudent().getLastName() + ".pdf";
+       String bonafidePdfPath = Paths.get(userFolderPath,fileName).toString();
+       savedBonafide.setGeneratedBonafideFilePath(bonafidePdfPath);
+       bonafideRepository.save(savedBonafide);
+       Files.write(Paths.get(bonafidePdfPath),byteArrayOutputStream.toByteArray());
+       return byteArrayOutputStream.toByteArray();
     }
 
 }

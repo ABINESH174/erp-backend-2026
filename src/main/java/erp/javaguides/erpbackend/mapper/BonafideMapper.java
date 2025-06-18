@@ -22,6 +22,7 @@ public class BonafideMapper {
                 bonafide.getRejectionMessage(),
                 bonafide.getBankNameForEducationalLoan(),
                 bonafide.getCompanyName(),
+                bonafide.getGeneratedBonafideFilePath(),
                 bonafide.getWelfareIdFilePath(),
                 bonafide.getSmartCardFilePath(),
                 bonafide.getStudentIdCardFilePath(),

@@ -21,6 +21,8 @@ public class CreateBonafideRequestDto {
 
     private String companyName;
     private String bankNameForEducationalLoan;
+    private String generatedBonafideFilePath;
+
 
     private MultipartFile smartCardFile;
     private MultipartFile studentIdCardFile;
