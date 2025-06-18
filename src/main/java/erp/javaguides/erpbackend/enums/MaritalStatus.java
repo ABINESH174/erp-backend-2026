@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum MaritalStatus {
-    MARRIED, UNMARRIED;
+    Married, Unmarried;
 
     @JsonCreator
     public static MaritalStatus fromValue(String value) {

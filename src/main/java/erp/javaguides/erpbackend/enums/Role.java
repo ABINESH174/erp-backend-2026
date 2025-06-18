@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Role {
-    STUDENT,FACULTY,HOD,OB,PRINCIPAL,ADMIN;
+    Student,Faculty,Hod,OB,Principal,Admin;
 
     @JsonCreator
     public static Role fromValue(String value) {
