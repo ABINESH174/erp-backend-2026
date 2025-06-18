@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Hosteller {
-    Yes,No;
+    YES,NO;
 
     @JsonCreator
     public static Hosteller fromValue(String value) {

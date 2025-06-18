@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum StudentStatus {
-    Pursuing,Terminated,Discontinued,PassedOut;
+    PURSUING,TERMINATED,DISCONTINUED,PASSEDOUT;
 
     @JsonCreator
     public static StudentStatus fromValue(String value) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CourseType {
-    Regular,Lateral,Regular_Transfer;
+    REGULAR,LATERAL,REGULAR_TRANSFER;
 
     @JsonCreator
     public static CourseType fromValue(String value) {

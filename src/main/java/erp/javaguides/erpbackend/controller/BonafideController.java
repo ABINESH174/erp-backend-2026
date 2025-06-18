@@ -1,7 +1,7 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
-import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafiedResponseDto;
+import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
@@ -230,11 +230,11 @@ public class BonafideController {
 
     }
 
-    @GetMapping("/getApplicableBonafied/{registerNo}")
-    public ResponseEntity<ApiResponse> getApplicableBonafied(@PathVariable String registerNo) {
+    @GetMapping("/getApplicableBonafide/{registerNo}")
+    public ResponseEntity<ApiResponse> getApplicableBonafide(@PathVariable String registerNo) {
         try {
-            ApplicableBonafiedResponseDto applicableBonafiedResponseDto = bonafideService.getApplicableBonafied(registerNo);
-            return ResponseEntity.ok(new ApiResponse("Applicable bonafide fetched successfully", applicableBonafiedResponseDto);
+            ApplicableBonafideResponseDto applicableBonafideResponseDto = bonafideService.getApplicableBonafied(registerNo);
+            return ResponseEntity.ok(new ApiResponse("Applicable bonafide fetched successfully", applicableBonafideResponseDto));
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching applicable bonafied",null));

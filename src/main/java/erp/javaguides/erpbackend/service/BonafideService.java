@@ -3,7 +3,7 @@ package erp.javaguides.erpbackend.service;
 import java.util.List;
 
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
-import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafiedResponseDto;
+import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 
 public interface BonafideService {
@@ -15,7 +15,7 @@ public interface BonafideService {
     List<BonafideResponseDto> getAllBonafides();
     BonafideResponseDto updateBonafideWithBonafideStatus(Long bonafideId, String registerNo, String status);
     void deleteBonafide(Long bonafideId, String registerNo);
-    ApplicableBonafiedResponseDto getApplicableBonafied(String registerNo);
+    ApplicableBonafideResponseDto getApplicableBonafied(String registerNo);
 
     List<BonafideResponseDto> getHodApprovedBonafides();
 
