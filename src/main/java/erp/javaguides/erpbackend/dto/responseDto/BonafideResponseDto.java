@@ -36,4 +36,5 @@ public class BonafideResponseDto {
     private String aadharCardFilePath;
     private String centralCommunityCertificateFilePath;
     private String collegeFeeReceiptFilePath;
+
 }

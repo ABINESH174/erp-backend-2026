@@ -92,5 +92,4 @@ public class AuthenticationController {
 
         return new ResponseEntity<>("Invalid Register Number", HttpStatus.OK);
     }
-
 }

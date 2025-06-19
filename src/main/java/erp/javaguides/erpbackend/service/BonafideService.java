@@ -20,6 +20,7 @@ public interface BonafideService {
 
     byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception;
     List<BonafideResponseDto> getHodApprovedBonafides();
+    List<BonafideResponseDto> getPrincipalApprovedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage);
     // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);

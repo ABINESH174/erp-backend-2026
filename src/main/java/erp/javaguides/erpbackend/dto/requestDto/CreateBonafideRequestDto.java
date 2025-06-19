@@ -32,6 +32,7 @@ public class CreateBonafideRequestDto {
     private MultipartFile collegeFeeReceiptFile;
     private MultipartFile labourWelfareFile;
 
+
     // private String smartCard;
     // private String studentIdCard;
     // private String provisionalAllotment;
