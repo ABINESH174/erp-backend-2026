@@ -368,6 +368,13 @@ public class BonafideServiceImpl implements BonafideService {
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .toList();
     }
+    @Override
+    public List<BonafideResponseDto> getPrincipalApprovedBonafides(){
+        return bonafideRepository.findByBonafideStatus(BonafideStatus.PRINCIPAL_APPROVED)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
 
 }
 

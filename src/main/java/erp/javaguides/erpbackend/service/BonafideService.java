@@ -18,6 +18,7 @@ public interface BonafideService {
     ApplicableBonafideResponseDto getApplicableBonafied(String registerNo);
 
     List<BonafideResponseDto> getHodApprovedBonafides();
+    List<BonafideResponseDto> getPrincipalApprovedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage);
     // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);
