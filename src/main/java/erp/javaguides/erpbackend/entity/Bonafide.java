@@ -37,6 +37,7 @@ public class Bonafide {
     private String academicYear;
 
     private String companyName;
+
     @Column(name = "loan_bank_name")
     private String bankNameForEducationalLoan;
 
