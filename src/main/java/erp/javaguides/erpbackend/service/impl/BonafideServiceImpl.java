@@ -288,10 +288,10 @@ public class BonafideServiceImpl implements BonafideService {
 
             switch (purpose) {
                 case "bonafide for bc/mbc/dnc post metric scholarship":
-                    purposeCheck.setBcMbcDncPostMetricScholarship(false);
+                    purposeCheck.setBcMbcDncPostMatricScholarship(false);
                     break;
                 case "bonafide for sc/st post metric scholorship":
-                    purposeCheck.setScStScaPostMetricScholarship(false);
+                    purposeCheck.setScStScaPostMatricScholarship(false);
                     break;
                 case "bonafide for tamilpudhalvan scholorship":
                     purposeCheck.setTamilPudhalvanScholarship(false);
@@ -311,7 +311,7 @@ public class BonafideServiceImpl implements BonafideService {
 
         // Validate constraints directly by accessing DTO fields
         // Constraint for BC MBC DNS
-        if (!(Boolean.FALSE.equals(purposeCheck.getBcMbcDncPostMetricScholarship()))) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getBcMbcDncPostMatricScholarship()))) {
             String income = student.getIncome();
             BigDecimal incomeDecimal = new BigDecimal(income.trim());
             String community = student.getCommunity();
@@ -323,10 +323,10 @@ public class BonafideServiceImpl implements BonafideService {
             );
 
             boolean isIncomeEligible = incomeDecimal.compareTo(BigDecimal.valueOf(250000)) <= 0;
-            purposeCheck.setBcMbcDncPostMetricScholarship(isCasteEligible && isIncomeEligible);
+            purposeCheck.setBcMbcDncPostMatricScholarship(isCasteEligible && isIncomeEligible);
         }
         // Constraint for SC ST
-        if (!(Boolean.FALSE.equals(purposeCheck.getScStScaPostMetricScholarship()))) {
+        if (!(Boolean.FALSE.equals(purposeCheck.getScStScaPostMatricScholarship()))) {
             String income = student.getIncome();
             BigDecimal incomeDecimal = new BigDecimal(income.trim());
             String community = student.getCommunity();
@@ -339,7 +339,7 @@ public class BonafideServiceImpl implements BonafideService {
 
             boolean isIncomeEligible = incomeDecimal.compareTo(BigDecimal.valueOf(250000)) <= 0;
 
-            purposeCheck.setScStScaPostMetricScholarship(isCasteEligible && isIncomeEligible);
+            purposeCheck.setScStScaPostMatricScholarship(isCasteEligible && isIncomeEligible);
         }
 
         // Constraint for TAMILPUDHALVAN
@@ -384,6 +384,31 @@ public class BonafideServiceImpl implements BonafideService {
                 .stream()
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .toList();
+    }
+
+    private String getYearFromSemester(String registerNo){
+        Student student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
+        String semesterRoman = student.getSemester();
+        int semesterNumber = switch (semesterRoman){
+            case "I" -> 1;
+            case "II" -> 2;
+            case "III" -> 3;
+            case "IV" -> 4;
+            case "V" -> 5;
+            case "VI" -> 6;
+            case "VII" -> 7;
+            case "VIII" -> 8;
+            default -> 0;
+        };
+        int yearNumber = (semesterNumber + 1) / 2;
+        return switch (yearNumber){
+            case 1 -> "First";
+            case 2 -> "Second";
+            case 3 -> "Third";
+            case 4 -> "Fourth";
+            default -> "Invalid Year";
+        };
     }
 
     //generate bonafide pdf
@@ -445,18 +470,36 @@ public class BonafideServiceImpl implements BonafideService {
                 .setMarginTop(20);
         document.add(title);
 
+        String companyName = bonafide.getCompanyName();
+        String bankNameForEducationalLoan = bonafide.getBankNameForEducationalLoan();
+        String purpose = bonafide.getPurpose();
+        String additionalPurpose = purpose;
+
+
+        if(purpose.trim().equalsIgnoreCase("Bonafide for Internship") && companyName != null && !companyName.isBlank()){
+            additionalPurpose = purpose + " at " + companyName;
+        }else if(purpose.trim().equalsIgnoreCase("Educational Support") && bankNameForEducationalLoan != null && !bankNameForEducationalLoan.isBlank()){
+            additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
+        }
+
+        System.out.println("Purpose: " + purpose);
+        System.out.println("Company Name: " + companyName);
+        System.out.println("Bank Name: " + bankNameForEducationalLoan);
+        System.out.println("Final Purpose: " + additionalPurpose);
+
         // Body
         String body = String.format(
-                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s in this institution. " +
-                "He is a bonafide student of our college during the academic year %s.\n\n" +
-                "This certificate is issued to enable him to apply for %s.",
+                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s (Semester:%s) in this institution. " +
+                        "He is a bonafide student of our college during the academic year %s.\n\n" +
+                        "This certificate is issued to enable him to apply for %s.",
                 student.getFirstName().toUpperCase(),
                 student.getLastName().toUpperCase(),
                 student.getRegisterNo(),
-                student.getBatch(),
+                getYearFromSemester(student.getRegisterNo()),
                 student.getDiscipline(),
-                student.getBatch(),
-                bonafide.getPurpose()
+                student.getSemester(),
+                bonafide.getAcademicYear(),
+                additionalPurpose
         );
 
         document.add(new Paragraph(body)
@@ -481,16 +524,17 @@ public class BonafideServiceImpl implements BonafideService {
 
         document.close();
 
-       Bonafide savedBonafide = bonafideRepository.save(bonafide);
-       String userFolderPath = Paths.get(FOLDERPATH ,savedBonafide.getStudent().getRegisterNo() , savedBonafide.getBonafideId().toString()).toString();
-       Files.createDirectories(Paths.get(userFolderPath));
-       String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() +"_"+ savedBonafide.getStudent().getLastName() + ".pdf";
-       String bonafidePdfPath = Paths.get(userFolderPath,fileName).toString();
-       savedBonafide.setGeneratedBonafideFilePath(bonafidePdfPath);
-       bonafideRepository.save(savedBonafide);
-       Files.write(Paths.get(bonafidePdfPath),byteArrayOutputStream.toByteArray());
-       return byteArrayOutputStream.toByteArray();
+        Bonafide savedBonafide = bonafideRepository.save(bonafide);
+        String userFolderPath = Paths.get(FOLDERPATH ,savedBonafide.getStudent().getRegisterNo() , savedBonafide.getBonafideId().toString()).toString();
+        Files.createDirectories(Paths.get(userFolderPath));
+        String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() +"_"+ savedBonafide.getStudent().getLastName() + ".pdf";
+        String bonafidePdfPath = Paths.get(userFolderPath,fileName).toString();
+        savedBonafide.setGeneratedBonafideFilePath(bonafidePdfPath);
+        bonafideRepository.save(savedBonafide);
+        Files.write(Paths.get(bonafidePdfPath),byteArrayOutputStream.toByteArray());
+        return byteArrayOutputStream.toByteArray();
     }
+
 
 }
 
