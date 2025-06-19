@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum FirstGraduate {
-    Yes,No;
+    Yes, No;
 
     @JsonCreator
     public static FirstGraduate fromValue(String value) {
