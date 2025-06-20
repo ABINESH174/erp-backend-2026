@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
+import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
@@ -244,9 +245,35 @@ public class BonafideController {
         }
 
     }
+    @GetMapping("/getPrincipalApproved")
+    public ResponseEntity<ApiResponse> getPrincipalApprovedBonafides() {
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getPrincipalApprovedBonafides();
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("No bonafides found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Bonafides found", bonafideResponseDtos));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("An error occurred, failed to retrieve bonafides", null));
+        }
+    }
 
-    
-    
+
+
+    @GetMapping("/getApplicableBonafide/{registerNo}")
+    public ResponseEntity<ApiResponse> getApplicableBonafide(@PathVariable String registerNo) {
+        try {
+            ApplicableBonafideResponseDto applicableBonafideResponseDto = bonafideService.getApplicableBonafied(registerNo);
+            return ResponseEntity.ok(new ApiResponse("Applicable bonafide fetched successfully", applicableBonafideResponseDto));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching applicable bonafied",null));
+        }
+    }
+
+
 }
 //    @GetMapping("/{registerNo}")
 //    public ResponseEntity<BonafideDto> getBonafideByRegisterNo(@PathVariable String registerNo) {

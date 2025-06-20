@@ -21,7 +21,7 @@ public class CreateBonafideRequestDto {
 
     private String companyName;
     private String bankNameForEducationalLoan;
-    private String generatedBonafideFilePath;
+//    private String generatedBonafideFilePath;
 
 
     private MultipartFile smartCardFile;
@@ -31,6 +31,7 @@ public class CreateBonafideRequestDto {
     private MultipartFile centralCommunityCertificateFile;
     private MultipartFile collegeFeeReceiptFile;
     private MultipartFile labourWelfareFile;
+
 
     // private String smartCard;
     // private String studentIdCard;
