@@ -271,7 +271,7 @@ public class BonafideServiceImpl implements BonafideService {
                 .toList();
     }
 
-    @Override
+
     public String getYearFromSemester(String registerNo){
         Student student = studentRepository.findByRegisterNo(registerNo)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
@@ -367,12 +367,6 @@ public class BonafideServiceImpl implements BonafideService {
         }else if(purpose.trim().equalsIgnoreCase("Educational Support") && bankNameForEducationalLoan != null && !bankNameForEducationalLoan.isBlank()){
             additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
         }
-
-        System.out.println("Purpose: " + purpose);
-        System.out.println("Company Name: " + companyName);
-        System.out.println("Bank Name: " + bankNameForEducationalLoan);
-        System.out.println("Final Purpose: " + additionalPurpose);
-
         // Body
         String body = String.format(
                 "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s (Semester:%s) in this institution. " +

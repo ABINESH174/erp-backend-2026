@@ -16,7 +16,6 @@ public interface BonafideService {
     void deleteBonafide(Long bonafideId, String registerNo);
 
     byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception;
-    String getYearFromSemester(String registerNo);
     List<BonafideResponseDto> getHodApprovedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage);
