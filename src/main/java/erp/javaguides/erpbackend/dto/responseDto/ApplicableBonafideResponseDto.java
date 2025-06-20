@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicableBonafideResponseDto {
-    private Boolean bcMbcDncPostMetricScholarship;
-    private Boolean scStScaPostMetricScholarship;
+    private Boolean bcMbcDncPostMatricScholarship;
+    private Boolean scStScaPostMatricScholarship;
     private Boolean tamilPudhalvanScholarship;
     private Boolean pudhumaiPennScholarship;
 

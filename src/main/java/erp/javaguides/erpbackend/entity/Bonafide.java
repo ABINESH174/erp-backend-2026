@@ -34,6 +34,13 @@ public class Bonafide {
 
     private String date;
 
+    private String academicYear;
+
+    private String companyName;
+
+    //    @Column(name = "loan_bank_name")
+    private String bankNameForEducationalLoan;
+
     private String rejectionMessage;
 
     @Column(length = 150)
@@ -60,6 +67,8 @@ public class Bonafide {
     @Column(length = 150)
     private String labourWelfareFilePath;
 
+    @Column(length = 150)
+    private String generatedBonafideFilePath;
 
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "registerNo" , referencedColumnName = "registerNo", nullable = false)
@@ -67,10 +76,12 @@ public class Bonafide {
     private Student student;
 
 
-    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date) {
+    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date, String academicYear , String companyName , String bankNameForEducationalLoan) {
         this.purpose = purpose;
         this.bonafideStatus = bonafideStatus;
         this.date = date;
+        this.academicYear = academicYear;
+        this.companyName = companyName;
+        this.bankNameForEducationalLoan = bankNameForEducationalLoan;
     }
-
 }

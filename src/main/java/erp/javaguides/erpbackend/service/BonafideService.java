@@ -17,6 +17,8 @@ public interface BonafideService {
     void deleteBonafide(Long bonafideId, String registerNo);
     ApplicableBonafideResponseDto getApplicableBonafied(String registerNo);
 
+
+    byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception;
     List<BonafideResponseDto> getHodApprovedBonafides();
     List<BonafideResponseDto> getPrincipalApprovedBonafides();
 

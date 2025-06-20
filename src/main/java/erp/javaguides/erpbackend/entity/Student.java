@@ -203,6 +203,7 @@ public class Student {
     private Boolean isGovtSchool;
 
 
+
     private StudentStatus studentStatus;
 
 
@@ -277,6 +278,7 @@ public class Student {
         this.cgpa = cgpa;
         this.isGovtSchool=isGovtSchool;
         this.studentStatus = studentStatus;
+
 
     }
 }
