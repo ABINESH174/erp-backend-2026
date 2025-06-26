@@ -5,6 +5,7 @@ import java.util.List;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
+import erp.javaguides.erpbackend.entity.Bonafide;
 
 public interface BonafideService {
     BonafideResponseDto saveBonafide(CreateBonafideRequestDto bonafideDto) throws  Exception;
@@ -19,6 +20,8 @@ public interface BonafideService {
 
 
     byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception;
+    void notifyFacultyOnSubmission(String registerNo);
+    void notifyNextApprover(Bonafide bonafide , String status , String registerNo);
     List<BonafideResponseDto> getHodApprovedBonafides();
     List<BonafideResponseDto> getPrincipalApprovedBonafides();
 
