@@ -1,2 +1,6 @@
 # Project exclude paths
 /target/
+
+# Exclude this local configuration file to be pushed to the repository
+application-local.properties
+application-dev.properties
