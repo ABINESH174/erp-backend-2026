@@ -186,12 +186,12 @@ public class BonafideServiceImpl implements BonafideService {
     }
 
     @Override
-    public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage) {
+    public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage) {
         try {
             Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
-            bonafide.setBonafideStatus(BonafideStatus.OB_REJECTED);
+            bonafide.setBonafideStatus(status);
             bonafide.setRejectionMessage(rejectionMessage);
 
             // Deleting the files associated with the Bonafide
