@@ -1,7 +1,9 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
+import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
+import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.BonafideService;
@@ -32,6 +34,7 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> createBonafide(@ModelAttribute CreateBonafideRequestDto requestDto) throws ResourceNotFoundException{
         try {
             BonafideResponseDto createdBonafide = bonafideService.saveBonafide(requestDto);
+            System.out.println(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Bonafide created successfully",createdBonafide));
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,10 +113,11 @@ public class BonafideController {
         }
     }
 
+
     @PutMapping("/updateObRejectedBonafide")
-    public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam String rejectionMessage) {
+    public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam BonafideStatus status, @RequestParam String rejectionMessage) {
         try {
-            BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo, rejectionMessage);
+            BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo,status, rejectionMessage);
             return ResponseEntity.ok(new ApiResponse("Bonafide rejected successfully", updatedBonafide));
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,6 +134,22 @@ public class BonafideController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to delete Bonafide", null));
         }
     }
+    @GetMapping("/getCertificate/{bonafideId}")
+    public ResponseEntity<byte[]> downloadBonafideCertificate(@PathVariable Long bonafideId, @RequestParam String registerNo){
+        try {
+            byte[] certificate = bonafideService.generateBonafideCertificate(bonafideId,registerNo);
+//            ByteArrayResource byteArrayResource = new ByteArrayResource(certificate);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=bonafide_"+bonafideId+".pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(certificate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
+    }
+
 
     @GetMapping("/downloadFile")
     public ResponseEntity<Resource> downloadFileUsingFilePath(@RequestParam String filePath) {
@@ -228,9 +248,35 @@ public class BonafideController {
         }
 
     }
+    @GetMapping("/getPrincipalApproved")
+    public ResponseEntity<ApiResponse> getPrincipalApprovedBonafides() {
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getPrincipalApprovedBonafides();
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("No bonafides found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Bonafides found", bonafideResponseDtos));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("An error occurred, failed to retrieve bonafides", null));
+        }
+    }
 
-    
-    
+
+
+    @GetMapping("/getApplicableBonafide/{registerNo}")
+    public ResponseEntity<ApiResponse> getApplicableBonafide(@PathVariable String registerNo) {
+        try {
+            ApplicableBonafideResponseDto applicableBonafideResponseDto = bonafideService.getApplicableBonafied(registerNo);
+            return ResponseEntity.ok(new ApiResponse("Applicable bonafide fetched successfully", applicableBonafideResponseDto));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching applicable bonafied",null));
+        }
+    }
+
+
 }
 //    @GetMapping("/{registerNo}")
 //    public ResponseEntity<BonafideDto> getBonafideByRegisterNo(@PathVariable String registerNo) {

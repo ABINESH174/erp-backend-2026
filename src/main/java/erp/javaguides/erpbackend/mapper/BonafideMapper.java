@@ -14,6 +14,10 @@ public class BonafideMapper {
                 bonafide.getPurpose(),
                 bonafide.getBonafideStatus(),
                 bonafide.getDate(),
+                bonafide.getAcademicYear(),
+                bonafide.getCompanyName(),
+                bonafide.getBankNameForEducationalLoan(),
+                bonafide.getGeneratedBonafideFilePath(),
                 bonafide.getStudent().getMobileNumber(),
                 bonafide.getStudent().getEmailId(),
                 bonafide.getStudent().getSemester(),
@@ -33,7 +37,10 @@ public class BonafideMapper {
         return new Bonafide(
                 bonafideDto.getPurpose(),
                 bonafideDto.getBonafideStatus(),
-                bonafideDto.getDate()
+                bonafideDto.getDate(),
+                bonafideDto.getAcademicYear(),
+                bonafideDto.getCompanyName(),
+                bonafideDto.getBankNameForEducationalLoan()
         );
     }
 }

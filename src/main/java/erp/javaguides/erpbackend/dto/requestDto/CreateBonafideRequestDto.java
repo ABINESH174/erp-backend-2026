@@ -12,11 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateBonafideRequestDto {
     private String registerNo;
-
+    
     private String date;
+    private String academicYear;
     private String purpose;
     private BonafideStatus bonafideStatus;
     private String welfareId;
+
+    private String companyName;
+    private String bankNameForEducationalLoan;
+//    private String generatedBonafideFilePath;
+
 
     private MultipartFile smartCardFile;
     private MultipartFile studentIdCardFile;
@@ -25,6 +31,7 @@ public class CreateBonafideRequestDto {
     private MultipartFile centralCommunityCertificateFile;
     private MultipartFile collegeFeeReceiptFile;
     private MultipartFile labourWelfareFile;
+
 
     // private String smartCard;
     // private String studentIdCard;

@@ -15,6 +15,11 @@ public class BonafideResponseDto {
     private String purpose;
     private BonafideStatus bonafideStatus;
     private String date;
+    private String academicYear;
+
+    private String companyName;
+    private String bankNameForEducationalLoan;
+    private String generatedBonafideFilePath;
 
     //Student details like mobile number and email
     private String mobileNumber;
@@ -31,4 +36,5 @@ public class BonafideResponseDto {
     private String aadharCardFilePath;
     private String centralCommunityCertificateFilePath;
     private String collegeFeeReceiptFilePath;
+
 }
