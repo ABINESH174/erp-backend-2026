@@ -24,21 +24,47 @@ public class EmailController {
             bonafideService.notifyFacultyOnSubmission(registerNo);
             return ResponseEntity.ok(new ApiResponse("Faculty notified Scuccessfully", null));
         }catch (Exception e){
-            return ResponseEntity.internalServerError().body(new ApiResponse("Failed to notify Faculty",null));
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(new ApiResponse("Failed to notify Faculty" + e.getMessage(),null));
         }
     }
 
     @PostMapping("/notify-approver")
-    public ResponseEntity<ApiResponse> notifyApprover(@RequestBody EmailRequestDto emailRequestDto){
-        try{
-            Long bonafideId = emailRequestDto.getBonafideId();
-            String registerNo = emailRequestDto.getRegisterNo();
-            String status = emailRequestDto.getStatus();
-            Bonafide bonafide = bonafideRepository.findById(bonafideId).orElseThrow(()->new ResourceNotFoundException("Bonafide Not Found with id: " + bonafideId));
-            bonafideService.notifyNextApprover(bonafide , status , registerNo);
-            return ResponseEntity.ok(new ApiResponse("Approver notified successfully",null));
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().body(new ApiResponse("Failed to notify Faculty",null));
+    public ResponseEntity<ApiResponse> notifyApprover(@RequestBody EmailRequestDto emailRequestDto) {
+        try {
+            Bonafide bonafide = bonafideService.notifyNextApprover(
+                    emailRequestDto.getBonafideId(),
+                    emailRequestDto.getStatus(),
+                    emailRequestDto.getRegisterNo()
+            );
+
+
+            String name = bonafide.getStudent().getFirstName() + " " + bonafide.getStudent().getLastName();
+            String registerNo = bonafide.getStudent().getRegisterNo();
+            String department = bonafide.getStudent().getDiscipline();
+
+            String message;
+            switch (emailRequestDto.getStatus().toUpperCase()) {
+                case "FACULTY_APPROVED":
+                    message = "Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.";
+                    break;
+                case "HOD_APPROVED":
+                    message = "Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.";
+                    break;
+                case "OB_APPROVED":
+                    message = "Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.";
+                    break;
+                case "PRINCIPAL_APPROVED":
+                    message = "Bonafide approved by Principal for student " + name + " (" + registerNo + ") from " + department + " department.";
+                    break;
+                default:
+                    message = "Approver notified for student " + name + " (" + registerNo + ") from " + department + " department.";
+            }
+
+            return ResponseEntity.ok(new ApiResponse(message, null));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse("Failed to notify approver", null));
         }
     }
+
 }

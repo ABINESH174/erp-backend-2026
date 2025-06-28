@@ -21,7 +21,7 @@ public interface BonafideService {
 
     byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception;
     void notifyFacultyOnSubmission(String registerNo);
-    void notifyNextApprover(Bonafide bonafide , String status , String registerNo);
+    Bonafide notifyNextApprover(Long bonafideId , String status , String registerNo);
     List<BonafideResponseDto> getHodApprovedBonafides();
     List<BonafideResponseDto> getPrincipalApprovedBonafides();
 

@@ -109,16 +109,21 @@ public class BonafideServiceImpl implements BonafideService {
     //email notify student to faculty
     @Override
     public void notifyFacultyOnSubmission(String registerNo) {
-        Student student = studentRepository.findByRegisterNo(registerNo).orElseThrow(() -> new ResourceNotFoundException("Faculty Not Found"));
+        Student student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
+
         Faculty faculty = student.getFaculty();
-        if(faculty != null){
-            emailService.sendEmail(
-                    faculty.getEmail(),
-                    "New Bonafide Request Received",
-                    "Bonafide request has been submitted by student: " + student.getRegisterNo()
-            );
+        if (faculty == null || faculty.getEmail() == null) {
+            throw new IllegalStateException("Faculty or faculty email is missing for student: " + registerNo);
         }
+
+        emailService.sendEmail(
+                faculty.getEmail(),
+                "New Bonafide Request Received",
+                "Bonafide request has been submitted by student: " + student.getFirstName() + " " + student.getLastName() + "Register No: " + student.getRegisterNo() + "Department: " + student.getDiscipline()
+        );
     }
+
 
     private String saveFile(MultipartFile file, String directory, String namePrefix) throws IOException {
         if (file != null && !file.isEmpty()) {
@@ -203,7 +208,7 @@ public class BonafideServiceImpl implements BonafideService {
             Bonafide updatedBonafide = bonafideRepository.save(bonafide);
 
             //email notification logic
-            notifyNextApprover(updatedBonafide , status , registerNo);
+            notifyNextApprover(updatedBonafide.getBonafideId() , status , registerNo);
 
             return BonafideMapper.mapToBonafideResponseDto(updatedBonafide);
         } catch (Exception e) {
@@ -213,22 +218,28 @@ public class BonafideServiceImpl implements BonafideService {
 
     //email notification logic
     @Override
-    public void notifyNextApprover(Bonafide bonafide , String status , String registerNo) {
+    public Bonafide notifyNextApprover(Long bonafideId , String status , String registerNo) {
+        Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId , registerNo).orElseThrow(() -> new ResourceNotFoundException(
+                "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
 //        String registerNo = bonafide.getStudent().getRegisterNo();
+        String name = bonafide.getStudent().getFirstName() + " " + bonafide.getStudent().getLastName();
+        String department = bonafide.getStudent().getDiscipline();
         switch (status.toUpperCase()) {
             case "FACULTY_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide for student " + registerNo + " approved by Faculty");
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "HOD_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getOfficeBearer().getEmail(),"Bonafide Approved by HOD","Bonafide for student " + registerNo + " approved by HOD");
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getOfficeBearer().getEmail(),"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "OB_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getPrincipal().getEmail(),"Bonafide Approved by office Bearer","Bonafide for student " + registerNo + " approved by office Bearer");
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getPrincipal().getEmail(),"Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "PRINCIPAL_APPROVED":
                 emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready for download.");
                 break;
+
         }
+        return bonafide;
     }
     @Override
     public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage) {
