@@ -6,6 +6,7 @@ import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
+import erp.javaguides.erpbackend.enums.BonafideStatus;
 
 public interface BonafideService {
     BonafideResponseDto saveBonafide(CreateBonafideRequestDto bonafideDto) throws  Exception;
