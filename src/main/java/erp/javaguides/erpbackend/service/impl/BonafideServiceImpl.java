@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -17,6 +18,7 @@ import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
+import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.enums.Gender;
@@ -25,6 +27,7 @@ import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
+import erp.javaguides.erpbackend.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +55,8 @@ public class BonafideServiceImpl implements BonafideService {
     private BonafideRepository bonafideRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Value("${bonafide.details.base-path}")
     private String FOLDERPATH;
@@ -79,6 +84,9 @@ public class BonafideServiceImpl implements BonafideService {
 
         Bonafide savedBonafide = bonafideRepository.save(bonafide);
 
+        //email send to faculty
+        notifyFacultyOnSubmission(student.getRegisterNo());
+
         // Folder Path with structure: "/basepath/registerNo/bonafideId"
         String userFolderPath = Paths.get(FOLDERPATH, requestDto.getRegisterNo(), savedBonafide.getBonafideId().toString()).toString();
 
@@ -97,6 +105,25 @@ public class BonafideServiceImpl implements BonafideService {
 
         return BonafideMapper.mapToBonafideResponseDto(bonafideRepository.save(savedBonafide));
     }
+
+    //email notify student to faculty
+    @Override
+    public void notifyFacultyOnSubmission(String registerNo) {
+        Student student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
+
+        Faculty faculty = student.getFaculty();
+        if (faculty == null || faculty.getEmail() == null) {
+            throw new IllegalStateException("Faculty or faculty email is missing for student: " + registerNo);
+        }
+
+        emailService.sendEmail(
+                faculty.getEmail(),
+                "New Bonafide Request Received",
+                "Bonafide request has been submitted by student: " + student.getFirstName() + " " + student.getLastName() + "Register No: " + student.getRegisterNo() + "Department: " + student.getDiscipline()
+        );
+    }
+
 
     private String saveFile(MultipartFile file, String directory, String namePrefix) throws IOException {
         if (file != null && !file.isEmpty()) {
@@ -179,12 +206,41 @@ public class BonafideServiceImpl implements BonafideService {
                             "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
             bonafide.setBonafideStatus(BonafideStatus.valueOf(status.toUpperCase()));
             Bonafide updatedBonafide = bonafideRepository.save(bonafide);
+
+            //email notification logic
+            notifyNextApprover(updatedBonafide.getBonafideId() , status , registerNo);
+
             return BonafideMapper.mapToBonafideResponseDto(updatedBonafide);
         } catch (Exception e) {
             throw new RuntimeException("Error updating Bonafide: " + e.getMessage(), e);
         }
     }
 
+    //email notification logic
+    @Override
+    public Bonafide notifyNextApprover(Long bonafideId , String status , String registerNo) {
+        Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId , registerNo).orElseThrow(() -> new ResourceNotFoundException(
+                "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
+//        String registerNo = bonafide.getStudent().getRegisterNo();
+        String name = bonafide.getStudent().getFirstName() + " " + bonafide.getStudent().getLastName();
+        String department = bonafide.getStudent().getDiscipline();
+        switch (status.toUpperCase()) {
+            case "FACULTY_APPROVED":
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.");
+                break;
+            case "HOD_APPROVED":
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getOfficeBearer().getEmail(),"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                break;
+            case "OB_APPROVED":
+                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getPrincipal().getEmail(),"Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
+                break;
+            case "PRINCIPAL_APPROVED":
+                emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready for download.");
+                break;
+
+        }
+        return bonafide;
+    }
     @Override
     public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage) {
         try {
@@ -420,31 +476,33 @@ public class BonafideServiceImpl implements BonafideService {
 
     //generate bonafide pdf
     @Override
-    public byte[] generateBonafideCertificate(Long bonafideId,String registerNo) throws Exception{
-        Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId,registerNo).orElseThrow(() -> new ResourceNotFoundException(
-                "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
+    public byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception {
+        Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
 
         Student student = bonafide.getStudent();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         Document document = new Document(pdfDocument);
+
         // Fonts
         PdfFont bold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
         PdfFont normal = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-        document.setMargins(50,50,50,50);
+        document.setMargins(50, 50, 50, 50);
 
+        // Logos
         ImageData leftLogo = ImageDataFactory.create("src/main/resources/Images/TN_GOVERN.png");
         ImageData rightLogo = ImageDataFactory.create("src/main/resources/Images/acgcetlogo.png");
-        Image leftImage = new Image(leftLogo).scaleToFit(70,70);
-        Image rightImage = new Image(rightLogo).scaleToFit(70,70);
+        Image leftImage = new Image(leftLogo).scaleToFit(70, 70);
+        Image rightImage = new Image(rightLogo).scaleToFit(70, 70);
 
-
-        // Header
+        // Header table
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{1, 4, 1}))
                 .useAllAvailableWidth();
-
         headerTable.addCell(new Cell().add(leftImage).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+
         Paragraph collegeHeader = new Paragraph()
                 .add("Department of Technical Education, Tamilnadu\n")
                 .add("Alagappa Chettiar Government College of Engineering & Technology,(AUTONOMOUS) Karaikudi - 630 003.\n")
@@ -453,6 +511,7 @@ public class BonafideServiceImpl implements BonafideService {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setFont(normal)
                 .setFontSize(10);
+
         headerTable.addCell(new Cell().add(collegeHeader).setBorder(Border.NO_BORDER));
         headerTable.addCell(new Cell().add(rightImage).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
         document.add(headerTable);
@@ -464,7 +523,7 @@ public class BonafideServiceImpl implements BonafideService {
                 .add(new Text("CERTIFICATE NO: 1804/S1/2024").setFont(normal))
                 .add(new Tab())
                 .addTabStops(new TabStop(450, TabAlignment.RIGHT))
-                .add(new Text("DATED: "+currentDate).setFont(normal))
+                .add(new Text("DATED: " + currentDate).setFont(normal))
                 .setMarginTop(10);
         document.add(certInfo);
 
@@ -477,52 +536,49 @@ public class BonafideServiceImpl implements BonafideService {
                 .setMarginTop(20);
         document.add(title);
 
+        // Purpose condition
         String companyName = bonafide.getCompanyName();
         String bankNameForEducationalLoan = bonafide.getBankNameForEducationalLoan();
         String purpose = bonafide.getPurpose();
         String additionalPurpose = purpose;
-
-
-        if(purpose.trim().equalsIgnoreCase("Bonafide for Internship") && companyName != null && !companyName.isBlank()){
+        if (purpose.trim().equalsIgnoreCase("Bonafide for Internship") && companyName != null && !companyName.isBlank()) {
             additionalPurpose = purpose + " at " + companyName;
-        }else if(purpose.trim().equalsIgnoreCase("Educational Support") && bankNameForEducationalLoan != null && !bankNameForEducationalLoan.isBlank()){
+        } else if (purpose.trim().equalsIgnoreCase("Educational Support") && bankNameForEducationalLoan != null && !bankNameForEducationalLoan.isBlank()) {
             additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
         }
 
-        System.out.println("Purpose: " + purpose);
-        System.out.println("Company Name: " + companyName);
-        System.out.println("Bank Name: " + bankNameForEducationalLoan);
-        System.out.println("Final Purpose: " + additionalPurpose);
+        // Body with formatting
+        Paragraph paragraph = new Paragraph()
+                .add("     This is to certify that Selvan. ")
+                .add(new Text(student.getFirstName().toUpperCase() + " " + student.getLastName().toUpperCase()).setBold())
+                .add(" (Reg. No: ")
+                .add(new Text(student.getRegisterNo()).setBold())
+                .add(") is studying in ")
+                .add(new Text(getYearFromSemester(student.getRegisterNo())).setBold())
+                .add(" Year B.E. ")
+                .add(new Text(student.getDiscipline()).setBold())
+                .add(" (Semester:")
+                .add(new Text(student.getSemester()).setBold())
+                .add(") in this institution. He is a bonafide student of our college during the academic year ")
+                .add(bonafide.getAcademicYear())
+                .add(".\n\nThis certificate is issued to enable him to apply for ")
+                .add(new Text(additionalPurpose).setBold())
+                .add(".");
 
-        // Body
-        String body = String.format(
-                "This is to certify that Selvan. %s %s (Reg. No: %s) is studying in %s Year B.E. %s (Semester:%s) in this institution. " +
-                        "He is a bonafide student of our college during the academic year %s.\n\n" +
-                        "This certificate is issued to enable him to apply for %s.",
-                student.getFirstName().toUpperCase(),
-                student.getLastName().toUpperCase(),
-                student.getRegisterNo(),
-                getYearFromSemester(student.getRegisterNo()),
-                student.getDiscipline(),
-                student.getSemester(),
-                bonafide.getAcademicYear(),
-                additionalPurpose
-        );
-
-        document.add(new Paragraph(body)
-                .setFont(normal)
+        paragraph.setFont(normal)
                 .setTextAlignment(TextAlignment.JUSTIFIED)
                 .setFontSize(11)
-                .setMarginTop(20));
+                .setFirstLineIndent(30f)
+                .setMarginTop(20);
+        document.add(paragraph);
 
         // Footer
         Table footerTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}))
                 .useAllAvailableWidth()
                 .setMarginTop(50);
-
         footerTable.addCell(new Cell().add(new Paragraph("College Seal"))
                 .setFont(normal).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
-        footerTable.addCell(new Cell().add(new Paragraph("VICE PRINCIPAL"))
+        footerTable.addCell(new Cell().add(new Paragraph("PRINCIPAL"))
                 .setFont(normal).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
         document.add(footerTable);
 
@@ -531,14 +587,16 @@ public class BonafideServiceImpl implements BonafideService {
 
         document.close();
 
+        // Save file
         Bonafide savedBonafide = bonafideRepository.save(bonafide);
-        String userFolderPath = Paths.get(FOLDERPATH ,savedBonafide.getStudent().getRegisterNo() , savedBonafide.getBonafideId().toString()).toString();
+        String userFolderPath = Paths.get(FOLDERPATH, savedBonafide.getStudent().getRegisterNo(), savedBonafide.getBonafideId().toString()).toString();
         Files.createDirectories(Paths.get(userFolderPath));
-        String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() +"_"+ savedBonafide.getStudent().getLastName() + ".pdf";
-        String bonafidePdfPath = Paths.get(userFolderPath,fileName).toString();
+        String fileName = "bonafide_" + savedBonafide.getStudent().getFirstName() + "_" + savedBonafide.getStudent().getLastName() + ".pdf";
+        String bonafidePdfPath = Paths.get(userFolderPath, fileName).toString();
         savedBonafide.setGeneratedBonafideFilePath(bonafidePdfPath);
         bonafideRepository.save(savedBonafide);
-        Files.write(Paths.get(bonafidePdfPath),byteArrayOutputStream.toByteArray());
+        Files.write(Paths.get(bonafidePdfPath), byteArrayOutputStream.toByteArray());
+
         return byteArrayOutputStream.toByteArray();
     }
 
