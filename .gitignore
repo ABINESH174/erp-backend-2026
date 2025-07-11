@@ -2,5 +2,5 @@
 /target/
 
 # Exclude this local configuration file to be pushed to the repository
-application-local.properties
+src/main/resources/application-local.properties
 application-dev.properties

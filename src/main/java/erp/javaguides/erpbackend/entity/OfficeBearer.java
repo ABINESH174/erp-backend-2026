@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,5 +27,18 @@ public class OfficeBearer {
 
     @OneToMany(mappedBy = "officeBearer", cascade = CascadeType.ALL)
     private List<Hod> hods;
+
+    void addHod(Hod hod){
+        if(hods.isEmpty()){
+            hods = new ArrayList<>();
+        }
+        this.hods.add(hod);
+        hod.setOfficeBearer(this);
+    }
+
+    public void removeHod(Hod hod) {
+        this.hods.remove(hod);
+        hod.setOfficeBearer(null);
+    }
 
 }

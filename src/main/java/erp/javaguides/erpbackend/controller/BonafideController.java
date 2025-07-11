@@ -108,6 +108,7 @@ public class BonafideController {
             BonafideResponseDto updatedBonafide = bonafideService.updateBonafideWithBonafideStatus(bonafideId, registerNo, status);
             return ResponseEntity.ok(new ApiResponse("Bonafide " + status + " successfully", updatedBonafide));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to update Bonafide", null));
         }
     }
