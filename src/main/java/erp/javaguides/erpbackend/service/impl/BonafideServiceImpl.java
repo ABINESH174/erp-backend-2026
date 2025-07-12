@@ -229,13 +229,13 @@ public class BonafideServiceImpl implements BonafideService {
                 emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "HOD_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getOfficeBearer().getEmail(),"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                emailService.sendEmail("dhanushdhanush3732@gmail.com","Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "OB_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getPrincipal().getEmail(),"Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
+                emailService.sendEmail("abineshabinayamuthu@gmail.com","Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
-            case "PRINCIPAL_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready for download.");
+            case "NOTIFIED":
+                emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready and you can collect it from the office.");
                 break;
 
         }
