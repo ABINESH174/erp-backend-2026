@@ -1,8 +1,10 @@
 package erp.javaguides.erpbackend.dto.requestDto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class HodRequestDto {
 
     private String firstName;
@@ -10,5 +12,8 @@ public class HodRequestDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+
+    // Hard code
+    private String principalEmail;
     
 }

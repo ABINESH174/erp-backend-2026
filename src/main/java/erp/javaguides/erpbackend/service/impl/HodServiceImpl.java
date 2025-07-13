@@ -5,11 +5,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import erp.javaguides.erpbackend.dto.requestDto.HodRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
 import erp.javaguides.erpbackend.entity.Hod;
+import erp.javaguides.erpbackend.entity.Principal;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
@@ -17,6 +19,7 @@ import erp.javaguides.erpbackend.mapper.HodMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.HodRepository;
 import erp.javaguides.erpbackend.service.HodService;
+import erp.javaguides.erpbackend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,15 +29,23 @@ public class HodServiceImpl implements HodService {
     private final HodRepository hodRepository;
 
     private final BonafideRepository bonafideRepository;
+
+    private final PrincipalService principalService;
     
 
+    @Transactional
     @Override
     public HodResponseDto createHod(HodRequestDto hodRequestDto) {
         Optional<Hod> existingHod = hodRepository.findByEmail(hodRequestDto.getEmail());
         if (existingHod.isPresent()) {
             throw new IllegalArgumentException("HOD with this email already exists.");
         }
+
         Hod hod = HodMapper.toHod(hodRequestDto);
+
+        Principal principal = principalService.getPrincipalByEmail(hodRequestDto.getPrincipalEmail());
+        principal.addHod(hod);
+        
         Hod savedHod = hodRepository.save(hod);
         return HodMapper.toHodResponseDto(savedHod);
     }

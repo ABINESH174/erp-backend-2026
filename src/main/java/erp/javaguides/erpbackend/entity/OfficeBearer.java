@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,20 +25,34 @@ public class OfficeBearer {
 
     private String email;
 
-    @OneToMany(mappedBy = "officeBearer", cascade = CascadeType.ALL)
-    private List<Hod> hods;
+    private String handlingPurpose;
 
-    void addHod(Hod hod){
-        if(hods.isEmpty()){
-            hods = new ArrayList<>();
-        }
+    // Many-to-many relationship with HOD
+    // @JoinTable defines the join table and its columns
+    // This is the owning side of the relationship (the one that manages the join table)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // Cascade PERSIST and MERGE operations
+    @JoinTable(
+        name = "hod_ob_mapping", // Name of the join table
+        joinColumns = @JoinColumn(name = "ob_id"), // Column in join table referring to OB (this entity)
+        inverseJoinColumns = @JoinColumn(name = "hod_id") // Column in join table referring to HOD (the other entity)
+    )
+    private Set<Hod> hods = new HashSet<>();
+
+    //Helper method to add a HOD to the OfficeBearer
+    public void addHod(Hod hod) {
         this.hods.add(hod);
-        hod.setOfficeBearer(this);
+        hod.getOfficeBearers().add(this); // Ensure bidirectional relationship
     }
 
+    //Helper method to remove a HOD from the OfficeBearer
     public void removeHod(Hod hod) {
         this.hods.remove(hod);
-        hod.setOfficeBearer(null);
+        hod.getOfficeBearers().remove(this); // Ensure bidirectional relationship
     }
 
+    public OfficeBearer(String name, String email, String handlingPurpose) {
+        this.name=name;
+        this.email=email;
+        this.handlingPurpose=handlingPurpose;
+    }
 }
