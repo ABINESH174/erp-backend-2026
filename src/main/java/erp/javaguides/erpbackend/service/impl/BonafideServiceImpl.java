@@ -229,7 +229,20 @@ public class BonafideServiceImpl implements BonafideService {
                 emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "HOD_APPROVED":
-                emailService.sendEmail("dhanushdhanush3732@gmail.com","Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                List<String> obEmails = bonafide.getStudent()
+                                            .getFaculty().getHod().getOfficeBearers()
+                                            .stream()
+                                            .map((ob)-> {
+                                                if(ob.getHandlingPurpose().equalsIgnoreCase("Bonafide")){
+                                                    return ob.getEmail();
+                                                }
+                                                return null;
+                                            })
+                                            .toList();
+                for(String obEmail : obEmails){
+                    emailService.sendEmail(obEmail,"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                }
+                // emailService.sendEmail(,"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "OB_APPROVED":
                 emailService.sendEmail("abineshabinayamuthu@gmail.com","Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");

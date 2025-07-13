@@ -3,6 +3,7 @@ package erp.javaguides.erpbackend.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Principal;
@@ -27,11 +28,13 @@ public class PrincipalServiceImpl implements PrincipalService {
                     .orElseThrow(()-> new ResourceNotFoundException("Principal not found with id: " + principalId));
     }
 
+    @Transactional
     @Override
     public Principal savePrincipal(Principal principal) {
         return principalRepository.save(principal);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Principal getPrincipalByEmail(String email) {
         return principalRepository.findByEmail(email)

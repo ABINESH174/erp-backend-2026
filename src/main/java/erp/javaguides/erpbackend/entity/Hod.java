@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -40,13 +42,12 @@ public class Hod {
     @OneToMany(mappedBy = "hod",cascade = CascadeType.ALL)
     private List<Faculty> faculties;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "principal_id")
     private Principal principal;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "officeBearer_id")
-    private OfficeBearer officeBearer;
+    @ManyToMany(mappedBy = "hods")
+    private Set<OfficeBearer> officeBearers = new HashSet<>();
 
     public void addFaculty(Faculty faculty) {
         if(faculties.isEmpty()){
@@ -60,5 +61,15 @@ public class Hod {
         this.faculties.remove(faculty);
         faculty.setHod(null);
     }
+
+    // public void addPrincipal(Principal principal) {
+    //     this.principal = principal;
+    //     principal.addHod(this);
+    // }
+
+    // public void removePrincipal(Principal principal) {
+    //     this.principal = null;
+    //     principal.removeHod(this);
+    // }
 
 }
