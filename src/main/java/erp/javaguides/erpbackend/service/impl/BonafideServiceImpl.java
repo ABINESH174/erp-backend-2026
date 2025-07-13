@@ -1,6 +1,5 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -28,6 +27,7 @@ import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
 import erp.javaguides.erpbackend.service.EmailService;
+import erp.javaguides.erpbackend.utility.UtilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +57,8 @@ public class BonafideServiceImpl implements BonafideService {
     private StudentRepository studentRepository;
     @Autowired
     private EmailService emailService;
+
+    private final UtilityService utilityService;
 
     @Value("${bonafide.details.base-path}")
     private String FOLDERPATH;
@@ -462,31 +464,6 @@ public class BonafideServiceImpl implements BonafideService {
                 .toList();
     }
 
-    private String getYearFromSemester(String registerNo){
-        Student student = studentRepository.findByRegisterNo(registerNo)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
-        String semesterRoman = student.getSemester();
-        int semesterNumber = switch (semesterRoman){
-            case "I" -> 1;
-            case "II" -> 2;
-            case "III" -> 3;
-            case "IV" -> 4;
-            case "V" -> 5;
-            case "VI" -> 6;
-            case "VII" -> 7;
-            case "VIII" -> 8;
-            default -> 0;
-        };
-        int yearNumber = (semesterNumber + 1) / 2;
-        return switch (yearNumber){
-            case 1 -> "First";
-            case 2 -> "Second";
-            case 3 -> "Third";
-            case 4 -> "Fourth";
-            default -> "Invalid Year";
-        };
-    }
-
     //generate bonafide pdf
     @Override
     public byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception {
@@ -567,7 +544,7 @@ public class BonafideServiceImpl implements BonafideService {
                 .add(" (Reg. No: ")
                 .add(new Text(student.getRegisterNo()).setBold())
                 .add(") is studying in ")
-                .add(new Text(getYearFromSemester(student.getRegisterNo())).setBold())
+                .add(new Text(utilityService.convertSemesterToYear(student.getSemester()).getPursuingYear()).setBold())
                 .add(" Year B.E. ")
                 .add(new Text(student.getDiscipline()).setBold())
                 .add(" (Semester:")
