@@ -170,6 +170,9 @@ public class Student {
     private String discipline;
 
     @Column(length = 50)
+    private String department;
+
+    @Column(length = 50)
     private String admissionNumber;
 
     @Column(length = 50)
@@ -202,10 +205,7 @@ public class Student {
     @Column(nullable = false)
     private Boolean isGovtSchool;
 
-
-
     private StudentStatus studentStatus;
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="faculty_id")
@@ -222,7 +222,7 @@ public class Student {
     }
 
 
-    public Student(String registerNo, String firstName, String lastName, String dateOfBirth, Gender gender, String aadharNumber, String bloodGroup, String nationality, String religion, String community, String caste, String fathersName, String fathersOccupation, String fathersMobileNumber, String mothersName, String mothersOccupation, String mothersMobileNumber, String guardiansName, String guardiansOccupation, String guardiansMobileNumber, String parentsStatus, String income, MaritalStatus maritalStatus, Object o, Object o1, String mobileNumber, String emailid, String residentialAddress, String communicationAddress, Hosteller hosteller, HostelType hostelType, String bankName, String ifscCode, String branchName, String accountNumber, Object o2, String sslc, String hsc1Year, String hsc2Year, String diploma, Object o3, Object o4, Object o5, Object o6, String emisNumber, FirstGraduate firstGraduate, String specialCategory, Object o7, Object o8, String programme, String discipline, String admissionNumber, String batch, String semester, String abcId, String umisId, String dateOfAdmission, String courseJoinedDate, CourseType courseType, String regulation, String cgpa,Boolean isGovtSchool, StudentStatus studentStatus) {
+    public Student(String registerNo, String firstName, String lastName, String dateOfBirth, Gender gender, String aadharNumber, String bloodGroup, String nationality, String religion, String community, String caste, String fathersName, String fathersOccupation, String fathersMobileNumber, String mothersName, String mothersOccupation, String mothersMobileNumber, String guardiansName, String guardiansOccupation, String guardiansMobileNumber, String parentsStatus, String income, MaritalStatus maritalStatus, Object o, Object o1, String mobileNumber, String emailid, String residentialAddress, String communicationAddress, Hosteller hosteller, HostelType hostelType, String bankName, String ifscCode, String branchName, String accountNumber, Object o2, String sslc, String hsc1Year, String hsc2Year, String diploma, Object o3, Object o4, Object o5, Object o6, String emisNumber, FirstGraduate firstGraduate, String specialCategory, Object o7, Object o8, String programme, String discipline, String department, String admissionNumber, String batch, String semester, String abcId, String umisId, String dateOfAdmission, String courseJoinedDate, CourseType courseType, String regulation, String cgpa,Boolean isGovtSchool, StudentStatus studentStatus) {
 
         this.registerNo = registerNo;
         this.firstName = firstName;
@@ -266,6 +266,7 @@ public class Student {
         this.specialCategory = specialCategory;
         this.programme = programme;
         this.discipline = discipline;
+        this.department = department;
         this.admissionNumber = admissionNumber;
         this.batch = batch;
         this.semester = semester;

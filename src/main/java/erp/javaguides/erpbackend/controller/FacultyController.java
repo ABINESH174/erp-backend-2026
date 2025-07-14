@@ -160,9 +160,9 @@ public class FacultyController {
     }
     
     @PutMapping("/update-assign/{batch}")
-    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email) throws ResourceNotFoundException{
+    public ResponseEntity<ApiResponse> assignFacultyWithStudent(@PathVariable String batch, @RequestParam String email, @RequestParam String discipline) throws ResourceNotFoundException{
         try {
-            FacultyResponseDto updatedFaculty = facultyService.assignFacultyWithStudents(email, batch);
+            FacultyResponseDto updatedFaculty = facultyService.assignFacultyWithStudents(email, batch, discipline);
             return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));

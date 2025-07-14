@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.enums.PursuingYear;
 
+// A general purpose file that contains methods that are required by the whole application anywhere...
+// Made a bean that can be injected anywhere in AppConfig file using the @Service annotation... 
 @Service
 public class UtilityService {
     

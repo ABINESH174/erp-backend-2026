@@ -593,34 +593,3 @@ public class BonafideServiceImpl implements BonafideService {
 
 }
 
-//
-//
-// @Override
-// public List<BonafideDto> getAllBonafides() {
-// List<Bonafide> bonafides = bonafideRepository.findAll();
-// return bonafides.stream()
-// .map(BonafideMapper::mapToBonafideDto)
-// .collect(Collectors.toList());
-// }
-//
-// @Override
-// public BonafideDto updateBonafide(String registerNo, BonafideDto bonafideDto)
-// {
-// Bonafide existingBonafide = bonafideRepository.findById(registerNo)
-// .orElseThrow(() -> new ResourceNotFoundException("Bonafide not found with
-// Register No: " + registerNo));
-//
-// existingBonafide.setPurpose(bonafideDto.getPurpose());
-// existingBonafide.setStatus(bonafideDto.getStatus());
-//
-// Bonafide updatedBonafide = bonafideRepository.save(existingBonafide);
-// return BonafideMapper.mapToBonafideDto(updatedBonafide);
-// }
-//
-// @Override
-// public void deleteBonafide(String registerNo) {
-// Bonafide bonafide = bonafideRepository.findById(registerNo)
-// .orElseThrow(() -> new ResourceNotFoundException("Bonafide not found with
-// Register No: " + registerNo));
-// bonafideRepository.delete(bonafide);
-// }

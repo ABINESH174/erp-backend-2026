@@ -101,6 +101,7 @@ public class HodController {
             }
             return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully", bonafides));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error retrieving Bonafides", null));
         }
     }

@@ -12,6 +12,7 @@ public class HodRequestDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+    private String department;
 
     // Hard code
     private String principalEmail;

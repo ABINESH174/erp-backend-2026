@@ -25,6 +25,8 @@ public class StudentResponseDto {
 
     private String discipline;
 
+    private String department;
+
     private String semester;
 
     private String batch;

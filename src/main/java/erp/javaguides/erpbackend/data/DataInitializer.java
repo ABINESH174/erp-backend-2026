@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationListener<ApplicationReadyEvent>{
 
-    private String principalEmail="91762215003@gmail.com";
+    private String principalEmail="91762215003@accet.ac.in";
 
     private final AuthenticationService authenticationService;
     private final PrincipalService principalService;
@@ -60,13 +60,17 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 
     private void createHods() {
         if (hodService.getAllHods().isEmpty()){
-            HodRequestDto hodCse = new HodRequestDto("Hodcse","Cse","duraiyan100@gmail.com","7878878788","Computer Science and Engineering", this.principalEmail );
+            HodRequestDto hodCse = new HodRequestDto("Hodcse","Cse","duraiyan100@gmail.com","7878878788","Computer Science and Engineering", "Computer Science and Engineering", this.principalEmail );
             HodResponseDto createdHodCse = hodService.createHod(hodCse);
             createAuthentication(createdHodCse.getEmail(), "123456", "HOD");
 
-            HodRequestDto hodEce = new HodRequestDto("HodEce", "ece", "ecehod@gmail.com","9898989890","Electronics and Communication Engineering", this.principalEmail);
+            HodRequestDto hodEce = new HodRequestDto("HodEce", "ece", "ecehod@gmail.com","9898989890","Electronics and Communication Engineering", "Electronics and Communication Engineering", this.principalEmail);
             HodResponseDto createdHodEce = hodService.createHod(hodEce);
             createAuthentication(createdHodEce.getEmail(), "123456", "HOD");
+
+            HodRequestDto cfa = new HodRequestDto("CFA","cfa", "dhanushdhanush3732@gmail.com", "9696969696", "Science and Humanities", "Science and Humanities", this.principalEmail);
+            HodResponseDto createdCfa = hodService.createHod(cfa);
+            createAuthentication(createdCfa.getEmail(), "123456", "HOD");
         }
     }
 
@@ -79,6 +83,8 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     private void authenticateStudentAndFaculty() {
         createAuthentication("studentcse1", "studentcse1", "STUDENT");
         createAuthentication("killervenom4002@gmail.com", "facultycse1", "FA");
+        createAuthentication("firstYearCseStudent","123456","STUDENT");
+        createAuthentication("dhanushajay2115@gmail.com", "123456", "FA");
     }
     
 }
