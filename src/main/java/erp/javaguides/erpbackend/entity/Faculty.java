@@ -36,6 +36,9 @@ public class Faculty {
     private String discipline;
 
     @Column(length = 50)
+    private String department;
+
+    @Column(length = 50)
     private String handlingBatch;
 
     private List<String> subjects = new ArrayList<>();
@@ -79,11 +82,12 @@ public class Faculty {
     }
 
 
-    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline) {
+    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline, String department) {
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
         this.mobileNumber=mobileNumber;
         this.discipline=discipline;
+        this.department=department;
     }
 }

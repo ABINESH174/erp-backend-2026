@@ -17,7 +17,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name="HOD")
-
 public class Hod {
 
     @Id
@@ -26,6 +25,9 @@ public class Hod {
 
     @Column(length = 100)
     private String discipline;
+
+    @Column(length = 50)
+    private String department;
 
     @Column(nullable = false)
     private String firstName;
@@ -62,14 +64,10 @@ public class Hod {
         faculty.setHod(null);
     }
 
-    // public void addPrincipal(Principal principal) {
-    //     this.principal = principal;
-    //     principal.addHod(this);
-    // }
-
-    // public void removePrincipal(Principal principal) {
-    //     this.principal = null;
-    //     principal.removeHod(this);
-    // }
+    public void addAllOfficeBearers(List<OfficeBearer> officeBearers) {
+        for(OfficeBearer officeBearer : officeBearers) {
+            officeBearer.addHod(this);
+        }
+    }
 
 }

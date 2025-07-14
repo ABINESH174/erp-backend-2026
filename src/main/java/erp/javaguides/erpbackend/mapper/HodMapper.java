@@ -27,6 +27,7 @@ public class HodMapper {
             hodResponseDto.setEmail(hod.getEmail());
             hodResponseDto.setMobileNumber(hod.getMobileNumber());
             hodResponseDto.setDiscipline(hod.getDiscipline());
+            hodResponseDto.setDepartment(hod.getDepartment());
             return hodResponseDto;
         }
     
@@ -37,6 +38,7 @@ public class HodMapper {
             hod.setEmail(hodRequestDto.getEmail());
             hod.setMobileNumber(hodRequestDto.getMobileNumber());
             hod.setDiscipline(hodRequestDto.getDiscipline());
+            hod.setDepartment(hodRequestDto.getDepartment());
             return hod;
         }
 }

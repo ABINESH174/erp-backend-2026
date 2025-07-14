@@ -2,8 +2,6 @@ package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.EmailRequestDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
-import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
-import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.BonafideService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class EmailController {
     private final BonafideService bonafideService;
-    private  final BonafideRepository bonafideRepository;
 
     @PostMapping("/notify-faculty/{registerNo}")
     public ResponseEntity<ApiResponse> notifyFaculty(@PathVariable String registerNo){
