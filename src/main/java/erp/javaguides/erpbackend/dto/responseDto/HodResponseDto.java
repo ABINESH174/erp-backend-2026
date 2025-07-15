@@ -13,6 +13,7 @@ public class HodResponseDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+    private String department;
 
     private List<FacultyResponseDto> faculties;
     

@@ -1,6 +1,5 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -28,6 +27,7 @@ import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.BonafideService;
 import erp.javaguides.erpbackend.service.EmailService;
+import erp.javaguides.erpbackend.utility.UtilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +57,8 @@ public class BonafideServiceImpl implements BonafideService {
     private StudentRepository studentRepository;
     @Autowired
     private EmailService emailService;
+
+    private final UtilityService utilityService;
 
     @Value("${bonafide.details.base-path}")
     private String FOLDERPATH;
@@ -229,25 +231,38 @@ public class BonafideServiceImpl implements BonafideService {
                 emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getEmail(),"Bonafide Approved by Faculty","Bonafide approved by Faculty for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "HOD_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getOfficeBearer().getEmail(),"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                List<String> obEmails = bonafide.getStudent()
+                                            .getFaculty().getHod().getOfficeBearers()
+                                            .stream()
+                                            .map((ob)-> {
+                                                if(ob.getHandlingPurpose().equalsIgnoreCase("Bonafide")){
+                                                    return ob.getEmail();
+                                                }
+                                                return null;
+                                            })
+                                            .toList();
+                for(String obEmail : obEmails){
+                    emailService.sendEmail(obEmail,"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
+                }
+                // emailService.sendEmail(,"Bonafide Approved by HOD","Bonafide approved by HOD for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
             case "OB_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getFaculty().getHod().getPrincipal().getEmail(),"Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
+                emailService.sendEmail("abineshabinayamuthu@gmail.com","Bonafide Approved by office Bearer","Bonafide approved by Office Bearer for student " + name + " (" + registerNo + ") from " + department + " department.");
                 break;
-            case "PRINCIPAL_APPROVED":
-                emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready for download.");
+            case "NOTIFIED":
+                emailService.sendEmail(bonafide.getStudent().getEmailId(),"Your Bonafide Certificate is Ready","Dear " + bonafide.getStudent().getFirstName() + " your bonafide certificate is now ready and you can collect it from the office.");
                 break;
 
         }
         return bonafide;
     }
     @Override
-    public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, String rejectionMessage) {
+    public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage) {
         try {
             Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
-            bonafide.setBonafideStatus(BonafideStatus.OB_REJECTED);
+            bonafide.setBonafideStatus(status);
             bonafide.setRejectionMessage(rejectionMessage);
 
             // Deleting the files associated with the Bonafide
@@ -449,31 +464,6 @@ public class BonafideServiceImpl implements BonafideService {
                 .toList();
     }
 
-    private String getYearFromSemester(String registerNo){
-        Student student = studentRepository.findByRegisterNo(registerNo)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with Register No: " + registerNo));
-        String semesterRoman = student.getSemester();
-        int semesterNumber = switch (semesterRoman){
-            case "I" -> 1;
-            case "II" -> 2;
-            case "III" -> 3;
-            case "IV" -> 4;
-            case "V" -> 5;
-            case "VI" -> 6;
-            case "VII" -> 7;
-            case "VIII" -> 8;
-            default -> 0;
-        };
-        int yearNumber = (semesterNumber + 1) / 2;
-        return switch (yearNumber){
-            case 1 -> "First";
-            case 2 -> "Second";
-            case 3 -> "Third";
-            case 4 -> "Fourth";
-            default -> "Invalid Year";
-        };
-    }
-
     //generate bonafide pdf
     @Override
     public byte[] generateBonafideCertificate(Long bonafideId, String registerNo) throws Exception {
@@ -554,7 +544,7 @@ public class BonafideServiceImpl implements BonafideService {
                 .add(" (Reg. No: ")
                 .add(new Text(student.getRegisterNo()).setBold())
                 .add(") is studying in ")
-                .add(new Text(getYearFromSemester(student.getRegisterNo())).setBold())
+                .add(new Text(utilityService.convertSemesterToYear(student.getSemester()).getPursuingYear()).setBold())
                 .add(" Year B.E. ")
                 .add(new Text(student.getDiscipline()).setBold())
                 .add(" (Semester:")
@@ -603,34 +593,3 @@ public class BonafideServiceImpl implements BonafideService {
 
 }
 
-//
-//
-// @Override
-// public List<BonafideDto> getAllBonafides() {
-// List<Bonafide> bonafides = bonafideRepository.findAll();
-// return bonafides.stream()
-// .map(BonafideMapper::mapToBonafideDto)
-// .collect(Collectors.toList());
-// }
-//
-// @Override
-// public BonafideDto updateBonafide(String registerNo, BonafideDto bonafideDto)
-// {
-// Bonafide existingBonafide = bonafideRepository.findById(registerNo)
-// .orElseThrow(() -> new ResourceNotFoundException("Bonafide not found with
-// Register No: " + registerNo));
-//
-// existingBonafide.setPurpose(bonafideDto.getPurpose());
-// existingBonafide.setStatus(bonafideDto.getStatus());
-//
-// Bonafide updatedBonafide = bonafideRepository.save(existingBonafide);
-// return BonafideMapper.mapToBonafideDto(updatedBonafide);
-// }
-//
-// @Override
-// public void deleteBonafide(String registerNo) {
-// Bonafide bonafide = bonafideRepository.findById(registerNo)
-// .orElseThrow(() -> new ResourceNotFoundException("Bonafide not found with
-// Register No: " + registerNo));
-// bonafideRepository.delete(bonafide);
-// }

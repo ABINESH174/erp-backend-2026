@@ -13,5 +13,6 @@ public class FacultyRequestDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+    private String department;
     // private String handlingBatch;
 }

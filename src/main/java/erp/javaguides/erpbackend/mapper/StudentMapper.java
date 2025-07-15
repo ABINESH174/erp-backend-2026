@@ -70,6 +70,7 @@ public class StudentMapper {
                 null,
                 student.getProgramme(),
                 student.getDiscipline(),
+                student.getDepartment(),
                 student.getAdmissionNumber(),
                 student.getBatch(),
                 student.getSemester(),
@@ -139,6 +140,7 @@ public class StudentMapper {
                 null,
                 studentDto.getProgramme(),
                 studentDto.getDiscipline(),
+                studentDto.getDepartment(),
                 studentDto.getAdmissionNumber(),
                 studentDto.getBatch(),
                 studentDto.getSemester(),
@@ -166,6 +168,7 @@ public class StudentMapper {
                 student.getDateOfBirth(),
                 student.getProgramme(),
                 student.getDiscipline(),
+                student.getDepartment(),
                 student.getSemester(),
                 student.getBatch(),
                 student.getCgpa()

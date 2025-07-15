@@ -21,10 +21,4 @@ public class ApplicableBonafideResponseDto {
     private Boolean labourWelfareScholarship;
     private Boolean tailorWelfareScholarship;
     private Boolean farmerWelfareScholarship;
-
-
-
-
-
-
 }

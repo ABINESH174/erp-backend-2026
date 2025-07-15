@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,6 +33,22 @@ public class Principal {
     @OneToMany(mappedBy = "principal",cascade = CascadeType.ALL)
     private List<Hod> hods;
 
+    public void addHod(Hod hod){
+        hod.setPrincipal(this);
+        if(hods == null){
+            hods = new ArrayList<>();
+        }
+        this.hods.add(hod);
+    }
+    public void removeHod(Hod hod){
+        this.hods.remove(hod);
+        hod.setPrincipal(null);
+    }
 
-
+    public Principal(String firstName, String lastName, String email, String mobileNumber) {
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.email=email;
+        this.mobileNumber=mobileNumber;
+    }
 }

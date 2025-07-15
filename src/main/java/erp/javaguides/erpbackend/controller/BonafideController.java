@@ -3,6 +3,7 @@ package erp.javaguides.erpbackend.controller;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
+import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.BonafideService;
@@ -107,14 +108,15 @@ public class BonafideController {
             BonafideResponseDto updatedBonafide = bonafideService.updateBonafideWithBonafideStatus(bonafideId, registerNo, status);
             return ResponseEntity.ok(new ApiResponse("Bonafide " + status + " successfully", updatedBonafide));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to update Bonafide", null));
         }
     }
 
     @PutMapping("/updateObRejectedBonafide")
-    public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam String rejectionMessage) {
+    public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam BonafideStatus status, @RequestParam String rejectionMessage) {
         try {
-            BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo, rejectionMessage);
+            BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo,  status, rejectionMessage);
             return ResponseEntity.ok(new ApiResponse("Bonafide rejected successfully", updatedBonafide));
         } catch (Exception e) {
             e.printStackTrace();

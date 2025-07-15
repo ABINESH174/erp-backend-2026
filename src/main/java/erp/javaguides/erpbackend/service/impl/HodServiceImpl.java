@@ -1,22 +1,27 @@
 package erp.javaguides.erpbackend.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import erp.javaguides.erpbackend.dto.requestDto.HodRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
 import erp.javaguides.erpbackend.entity.Hod;
+import erp.javaguides.erpbackend.entity.Principal;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.mapper.HodMapper;
 import erp.javaguides.erpbackend.repository.BonafideRepository;
 import erp.javaguides.erpbackend.repository.HodRepository;
+import erp.javaguides.erpbackend.repository.OfficeBearerRepository;
 import erp.javaguides.erpbackend.service.HodService;
+import erp.javaguides.erpbackend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,15 +31,27 @@ public class HodServiceImpl implements HodService {
     private final HodRepository hodRepository;
 
     private final BonafideRepository bonafideRepository;
+
+    private final PrincipalService principalService;
+
+    private final OfficeBearerRepository officeBearerRepository;
     
 
+    @Transactional
     @Override
     public HodResponseDto createHod(HodRequestDto hodRequestDto) {
         Optional<Hod> existingHod = hodRepository.findByEmail(hodRequestDto.getEmail());
         if (existingHod.isPresent()) {
             throw new IllegalArgumentException("HOD with this email already exists.");
         }
+
         Hod hod = HodMapper.toHod(hodRequestDto);
+
+        Principal principal = principalService.getPrincipalByEmail(hodRequestDto.getPrincipalEmail());
+        principal.addHod(hod);
+
+        hod.addAllOfficeBearers(officeBearerRepository.findAll());
+        
         Hod savedHod = hodRepository.save(hod);
         return HodMapper.toHodResponseDto(savedHod);
     }
@@ -76,14 +93,25 @@ public class HodServiceImpl implements HodService {
     }
     @Override
     public List<BonafideResponseDto> getFacultyApprovedBonafidesByHodId(Long hodId) {
+
+        List<BonafideResponseDto> bonafideResponseDtos = new ArrayList<>();
+
         Hod hod = hodRepository.findById(hodId)
                 .orElseThrow(() -> new ResourceNotFoundException("HOD not found with id: " + hodId));
-        List<BonafideResponseDto> bonafideResponseDtos = bonafideRepository.findByBonafideStatusAndStudentDiscipline(
+
+        if( hod.getDiscipline().equalsIgnoreCase("Science and Humanities")){
+            bonafideResponseDtos = bonafideRepository.findByBonafideStatusAndStudentDepartment(BonafideStatus.FACULTY_APPROVED, "Science and Humanities")
+                                        .stream()
+                                        .map(BonafideMapper::mapToBonafideResponseDto)
+                                        .collect((Collectors.toList()));
+        } 
+        else {      
+            bonafideResponseDtos = bonafideRepository.findByBonafideStatusAndStudentDiscipline(
                 BonafideStatus.FACULTY_APPROVED, hod.getDiscipline())
                 .stream()
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .collect((Collectors.toList()));
-        
+        }
         return bonafideResponseDtos;
     }
         

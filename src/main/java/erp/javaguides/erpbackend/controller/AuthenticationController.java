@@ -81,7 +81,6 @@ public class AuthenticationController {
                 OfficeBearer officeBearer=officeBearerService.getOfficeBearerByEmail(authentication.getUserId());
                 if(officeBearer==null){
                     return new ResponseEntity<>("Office bearer is null",HttpStatus.OK);
-
                 }
             }catch(Exception e) {
                 e.printStackTrace();
