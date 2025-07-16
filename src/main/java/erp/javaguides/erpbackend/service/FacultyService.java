@@ -6,6 +6,7 @@ import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 // import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 // import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
+import erp.javaguides.erpbackend.enums.PursuingYear;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface FacultyService {
 
     //Assigning and dismissing students to faculty using batch
     FacultyResponseDto assignFacultyWithStudents(String email, String batch, String discipline);
-    FacultyResponseDto dismissFacultyWithStudents(String email, String batch);
+    FacultyResponseDto dismissFacultyWithStudents(String email);
 
     
     List<StudentDto> getAllStudentsByFacultyId(Long facultyId);
@@ -38,5 +39,9 @@ public interface FacultyService {
 
     //hod neccessities
     List<FacultyResponseDto> getAllUnassignedFaculties();
+
+    // Corrected assignFaculties() with static values like year, discipline and class section
+    FacultyResponseDto assignFacultyUsingDisciplineYearAndClass(String facultyEmail, String discipline, PursuingYear year, String classSection);
+    
     
 }

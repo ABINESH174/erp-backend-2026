@@ -75,6 +75,7 @@ public class StudentDto {
     private String programme;
     private String discipline;
     private String department;
+    private String classSection;
     private String admissionNumber;
     private String batch;
     private String semester;

@@ -1,5 +1,7 @@
 package erp.javaguides.erpbackend.utility;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.enums.PursuingYear;
@@ -20,6 +22,14 @@ public class UtilityService {
             case "VII"-> PursuingYear.FOURTH;
             case "VIII"-> PursuingYear.FOURTH;
             default -> null;
+        };
+    }
+    public List<String> getListOfSemesterFromYear(PursuingYear year) {
+        return switch( year ) {
+            case PursuingYear.FIRST -> List.of("I","II");
+            case PursuingYear.SECOND -> List.of("III","IV");
+            case PursuingYear.THIRD -> List.of("V","VI");
+            case PursuingYear.FOURTH -> List.of("VII","VIII");
         };
     }
 }
