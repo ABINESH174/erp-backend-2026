@@ -358,19 +358,19 @@ public class BonafideServiceImpl implements BonafideService {
             String purpose = bonafide.getPurpose();
 
             switch (purpose) {
-                case "bonafide for bc/mbc/dnc post metric scholarship":
+                case "bc/mbc/dnc post matric scholarship":
                     purposeCheck.setBcMbcDncPostMatricScholarship(false);
                     break;
-                case "bonafide for sc/st post metric scholorship":
+                case "sc/st/sca post matric scholarship":
                     purposeCheck.setScStScaPostMatricScholarship(false);
                     break;
-                case "bonafide for tamilpudhalvan scholorship":
+                case "bonafide for tamilpudhalvan scheme":
                     purposeCheck.setTamilPudhalvanScholarship(false);
                     break;
-                case "bonafide for pudhumaipenn scholorship":
+                case "bonafide for pudhumai penn scheme":
                     purposeCheck.setPudhumaiPennScholarship(false);
                     break;
-                case "bonafide for labourwelfare", "bonafide for tailorwelfare", "bonafide for farmerwelfare":
+                case "labour welfare", "tailor welfare", "farmer welfare":
                     purposeCheck.setLabourWelfareScholarship(false);
                     purposeCheck.setTailorWelfareScholarship(false);
                     purposeCheck.setFarmerWelfareScholarship(false);
@@ -507,10 +507,13 @@ public class BonafideServiceImpl implements BonafideService {
         document.add(headerTable);
         document.add(new LineSeparator(new SolidLine()));
 
+        String certificateNumber = generateBonafideCertificateNumber(bonafideId , student.getDiscipline());
+
         // Certificate number and date
         String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         Paragraph certInfo = new Paragraph()
-                .add(new Text("CERTIFICATE NO: 1804/S1/2024").setFont(normal))
+                .add(new Text("CERTIFICATE NO: ").setFont(normal))
+                .add(new Text(certificateNumber)).setFont(normal)
                 .add(new Tab())
                 .addTabStops(new TabStop(450, TabAlignment.RIGHT))
                 .add(new Text("DATED: " + currentDate).setFont(normal))
@@ -537,9 +540,35 @@ public class BonafideServiceImpl implements BonafideService {
             additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
         }
 
+        Gender gender = student.getGender();
+        String selvanSelviIdentifier = "";
+        String heSheIdentifier = "";
+        String himHerIdentifier = "";
+        switch (gender){
+            case Male :
+                selvanSelviIdentifier = "Mr. ";
+                heSheIdentifier = "He";
+                himHerIdentifier = "him";
+                break;
+            case Female :
+                selvanSelviIdentifier = "Ms. ";
+                heSheIdentifier = "She";
+                himHerIdentifier = "her";
+                break;
+            case Others :
+                selvanSelviIdentifier = "Mx. ";
+                heSheIdentifier = "He/She";
+                himHerIdentifier = "him/her";
+                break;
+            default :
+                selvanSelviIdentifier = "Mr./Ms. ";
+                heSheIdentifier = "He/She";
+                himHerIdentifier = "him/her";
+        }
         // Body with formatting
         Paragraph paragraph = new Paragraph()
-                .add("     This is to certify that Selvan. ")
+                .add("     This is to certify that ")
+                .add(new Text(selvanSelviIdentifier))
                 .add(new Text(student.getFirstName().toUpperCase() + " " + student.getLastName().toUpperCase()).setBold())
                 .add(" (Reg. No: ")
                 .add(new Text(student.getRegisterNo()).setBold())
@@ -549,9 +578,13 @@ public class BonafideServiceImpl implements BonafideService {
                 .add(new Text(student.getDiscipline()).setBold())
                 .add(" (Semester:")
                 .add(new Text(student.getSemester()).setBold())
-                .add(") in this institution. He is a bonafide student of our college during the academic year ")
+                .add(") in this institution. ")
+                .add(new Text(heSheIdentifier))
+                .add(" is a bonafide student of our college during the academic year ")
                 .add(bonafide.getAcademicYear())
-                .add(".\n\nThis certificate is issued to enable him to apply for ")
+                .add(".\n\nThis certificate is issued to enable ")
+                .add(new Text(himHerIdentifier))
+                .add(" to apply for ")
                 .add(new Text(additionalPurpose).setBold())
                 .add(".");
 
@@ -588,6 +621,12 @@ public class BonafideServiceImpl implements BonafideService {
         Files.write(Paths.get(bonafidePdfPath), byteArrayOutputStream.toByteArray());
 
         return byteArrayOutputStream.toByteArray();
+    }
+
+    private String generateBonafideCertificateNumber(Long bonafideId , String discipline){
+        String idWithZero = "0" + bonafideId;
+        int currentYear = LocalDate.now().getYear();
+        return idWithZero + "/" + discipline + "/" + currentYear;
     }
 
 
