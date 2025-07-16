@@ -358,19 +358,19 @@ public class BonafideServiceImpl implements BonafideService {
             String purpose = bonafide.getPurpose();
 
             switch (purpose) {
-                case "bonafide for bc/mbc/dnc post metric scholarship":
+                case "bc/mbc/dnc post matric scholarship":
                     purposeCheck.setBcMbcDncPostMatricScholarship(false);
                     break;
-                case "bonafide for sc/st post metric scholorship":
+                case "sc/st/sca post matric scholarship":
                     purposeCheck.setScStScaPostMatricScholarship(false);
                     break;
-                case "bonafide for tamilpudhalvan scholorship":
+                case "bonafide for tamilpudhalvan scheme":
                     purposeCheck.setTamilPudhalvanScholarship(false);
                     break;
-                case "bonafide for pudhumaipenn scholorship":
+                case "bonafide for pudhumai penn scheme":
                     purposeCheck.setPudhumaiPennScholarship(false);
                     break;
-                case "bonafide for labourwelfare", "bonafide for tailorwelfare", "bonafide for farmerwelfare":
+                case "labour welfare", "tailor welfare", "farmer welfare":
                     purposeCheck.setLabourWelfareScholarship(false);
                     purposeCheck.setTailorWelfareScholarship(false);
                     purposeCheck.setFarmerWelfareScholarship(false);
