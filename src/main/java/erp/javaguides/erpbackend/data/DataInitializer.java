@@ -33,14 +33,14 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     @Transactional
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        //createPrincipal();
-        //createHods();
-        //try {
-           //createOfficeBearer();
-         //} catch (Exception e) {
-            //e.printStackTrace();
-         //}
-         //authenticateStudentAndFaculty();
+        // createPrincipal();
+        // createHods();
+        // try {
+        //     createOfficeBearer();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+        // authenticateStudentAndFaculty();
     }
 
     // Implement your data initialization logic here
