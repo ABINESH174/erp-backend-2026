@@ -589,6 +589,13 @@ public class BonafideServiceImpl implements BonafideService {
 
         return byteArrayOutputStream.toByteArray();
     }
+    @Override
+    public List<BonafideResponseDto> getNotifiedBonafides(){
+        return bonafideRepository.findByBonafideStatus(BonafideStatus.NOTIFIED)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
 
 
 }
