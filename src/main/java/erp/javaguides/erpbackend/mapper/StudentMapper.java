@@ -3,10 +3,16 @@ package erp.javaguides.erpbackend.mapper;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.utility.UtilityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
-
+@Component
 public class StudentMapper {
+    @Autowired
+    private static UtilityService utilityService;
 
     public static StudentDto mapToStudentWithFilesDto(Student student){
         return new StudentDto(
@@ -93,7 +99,7 @@ public class StudentMapper {
                 studentDto.getRegisterNo(),
                 studentDto.getFirstName(),
                 studentDto.getLastName(),
-                studentDto.getDateOfBirth(),
+                utilityService.yearMonthDayToDayMonthYear(studentDto.getDateOfBirth()),
                 studentDto.getGender(),
                 studentDto.getAadharNumber(),
                 studentDto.getBloodGroup(),
@@ -148,8 +154,8 @@ public class StudentMapper {
                 studentDto.getSemester(),
                 studentDto.getAbcId(),
                 studentDto.getUmisId(),
-                studentDto.getDateOfAdmission(),
-                studentDto.getCourseJoinedDate(),
+                UtilityService.yearMonthDayToDayMonthYear(studentDto.getDateOfAdmission()),
+                UtilityService.yearMonthDayToDayMonthYear(studentDto.getCourseJoinedDate()),
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),

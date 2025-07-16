@@ -261,8 +261,20 @@ public class BonafideController {
                     .body(new ApiResponse("An error occurred, failed to retrieve bonafides", null));
         }
     }
-
-
+    @GetMapping("getNotifiedBonafides")
+    public ResponseEntity<ApiResponse> getNotifiedBonafides(){
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getNotifiedBonafides();
+            if (bonafideResponseDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("No bonafides found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Bonafides found", bonafideResponseDtos));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("An error occurred, failed to retrieve bonafides", null));
+        }
+    }
 
     @GetMapping("/getApplicableBonafide/{registerNo}")
     public ResponseEntity<ApiResponse> getApplicableBonafide(@PathVariable String registerNo) {
