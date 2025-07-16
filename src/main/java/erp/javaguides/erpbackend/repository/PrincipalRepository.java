@@ -9,4 +9,6 @@ import erp.javaguides.erpbackend.entity.Principal;
 
 public interface PrincipalRepository extends JpaRepository<Principal, Long> {
     Optional<Principal> findByEmail(String email);
+
+    boolean existsByEmail(String principalEmail);
 }

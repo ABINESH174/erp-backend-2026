@@ -109,6 +109,7 @@ public class BonafideController {
             BonafideResponseDto updatedBonafide = bonafideService.updateBonafideWithBonafideStatus(bonafideId, registerNo, status);
             return ResponseEntity.ok(new ApiResponse("Bonafide " + status + " successfully", updatedBonafide));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to update Bonafide", null));
         }
     }
@@ -117,7 +118,11 @@ public class BonafideController {
     @PutMapping("/updateObRejectedBonafide")
     public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam BonafideStatus status, @RequestParam String rejectionMessage) {
         try {
+<<<<<<< HEAD
             BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo,status, rejectionMessage);
+=======
+            BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo,  status, rejectionMessage);
+>>>>>>> 2bf405fcf4e9e2abbd4cb7a36444496396403921
             return ResponseEntity.ok(new ApiResponse("Bonafide rejected successfully", updatedBonafide));
         } catch (Exception e) {
             e.printStackTrace();

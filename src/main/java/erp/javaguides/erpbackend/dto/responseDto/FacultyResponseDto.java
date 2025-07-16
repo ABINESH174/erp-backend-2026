@@ -16,6 +16,7 @@ public class FacultyResponseDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+    private String department;
     private String handlingBatch;
     private List<StudentResponseDto> students;
 

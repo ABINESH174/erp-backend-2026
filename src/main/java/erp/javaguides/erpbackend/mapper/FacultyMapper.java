@@ -59,6 +59,7 @@ public class FacultyMapper {
                 faculty.getEmail(),
                 faculty.getMobileNumber(),
                 faculty.getDiscipline(),
+                faculty.getDepartment(),
                 faculty.getHandlingBatch(),
                 studentDtos
         );
@@ -69,7 +70,8 @@ public class FacultyMapper {
             facultyRequestDto.getLastName(),
             facultyRequestDto.getEmail(),
             facultyRequestDto.getMobileNumber(),
-            facultyRequestDto.getDiscipline()
+            facultyRequestDto.getDiscipline(),
+            facultyRequestDto.getDepartment()
         );
     }
 }

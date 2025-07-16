@@ -27,7 +27,7 @@ public interface FacultyService {
     FacultyResponseDto getFacultyByDisciplineAndBatch(String discipline, String handlingBatch);
 
     //Assigning and dismissing students to faculty using batch
-    FacultyResponseDto assignFacultyWithStudents(String email, String batch);
+    FacultyResponseDto assignFacultyWithStudents(String email, String batch, String discipline);
     FacultyResponseDto dismissFacultyWithStudents(String email, String batch);
 
     

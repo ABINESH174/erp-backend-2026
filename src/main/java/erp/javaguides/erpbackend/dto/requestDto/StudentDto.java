@@ -74,6 +74,7 @@ public class StudentDto {
     private byte[] specialCategoryFileContent;
     private String programme;
     private String discipline;
+    private String department;
     private String admissionNumber;
     private String batch;
     private String semester;

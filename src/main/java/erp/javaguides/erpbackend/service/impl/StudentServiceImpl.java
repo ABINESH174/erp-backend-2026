@@ -267,6 +267,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getDateOfBirth(),
                         student.getProgramme(),
                         student.getDiscipline(),
+                        student.getDepartment(),
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa()
@@ -288,6 +289,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getDateOfBirth(),
                         student.getProgramme(),
                         student.getDiscipline(),
+                        student.getDepartment(),
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa()
