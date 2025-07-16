@@ -3,11 +3,13 @@ package erp.javaguides.erpbackend.service.impl;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.StudentService;
+import erp.javaguides.erpbackend.utility.UtilityService;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.coyote.BadRequestException;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+
+    private final UtilityService utilityService;
 
     @Value("${student.details.base-path}")
     private String FOLDERPATH;
@@ -189,8 +193,8 @@ public class StudentServiceImpl implements StudentService {
     }
     @Override
     public List<StudentDto> getAllStudentsByDiscipline(String discipline) {
-        List<Student> cseStudents = studentRepository.findByDiscipline(discipline);
-        return cseStudents.stream()
+        List<Student> Students = studentRepository.findByDiscipline(discipline);
+        return Students.stream()
                 .map(StudentMapper::mapToStudentWithFilesDto)
                 .collect(Collectors.toList());
     }
@@ -268,6 +272,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getProgramme(),
                         student.getDiscipline(),
                         student.getDepartment(),
+                        student.getClassSection(),
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa()
@@ -290,11 +295,61 @@ public class StudentServiceImpl implements StudentService {
                         student.getProgramme(),
                         student.getDiscipline(),
                         student.getDepartment(),
+                        student.getClassSection(),
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    // Required for EEE and Mechanical displines as they have two sections...
+
+    @Override
+    public List<StudentResponseDto> getAllStudentsByDisciplineAndClassSection(String discipline, String classSection) {
+        List<Student> students = studentRepository.findByDisciplineAndClassSection(discipline,classSection);
+        return students
+                .stream()
+                .map(StudentMapper::mapToStudentResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentResponseDto> getAllStudentsByDisciplineAndClassSectionAndBatch(String discipline,
+            String classSection, String batch) {
+                List<Student> students = studentRepository.findByDisciplineAndClassSectionAndBatch(discipline, classSection, batch);
+                return students
+                        .stream()
+                        .map(StudentMapper::mapToStudentResponseDto)
+                        .collect(Collectors.toList());
+    }
+
+
+    // Hod neccessities
+
+    @Override
+    public List<StudentDto> getAllStudentsByDisciplineAndYear(String discipline, PursuingYear year) {
+        return studentRepository.findByDisciplineAndSemesterIn(
+                                        discipline, 
+                                        utilityService.getListOfSemesterFromYear(year)
+                                    )
+                                    .stream()
+                                    .map(StudentMapper::mapToStudentWithFilesDto)
+                                    .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentDto> getAllStudentsByDisciplineAndYearAndClassSection(String discipline, PursuingYear year,
+            String classSection) {
+        
+        return studentRepository.findByDisciplineAndSemesterInAndClassSection(
+                                        discipline, 
+                                        utilityService.getListOfSemesterFromYear(year), 
+                                        classSection
+                                    )
+                                    .stream()
+                                    .map(StudentMapper::mapToStudentWithFilesDto)
+                                    .collect(Collectors.toList());
     }
 
     //Faculty neccessities
