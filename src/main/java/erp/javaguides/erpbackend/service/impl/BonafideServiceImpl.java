@@ -10,9 +10,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.properties.TabAlignment;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.*;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
@@ -87,7 +85,7 @@ public class BonafideServiceImpl implements BonafideService {
         Bonafide savedBonafide = bonafideRepository.save(bonafide);
 
         //email send to faculty
-        notifyFacultyOnSubmission(student.getRegisterNo());
+//        notifyFacultyOnSubmission(student.getRegisterNo());
 
         // Folder Path with structure: "/basepath/registerNo/bonafideId"
         String userFolderPath = Paths.get(FOLDERPATH, requestDto.getRegisterNo(), savedBonafide.getBonafideId().toString()).toString();
@@ -210,7 +208,7 @@ public class BonafideServiceImpl implements BonafideService {
             Bonafide updatedBonafide = bonafideRepository.save(bonafide);
 
             //email notification logic
-            notifyNextApprover(updatedBonafide.getBonafideId() , status , registerNo);
+//            notifyNextApprover(updatedBonafide.getBonafideId() , status , registerNo);
 
             return BonafideMapper.mapToBonafideResponseDto(updatedBonafide);
         } catch (Exception e) {
@@ -358,10 +356,10 @@ public class BonafideServiceImpl implements BonafideService {
             String purpose = bonafide.getPurpose();
 
             switch (purpose) {
-                case "bc/mbc/dnc post matric scholarship":
+                case "bonafide for bc/mbc/dnc post matric scholarship":
                     purposeCheck.setBcMbcDncPostMatricScholarship(false);
                     break;
-                case "sc/st/sca post matric scholarship":
+                case "bonafide for sc/st/sca post matric scholarship":
                     purposeCheck.setScStScaPostMatricScholarship(false);
                     break;
                 case "bonafide for tamilpudhalvan scheme":
@@ -370,7 +368,7 @@ public class BonafideServiceImpl implements BonafideService {
                 case "bonafide for pudhumai penn scheme":
                     purposeCheck.setPudhumaiPennScholarship(false);
                     break;
-                case "labour welfare", "tailor welfare", "farmer welfare":
+                case "bonafide for labour welfare", "bonafide for tailor welfare", "bonafide for farmer welfare":
                     purposeCheck.setLabourWelfareScholarship(false);
                     purposeCheck.setTailorWelfareScholarship(false);
                     purposeCheck.setFarmerWelfareScholarship(false);
@@ -540,35 +538,11 @@ public class BonafideServiceImpl implements BonafideService {
             additionalPurpose = purpose + " from " + bankNameForEducationalLoan;
         }
 
-        Gender gender = student.getGender();
-        String selvanSelviIdentifier = "";
-        String heSheIdentifier = "";
-        String himHerIdentifier = "";
-        switch (gender){
-            case Male :
-                selvanSelviIdentifier = "Mr. ";
-                heSheIdentifier = "He";
-                himHerIdentifier = "him";
-                break;
-            case Female :
-                selvanSelviIdentifier = "Ms. ";
-                heSheIdentifier = "She";
-                himHerIdentifier = "her";
-                break;
-            case Others :
-                selvanSelviIdentifier = "Mx. ";
-                heSheIdentifier = "He/She";
-                himHerIdentifier = "him/her";
-                break;
-            default :
-                selvanSelviIdentifier = "Mr./Ms. ";
-                heSheIdentifier = "He/She";
-                himHerIdentifier = "him/her";
-        }
+
         // Body with formatting
         Paragraph paragraph = new Paragraph()
                 .add("     This is to certify that ")
-                .add(new Text(selvanSelviIdentifier))
+                .add(new Text(utilityService.genderIdentifier(student.getGender())[0]))
                 .add(new Text(student.getFirstName().toUpperCase() + " " + student.getLastName().toUpperCase()).setBold())
                 .add(" (Reg. No: ")
                 .add(new Text(student.getRegisterNo()).setBold())
@@ -579,11 +553,11 @@ public class BonafideServiceImpl implements BonafideService {
                 .add(" (Semester:")
                 .add(new Text(student.getSemester()).setBold())
                 .add(") in this institution. ")
-                .add(new Text(heSheIdentifier))
+                .add(new Text(utilityService.genderIdentifier(student.getGender())[1]))
                 .add(" is a bonafide student of our college during the academic year ")
                 .add(bonafide.getAcademicYear())
                 .add(".\n\nThis certificate is issued to enable ")
-                .add(new Text(himHerIdentifier))
+                .add(new Text(utilityService.genderIdentifier(student.getGender())[2]))
                 .add(" to apply for ")
                 .add(new Text(additionalPurpose).setBold())
                 .add(".");
@@ -609,45 +583,155 @@ public class BonafideServiceImpl implements BonafideService {
                 .setFont(normal).setTextAlignment(TextAlignment.LEFT));
 
         //StudentLetter
-        pdfDocument.addNewPage();
-        document.flush();
+        // Add new page for Student Letter
+        // Add a page break for second page
+        document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
-        Document studentLetterPage = new Document(pdfDocument);
-
-        studentLetterPage.setMargins(50, 50, 50, 50);
-
-        studentLetterPage.add(new Paragraph("From\n")
-                .add(student.getFirstName() + " " + student.getLastName() + ",\n")
-                .add(student.getRegisterNo() + ",\n")
-                .add(student.getDiscipline() + " Department, " + student.getClassSection() + " Section, " + utilityService.convertSemesterToYear(student.getSemester()).getPursuingYear() + " Year,\n")
-                .add("ACGCET, Karaikudi-03.\n")
+// From & To section
+        // "From" heading
+        document.add(new Paragraph("From")
                 .setFontSize(11)
-                .setTextAlignment(TextAlignment.LEFT));
+                .setTextAlignment(TextAlignment.LEFT)
+        );
 
-        studentLetterPage.add(new Paragraph("\nTo\nThe Principal,\nACGCET,\nKaraikudi-03.\n\nThrough the proper channel")
-                .setFontSize(11));
+// Indented sender details
+        document.add(new Paragraph(student.getFirstName() + " " + student.getLastName() + ",")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
 
-        studentLetterPage.add(new Paragraph("\nRespected Sir/Madam,\n\nSub: To Request " + bonafide.getPurpose() + " for the academic year " + bonafide.getAcademicYear() + "\n\n" +
-                "I am writing this letter to request Bonafide for " + bonafide.getPurpose() + " on the academic year " + bonafide.getAcademicYear() + ".\n\n" +
-                "So, I kindly request you to issue me the Bonafide as soon as possible.\n")
+        document.add(new Paragraph(student.getRegisterNo() + ",")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+        String section = (student.getClassSection().equals("A")||student.getClassSection().equals("B")) ? ("- "+student.getClassSection()) : " ";
+
+        document.add(new Paragraph(student.getDiscipline() + " " + section + ", " +
+                utilityService.convertSemesterToYear(student.getSemester()).getPursuingYear() + " YEAR,")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+
+        document.add(new Paragraph("ACGCET, Karaikudi-03.")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+
+
+        // Blank line then "To"
+        document.add(new Paragraph("\nTo")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+        );
+
+        document.add(new Paragraph("The Principal,")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+
+        document.add(new Paragraph("ACGCET,")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+
+        document.add(new Paragraph("Karaikudi-03.")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFirstLineIndent(30f)
+        );
+
+        document.add(new Paragraph("\nThrough the proper channel")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT)
+        );
+
+
+// Letter Body
+
+        document.add(new Paragraph("\nRespected Sir/Madam,\n")
+                .setFontSize(11)
+        );
+
+// Combine the subject and body with indentation
+        // Subject line
+        document.add(new Paragraph("Sub: To Request " + bonafide.getPurpose() + " for the academic year " + bonafide.getAcademicYear() + ".")
+                .setFontSize(11)
                 .setTextAlignment(TextAlignment.JUSTIFIED)
-                .setFontSize(11));
+        );
 
-        studentLetterPage.add(new Paragraph("\nPlace : Karaikudi" + "\nDate : " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                .setFontSize(11));
-
-        studentLetterPage.add(new Paragraph("\nYours Obediently,\n" + student.getFirstName() + " " + student.getLastName())
-                .setTextAlignment(TextAlignment.RIGHT)
-                .setFontSize(11));
-
-        studentLetterPage.add(new Paragraph("\n\nApproved by Faculty Advisor\t\t\tApproved by Head of the Department\n")
-                .add(student.getFaculty().getFirstName() + "\t\t\t" + student.getFaculty().getHod().getFirstName() + "\n")
-                .add(student.getFaculty().getSubjects() + "\t\t\t" + student.getFaculty().getHod().getSubjects())
-                .setFontSize(11));
-
-        studentLetterPage.add(new Paragraph("\n\nSubmitted to the Principal")
+// Body paragraph with manual indent
+        document.add(new Paragraph("I am writing this letter to request " + bonafide.getPurpose() + " for the academic year " + bonafide.getAcademicYear() + "." +
+                "So, I kindly request you to issue me the Bonafide as soon as possible.")
                 .setFontSize(11)
+                .setTextAlignment(TextAlignment.JUSTIFIED)
+                .setFirstLineIndent(30f)
+        );
+
+
+
+        document.add(new Paragraph("Thank You")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(11)
+        );
+
+// Place & Date + Yours obediently
+        Table placeDateTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}))
+                .useAllAvailableWidth()
+                .setFontSize(11);
+
+        placeDateTable.addCell(new Cell().add(new Paragraph("Place : Karaikudi"))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.LEFT));
+        placeDateTable.addCell(new Cell().add(new Paragraph("Yours Obediently,"))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.RIGHT));
+        placeDateTable.addCell(new Cell().add(new Paragraph("Date : " +
+                        LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.LEFT));
+        placeDateTable.addCell(new Cell().add(new Paragraph(student.getFirstName() + " " + student.getLastName()))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.RIGHT));
+
+        document.add(placeDateTable);
+
+// ✅ Add space before approval table
+        document.add(new Paragraph("\n\n"));
+
+        Table approvalTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}))
+                .useAllAvailableWidth()
+                .setFontSize(11);
+
+// Faculty and HOD labels
+        approvalTable.addCell(new Cell().add(new Paragraph("Approved by Faculty Advisor"))
+                .setBorder(Border.NO_BORDER)
                 .setTextAlignment(TextAlignment.CENTER));
+        approvalTable.addCell(new Cell().add(new Paragraph("Approved by Head of the Department"))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.CENTER));
+
+// Faculty and HOD names
+        approvalTable.addCell(new Cell().add(new Paragraph("Mr/Mrs. " + student.getFaculty().getLastName() + " " + student.getFaculty().getFirstName()))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.CENTER));
+        approvalTable.addCell(new Cell().add(new Paragraph("Mr/Mrs. " + student.getFaculty().getHod().getLastName() + " " +student.getFaculty().getHod().getFirstName()))
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.CENTER));
+
+        document.add(approvalTable);
+
+// Final line
+        document.add(new Paragraph("\n\nSubmitted to the Principal")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setUnderline()
+        );
 
 
         document.close();
