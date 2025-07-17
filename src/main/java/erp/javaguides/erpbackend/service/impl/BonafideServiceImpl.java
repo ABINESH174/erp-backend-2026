@@ -608,6 +608,48 @@ public class BonafideServiceImpl implements BonafideService {
         document.add(new Paragraph("\nTo\nThe above Student")
                 .setFont(normal).setTextAlignment(TextAlignment.LEFT));
 
+        //StudentLetter
+        pdfDocument.addNewPage();
+        document.flush();
+
+        Document studentLetterPage = new Document(pdfDocument);
+
+        studentLetterPage.setMargins(50, 50, 50, 50);
+
+        studentLetterPage.add(new Paragraph("From\n")
+                .add(student.getFirstName() + " " + student.getLastName() + ",\n")
+                .add(student.getRegisterNo() + ",\n")
+                .add(student.getDiscipline() + " Department, " + student.getClassSection() + " Section, " + utilityService.convertSemesterToYear(student.getSemester()).getPursuingYear() + " Year,\n")
+                .add("ACGCET, Karaikudi-03.\n")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.LEFT));
+
+        studentLetterPage.add(new Paragraph("\nTo\nThe Principal,\nACGCET,\nKaraikudi-03.\n\nThrough the proper channel")
+                .setFontSize(11));
+
+        studentLetterPage.add(new Paragraph("\nRespected Sir/Madam,\n\nSub: To Request " + bonafide.getPurpose() + " for the academic year " + bonafide.getAcademicYear() + "\n\n" +
+                "I am writing this letter to request Bonafide for " + bonafide.getPurpose() + " on the academic year " + bonafide.getAcademicYear() + ".\n\n" +
+                "So, I kindly request you to issue me the Bonafide as soon as possible.\n")
+                .setTextAlignment(TextAlignment.JUSTIFIED)
+                .setFontSize(11));
+
+        studentLetterPage.add(new Paragraph("\nPlace : Karaikudi" + "\nDate : " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .setFontSize(11));
+
+        studentLetterPage.add(new Paragraph("\nYours Obediently,\n" + student.getFirstName() + " " + student.getLastName())
+                .setTextAlignment(TextAlignment.RIGHT)
+                .setFontSize(11));
+
+        studentLetterPage.add(new Paragraph("\n\nApproved by Faculty Advisor\t\t\tApproved by Head of the Department\n")
+                .add(student.getFaculty().getFirstName() + "\t\t\t" + student.getFaculty().getHod().getFirstName() + "\n")
+                .add(student.getFaculty().getSubjects() + "\t\t\t" + student.getFaculty().getHod().getSubjects())
+                .setFontSize(11));
+
+        studentLetterPage.add(new Paragraph("\n\nSubmitted to the Principal")
+                .setFontSize(11)
+                .setTextAlignment(TextAlignment.CENTER));
+
+
         document.close();
 
         // Save file
