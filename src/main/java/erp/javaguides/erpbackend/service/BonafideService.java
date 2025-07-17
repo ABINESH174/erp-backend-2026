@@ -28,6 +28,8 @@ public interface BonafideService {
     List<BonafideResponseDto> getNotifiedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage);
+    List<BonafideResponseDto> getPreviousBonafidebyFacultyId(Long facultyId);
+    List<BonafideResponseDto> getPreviousBonafidebyHodId(Long hodId);
     // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);
 
 //    List<BonafideDto> getAllBonafides();
