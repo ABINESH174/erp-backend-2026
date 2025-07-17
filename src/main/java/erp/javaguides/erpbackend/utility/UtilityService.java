@@ -2,6 +2,7 @@ package erp.javaguides.erpbackend.utility;
 
 import java.util.List;
 
+import erp.javaguides.erpbackend.enums.Gender;
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.enums.PursuingYear;
@@ -13,17 +14,12 @@ import java.time.format.DateTimeFormatter;
 // Made a bean that can be injected anywhere in AppConfig file using the @Service annotation... 
 @Service
 public class UtilityService {
-    
     public PursuingYear convertSemesterToYear(String semester) {
         return switch(semester){
-            case "I"-> PursuingYear.FIRST;
-            case "II"-> PursuingYear.FIRST;
-            case "III"-> PursuingYear.SECOND;
-            case "IV"-> PursuingYear.SECOND;
-            case "V"-> PursuingYear.THIRD;
-            case "VI"-> PursuingYear.THIRD;
-            case "VII"-> PursuingYear.FOURTH;
-            case "VIII"-> PursuingYear.FOURTH;
+            case "I","II"-> PursuingYear.FIRST;
+            case "III", "IV" -> PursuingYear.SECOND;
+            case "V", "VI" -> PursuingYear.THIRD;
+            case "VII", "VIII" -> PursuingYear.FOURTH;
             default -> null;
         };
     }
@@ -46,6 +42,32 @@ public class UtilityService {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String dateWithDayFirst = date.format(outputFormatter);
         return dateWithDayFirst;
+    }
+
+    public String[] genderIdentifier(Gender gender) {
+        String[] identifyGender = new String[3];
+        switch (gender){
+            case Male :
+                identifyGender[0] = "Mr. ";
+                identifyGender[1] = "He";
+                identifyGender[2] = "him";
+                break;
+            case Female :
+                identifyGender[0] = "Ms. ";
+                identifyGender[1] = "She";
+                identifyGender[2] = "her";
+                break;
+            case Others :
+                identifyGender[0] = "Mx. ";
+                identifyGender[1] = "He/She";
+                identifyGender[2] = "him/her";
+                break;
+            default :
+                identifyGender[0] = "Mr./Ms. ";
+                identifyGender[1] = "He/She";
+                identifyGender[2] = "him/her";
+        }
+        return identifyGender;
     }
     
 }
