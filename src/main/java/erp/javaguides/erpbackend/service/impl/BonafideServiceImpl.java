@@ -701,7 +701,7 @@ public class BonafideServiceImpl implements BonafideService {
 
         document.add(placeDateTable);
 
-// ✅ Add space before approval table
+//    Add space before approval table
         document.add(new Paragraph("\n\n"));
 
         Table approvalTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}))
@@ -760,6 +760,27 @@ public class BonafideServiceImpl implements BonafideService {
         String idWithZero = "0" + bonafideId;
         int currentYear = LocalDate.now().getYear();
         return idWithZero + "/" + discipline + "/" + currentYear;
+    }
+
+    @Override
+    public List<BonafideResponseDto> getPreviousBonafidebyFacultyId(Long facultyId){
+        return bonafideRepository.findByBonafideStatusInAndStudentFacultyFacultyId(List.of(
+                BonafideStatus.FACULTY_APPROVED , BonafideStatus.HOD_APPROVED , BonafideStatus.PRINCIPAL_APPROVED,
+                BonafideStatus.FACULTY_REJECTED , BonafideStatus.HOD_REJECTED , BonafideStatus.OB_REJECTED , BonafideStatus.NOTIFIED
+        ) , facultyId)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
+    @Override
+    public List<BonafideResponseDto> getPreviousBonafidebyHodId(Long hodId) {
+        return bonafideRepository.findByBonafideStatusInAndStudentFacultyHodHodId(List.of(
+                BonafideStatus.HOD_APPROVED , BonafideStatus.PRINCIPAL_APPROVED,
+                BonafideStatus.HOD_REJECTED , BonafideStatus.OB_REJECTED , BonafideStatus.NOTIFIED
+        ),hodId)
+                .stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
     }
 
 
