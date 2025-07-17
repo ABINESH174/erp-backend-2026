@@ -5,10 +5,9 @@ import java.util.List;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
-<<<<<<< HEAD
-=======
+
 import erp.javaguides.erpbackend.entity.Bonafide;
->>>>>>> 2bf405fcf4e9e2abbd4cb7a36444496396403921
+
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 
 public interface BonafideService {
@@ -30,10 +29,7 @@ public interface BonafideService {
     List<BonafideResponseDto> getPrincipalApprovedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage);
-<<<<<<< HEAD
 
-=======
->>>>>>> 2bf405fcf4e9e2abbd4cb7a36444496396403921
     // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);
 
 //    List<BonafideDto> getAllBonafides();
