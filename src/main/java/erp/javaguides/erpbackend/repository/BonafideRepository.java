@@ -26,5 +26,9 @@ public interface BonafideRepository extends JpaRepository<Bonafide, Long> {
 
     List<Bonafide> findByBonafideStatus(BonafideStatus bonafideStatus);
     List<Bonafide> findByBonafideStatusAndStudentDepartment(BonafideStatus bonafideStatus, String department);
+
+    // previos bonafide query
+    List<Bonafide> findByBonafideStatusInAndStudentFacultyFacultyId(List<BonafideStatus> bonafideStatusList, Long facultyId);
+    List<Bonafide> findByBonafideStatusInAndStudentFacultyHodHodId(List<BonafideStatus> bonafideStatusList, Long hodId);
 }
 
