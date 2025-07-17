@@ -1,12 +1,13 @@
 package erp.javaguides.erpbackend.utility;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.enums.PursuingYear;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 // A general purpose file that contains methods that are required by the whole application anywhere...
 // Made a bean that can be injected anywhere in AppConfig file using the @Service annotation... 
@@ -27,6 +28,15 @@ public class UtilityService {
         };
     }
 
+    public List<String> getListOfSemesterFromYear(PursuingYear year) {
+        return switch( year ) {
+            case PursuingYear.FIRST -> List.of("I","II");
+            case PursuingYear.SECOND -> List.of("III","IV");
+            case PursuingYear.THIRD -> List.of("V","VI");
+            case PursuingYear.FOURTH -> List.of("VII","VIII");
+        };
+    }
+
     public static String yearMonthDayToDayMonthYear(String dateWithYearFirst) {
         if(dateWithYearFirst.matches("\\d{2}-\\d{2}-\\d{4}")){
             return dateWithYearFirst;
@@ -37,4 +47,5 @@ public class UtilityService {
         String dateWithDayFirst = date.format(outputFormatter);
         return dateWithDayFirst;
     }
+    
 }

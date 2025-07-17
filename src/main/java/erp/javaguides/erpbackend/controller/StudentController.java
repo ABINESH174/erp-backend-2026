@@ -2,11 +2,11 @@ package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
+import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-// import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -86,6 +86,37 @@ public class StudentController {
                     return ResponseEntity.ok(new ApiResponse("Success", students));
                 } catch (Exception e) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", null));
+                }
+            }
+
+            // Hod neccessities
+            @GetMapping("/get/displine/year")
+            public ResponseEntity<ApiResponse> getAllStudentsByDisciplineAndYear(@RequestParam String discipline, @RequestParam PursuingYear year) {
+                try {
+                    List<StudentDto> students = studentService.getAllStudentsByDisciplineAndYear(discipline, year);
+                    if(students.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No students found",null));
+                    }
+                    return ResponseEntity.ok(new ApiResponse("Success in retrieving Students",students));
+                } catch(Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error retrieving students", null));
+                }
+            }
+
+            @GetMapping("/get/discipline/year/section")
+            public ResponseEntity<ApiResponse> getAllStudentsByDisciplineAndYearAndClassSection(
+                    @RequestParam String discipline, 
+                    @RequestParam PursuingYear year, 
+                    @RequestParam String classSection
+                    ) {
+                try {
+                    List<StudentDto> students = studentService.getAllStudentsByDisciplineAndYearAndClassSection(discipline, year, classSection);
+                    if (students.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No students found", null));
+                    }
+                    return ResponseEntity.ok(new ApiResponse("Students retrieved successfully", students));
+                } catch(Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error retrieving students",null));
                 }
             }
     
