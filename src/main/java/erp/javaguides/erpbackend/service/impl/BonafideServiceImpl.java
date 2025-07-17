@@ -87,7 +87,7 @@ public class BonafideServiceImpl implements BonafideService {
         Bonafide savedBonafide = bonafideRepository.save(bonafide);
 
         //email send to faculty
-        notifyFacultyOnSubmission(student.getRegisterNo());
+        //notifyFacultyOnSubmission(student.getRegisterNo());
 
         // Folder Path with structure: "/basepath/registerNo/bonafideId"
         String userFolderPath = Paths.get(FOLDERPATH, requestDto.getRegisterNo(), savedBonafide.getBonafideId().toString()).toString();
