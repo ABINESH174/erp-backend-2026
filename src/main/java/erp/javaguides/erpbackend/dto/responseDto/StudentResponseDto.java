@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.dto.responseDto;
 
+import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,5 +35,7 @@ public class StudentResponseDto {
     private String batch;
 
     private String cgpa;
+
+    private Faculty faculty;
 
 }
