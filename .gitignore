@@ -1,10 +1,5 @@
 # Project exclude paths
 /target/
-<<<<<<< HEAD
-src/main/resources/application-local.properties
-=======
 
 # Exclude this local configuration file to be pushed to the repository
 src/main/resources/application-local.properties
-application-dev.properties
->>>>>>> 2bf405fcf4e9e2abbd4cb7a36444496396403921

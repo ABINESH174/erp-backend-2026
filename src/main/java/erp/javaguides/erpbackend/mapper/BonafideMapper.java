@@ -3,8 +3,16 @@ package erp.javaguides.erpbackend.mapper;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
+import erp.javaguides.erpbackend.utility.UtilityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BonafideMapper {
+
+    @Autowired
+    private static UtilityService utilityService;
 
     public static BonafideResponseDto mapToBonafideResponseDto(Bonafide bonafide){
         return new BonafideResponseDto(
@@ -37,7 +45,7 @@ public class BonafideMapper {
         return new Bonafide(
                 bonafideDto.getPurpose(),
                 bonafideDto.getBonafideStatus(),
-                bonafideDto.getDate(),
+                UtilityService.yearMonthDayToDayMonthYear(bonafideDto.getDate()),
                 bonafideDto.getAcademicYear(),
                 bonafideDto.getCompanyName(),
                 bonafideDto.getBankNameForEducationalLoan()

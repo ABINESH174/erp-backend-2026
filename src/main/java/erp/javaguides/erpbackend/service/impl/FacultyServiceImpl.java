@@ -8,6 +8,7 @@ import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Hod;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.mapper.FacultyMapper;
@@ -17,6 +18,7 @@ import erp.javaguides.erpbackend.repository.FacultyRepository;
 import erp.javaguides.erpbackend.repository.HodRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.FacultyService;
+import erp.javaguides.erpbackend.utility.UtilityService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ public class FacultyServiceImpl implements FacultyService {
     private final StudentRepository studentRepository;
     private final BonafideRepository bonafideRepository;
     private final HodRepository hodRepository;
+
+    private final UtilityService utilityService;
 
     @Override
     public FacultyResponseDto createFaculty(FacultyRequestDto facultyRequestDto) throws Exception {
@@ -122,14 +126,14 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public FacultyResponseDto dismissFacultyWithStudents(String email, String batch) {
+    public FacultyResponseDto dismissFacultyWithStudents(String email) {
         Faculty faculty = facultyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with email: " + email));
         List<Student> studentsList = new ArrayList<>(faculty.getStudents());
         for(Student student:studentsList){
             faculty.removeStudent(student);
         }
-
+        faculty.setHandlingBatch(null);
         Faculty updatedFaculty = facultyRepository.save(faculty);
         return FacultyMapper.mapToFacultyResponseDto(updatedFaculty);
     }
@@ -162,6 +166,26 @@ public class FacultyServiceImpl implements FacultyService {
         return faculties.stream()
                 .map(FacultyMapper::mapToFacultyResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public FacultyResponseDto assignFacultyUsingDisciplineYearAndClass(String facultyEmail, String discipline, PursuingYear year, String classSection) {
+                Faculty faculty = facultyRepository.findByEmail(facultyEmail)
+                                        .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
+                
+                List<Student> students = studentRepository.findByDisciplineAndSemesterInAndClassSection(discipline, utilityService.getListOfSemesterFromYear(year), classSection);
+
+                if (students.isEmpty()) {
+                        throw new ResourceNotFoundException("No students found with discipline: " + discipline);
+                }
+
+                faculty.setHandlingBatch(students.getFirst().getBatch());
+
+                for(Student student : students) {
+                    faculty.addStudent(student);
+                }
+
+                return FacultyMapper.mapToFacultyResponseDto(facultyRepository.save(faculty));
     }
 
 }

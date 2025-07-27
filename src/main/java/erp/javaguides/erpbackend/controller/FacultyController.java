@@ -4,6 +4,7 @@ import erp.javaguides.erpbackend.dto.requestDto.FacultyRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
+import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.FacultyService;
@@ -169,10 +170,10 @@ public class FacultyController {
         }
     }
 
-    @PutMapping("/update-dismiss/{batch}")
-    public ResponseEntity<ApiResponse> dismissFacultyWithStudent(@PathVariable String batch, @RequestParam String email){
+    @PutMapping("/update-dismiss")
+    public ResponseEntity<ApiResponse> dismissFacultyWithStudent(@RequestParam String email){
         try {
-            FacultyResponseDto updatedFaculty = facultyService.dismissFacultyWithStudents(email, batch);
+            FacultyResponseDto updatedFaculty = facultyService.dismissFacultyWithStudents(email);
             return ResponseEntity.ok(new ApiResponse("Faculty updated successfully", updatedFaculty));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
@@ -189,6 +190,22 @@ public class FacultyController {
             return ResponseEntity.ok(new ApiResponse("Unassigned faculties fetched successfully", faculties));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error fetching unassigned faculties", null));
+        }
+    }
+
+    @PutMapping("/assign-students")
+    public ResponseEntity<ApiResponse> assignFacultyUsingDisciplineYearAndClassSection(
+                    @RequestParam String facultyEmail, 
+                    @RequestParam String discipline, 
+                    @RequestParam PursuingYear year, 
+                    @RequestParam String classSection
+                    ) {
+        try {
+            FacultyResponseDto facultyResponseDto = facultyService.assignFacultyUsingDisciplineYearAndClass(facultyEmail, discipline, year, classSection);
+            return ResponseEntity.ok(new ApiResponse("Faculty updated with students successfully", facultyResponseDto));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating faculty", null));
         }
     }
 
