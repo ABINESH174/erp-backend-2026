@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.dto.requestDto;
 
 
+import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -89,5 +90,6 @@ public class StudentDto {
     private Boolean isGovtSchool;
     private StudentStatus studentStatus;
 
+    private Faculty faculty;
 
 }
