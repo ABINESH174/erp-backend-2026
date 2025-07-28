@@ -290,6 +290,36 @@ public class BonafideController {
         }
     }
 
+    @GetMapping("/faculty/previousBonafide/{facultyId}")
+    public ResponseEntity<ApiResponse> getPreviousBonafideByFacultyId(@PathVariable Long facultyId) {
+        try {
+            List<BonafideResponseDto> previousBonafides = bonafideService.getPreviousBonafidebyFacultyId(facultyId);
+            if(previousBonafides.isEmpty()){
+                return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("No previous Bonafides" , null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Previous Bonafides:" , previousBonafides));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error Fetching Previous Bonafides." ,null));
+        }
+    }
+
+    @GetMapping("/hod/previousBonafide/{hodId}")
+    public ResponseEntity<ApiResponse> getPreviousBonafideByHodId(@PathVariable Long hodId) {
+        try {
+            List<BonafideResponseDto> previousBonafide = bonafideService.getPreviousBonafidebyHodId(hodId);
+            if(previousBonafide.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Previous Bonafides",null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Previous Bonafides:", previousBonafide));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error Fetching Previous Bonafides." ,null));
+        }
+
+    }
+
 
 }
 //    @GetMapping("/{registerNo}")

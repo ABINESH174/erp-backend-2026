@@ -7,11 +7,16 @@ import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.entity.OfficeBearer;
+import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
+import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -24,6 +29,8 @@ public class AuthenticationController {
     private  final FacultyService facultyService;
     private final HodService hodService;
     private final OfficeBearerService officeBearerService;
+
+    private final ExcelService excelService;
 
     @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
@@ -90,5 +97,19 @@ public class AuthenticationController {
         }
 
         return new ResponseEntity<>("Invalid Register Number", HttpStatus.OK);
+    }
+
+    @PostMapping("/upload-students")
+    public ResponseEntity<ApiResponse> addStudentAuthenticationFromExcel(@RequestParam("file") MultipartFile file) {
+        try {
+            List<AuthenticationDto> authenticationDtos =  excelService.addStudentAuthenticationFromExcel(file.getInputStream());
+            for(AuthenticationDto authenticationDto : authenticationDtos) {
+                AuthenticationDto authentication = authenticationService.createAuthentication(authenticationDto);
+            }
+            return ResponseEntity.ok(new ApiResponse("Authentication of students using excel is created successfully",null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding authentication students from excel",null));
+        }
     }
 }

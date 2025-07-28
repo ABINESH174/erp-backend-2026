@@ -5,9 +5,7 @@ import java.util.List;
 import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
-
 import erp.javaguides.erpbackend.entity.Bonafide;
-
 import erp.javaguides.erpbackend.enums.BonafideStatus;
 
 public interface BonafideService {
@@ -30,7 +28,8 @@ public interface BonafideService {
     List<BonafideResponseDto> getNotifiedBonafides();
 
     BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage);
-
+    List<BonafideResponseDto> getPreviousBonafidebyFacultyId(Long facultyId);
+    List<BonafideResponseDto> getPreviousBonafidebyHodId(Long hodId);
     // BonafideResponseDto updateBonafideWithFiles(CreateBonafideRequestDto bonafideDto);
 
 //    List<BonafideDto> getAllBonafides();

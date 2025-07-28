@@ -90,7 +90,7 @@ public class StudentController {
             }
 
             // Hod neccessities
-            @GetMapping("/get/displine/year")
+            @GetMapping("/get/discipline/year")
             public ResponseEntity<ApiResponse> getAllStudentsByDisciplineAndYear(@RequestParam String discipline, @RequestParam PursuingYear year) {
                 try {
                     List<StudentDto> students = studentService.getAllStudentsByDisciplineAndYear(discipline, year);
