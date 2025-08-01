@@ -1,11 +1,18 @@
 package erp.javaguides.erpbackend.mapper;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.utility.UtilityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
-
+@Component
 public class StudentMapper {
+    @Autowired
+    private static UtilityService utilityService;
 
     public static StudentDto mapToStudentWithFilesDto(Student student){
         return new StudentDto(
@@ -49,13 +56,13 @@ public class StudentMapper {
                 null,
                 null,
                 student.getSslcPercent(),
+                student.getHscFirstYearPercent(),
+                student.getHscSecondYearPercent(),
+                student.getDiplomaPercent(),
+                student.getSslcFilePath(),
                 student.getHscFirstYearFilePath(),
                 student.getHscSecondYearFilePath(),
                 student.getDiplomaFilePath(),
-                null,
-                null,
-                null,
-                null,
                 null,
                 null,
                 null,
@@ -69,6 +76,8 @@ public class StudentMapper {
                 null,
                 student.getProgramme(),
                 student.getDiscipline(),
+                student.getDepartment(),
+                student.getClassSection(),
                 student.getAdmissionNumber(),
                 student.getBatch(),
                 student.getSemester(),
@@ -79,7 +88,10 @@ public class StudentMapper {
                 student.getCourseType(),
                 student.getRegulation(),
                 student.getCgpa(),
-                student.getStudentStatus()
+                student.getIsGovtSchool(),
+                student.getStudentStatus(),
+                student.getFaculty()
+
         );
     }
 
@@ -88,7 +100,7 @@ public class StudentMapper {
                 studentDto.getRegisterNo(),
                 studentDto.getFirstName(),
                 studentDto.getLastName(),
-                studentDto.getDateOfBirth(),
+                utilityService.yearMonthDayToDayMonthYear(studentDto.getDateOfBirth()),
                 studentDto.getGender(),
                 studentDto.getAadharNumber(),
                 studentDto.getBloodGroup(),
@@ -136,17 +148,41 @@ public class StudentMapper {
                 null,
                 studentDto.getProgramme(),
                 studentDto.getDiscipline(),
+                studentDto.getDepartment(),
+                studentDto.getClassSection(),
                 studentDto.getAdmissionNumber(),
                 studentDto.getBatch(),
                 studentDto.getSemester(),
                 studentDto.getAbcId(),
                 studentDto.getUmisId(),
-                studentDto.getDateOfAdmission(),
-                studentDto.getCourseJoinedDate(),
+                UtilityService.yearMonthDayToDayMonthYear(studentDto.getDateOfAdmission()),
+                UtilityService.yearMonthDayToDayMonthYear(studentDto.getCourseJoinedDate()),
                 studentDto.getCourseType(),
                 studentDto.getRegulation(),
                 studentDto.getCgpa(),
+                studentDto.getIsGovtSchool(),
                 studentDto.getStudentStatus()
+
+        );
+    }
+
+    public static StudentResponseDto mapToStudentResponseDto(Student student) {
+        return new StudentResponseDto(
+                student.getRegisterNo(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getGender(),
+                student.getEmailId(),
+                student.getMobileNumber(),
+                student.getDateOfBirth(),
+                student.getProgramme(),
+                student.getDiscipline(),
+                student.getDepartment(),
+                student.getClassSection(),
+                student.getSemester(),
+                student.getBatch(),
+                student.getCgpa(),
+                student.getFaculty()
         );
     }
 }

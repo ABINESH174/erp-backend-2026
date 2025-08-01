@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.dto.requestDto;
 
 
+import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -74,6 +75,8 @@ public class StudentDto {
     private byte[] specialCategoryFileContent;
     private String programme;
     private String discipline;
+    private String department;
+    private String classSection;
     private String admissionNumber;
     private String batch;
     private String semester;
@@ -84,6 +87,9 @@ public class StudentDto {
     private CourseType courseType;
     private String regulation;
     private String cgpa;
+    private Boolean isGovtSchool;
     private StudentStatus studentStatus;
+
+    private Faculty faculty;
 
 }

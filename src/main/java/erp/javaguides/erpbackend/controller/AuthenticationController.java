@@ -1,16 +1,22 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+// import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
+import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
-import erp.javaguides.erpbackend.service.AuthenticationService;
-import erp.javaguides.erpbackend.service.FacultyService;
-import erp.javaguides.erpbackend.service.StudentService;
+import erp.javaguides.erpbackend.entity.OfficeBearer;
+import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
+import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -21,6 +27,10 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final StudentService studentService;
     private  final FacultyService facultyService;
+    private final HodService hodService;
+    private final OfficeBearerService officeBearerService;
+
+    private final ExcelService excelService;
 
     @PostMapping("/create")
     public ResponseEntity<AuthenticationDto> createAuthentication(@RequestBody AuthenticationDto authenticationDto) {
@@ -37,19 +47,23 @@ public class AuthenticationController {
         }
         if(authentication.getRole().equalsIgnoreCase("HOD")){
             try {
-                FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
-                if (facultyDto==null) {
-                    return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
-                }
+                HodResponseDto hodResponseDto= hodService.getHodByEmail(authenticationDto.getUserId());
+//                FacultyResponseDto facultyResponseDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
+//                if (facultyResponseDto==null) {
+//                    return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
+//                }
             } catch (Exception e) {
                 return new ResponseEntity<>("HOD Registration Not Successful", HttpStatus.OK);
             }
             return new ResponseEntity<>("HOD Authentication Successful", HttpStatus.OK);
         }
+        if (authentication.getRole().equalsIgnoreCase("PRINCIPAL")) {
+            return new ResponseEntity<>("Principal Authentication Successful", HttpStatus.OK);
+        }
         if(authentication.getRole().equalsIgnoreCase("FA")){
             try {
-                FacultyDto facultyDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
-                if (facultyDto==null) {
+                FacultyResponseDto facultyResponseDto = facultyService.getFacultyByEmail(authenticationDto.getUserId());
+                if (facultyResponseDto==null) {
                     return new ResponseEntity<>("Faculty Registration Not Successful", HttpStatus.OK);
                 }
             } catch (Exception e) {
@@ -57,7 +71,7 @@ public class AuthenticationController {
             }
             return new ResponseEntity<>("Faculty Authentication Successful", HttpStatus.OK);
         }
-        if(authentication.getRole().equalsIgnoreCase("ST")){
+        if(authentication.getRole().equalsIgnoreCase("STUDENT")){
             try {
                 StudentDto studentDto = studentService.getStudentByRegisterNo(authenticationDto.getUserId());
                 if (studentDto == null) {
@@ -68,7 +82,34 @@ public class AuthenticationController {
             }
             return new ResponseEntity<>("Student Authentication Successful", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid Register Number", HttpStatus.OK);
 
+        if(authentication.getRole().equalsIgnoreCase("OB")){
+            try{
+                OfficeBearer officeBearer=officeBearerService.getOfficeBearerByEmail(authentication.getUserId());
+                if(officeBearer==null){
+                    return new ResponseEntity<>("Office bearer is null",HttpStatus.OK);
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Office bearer login unsuccessful", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Office Bearer Authentication Successful", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Invalid Register Number", HttpStatus.OK);
+    }
+
+    @PostMapping("/upload-students")
+    public ResponseEntity<ApiResponse> addStudentAuthenticationFromExcel(@RequestParam("file") MultipartFile file) {
+        try {
+            List<AuthenticationDto> authenticationDtos =  excelService.addStudentAuthenticationFromExcel(file.getInputStream());
+            for(AuthenticationDto authenticationDto : authenticationDtos) {
+                AuthenticationDto authentication = authenticationService.createAuthentication(authenticationDto);
+            }
+            return ResponseEntity.ok(new ApiResponse("Authentication of students using excel is created successfully",null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding authentication students from excel",null));
+        }
     }
 }

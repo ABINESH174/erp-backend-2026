@@ -17,6 +17,8 @@ public class FacultyDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+
+    // Dynamic field, it must be assigned by the hod
     private String handlingBatch;
 
     private List<String> subjects;
@@ -24,5 +26,5 @@ public class FacultyDto {
     private List<String> handlingDepartments;
     private List<String> batches;
     private List<StudentDto> students;
-    private List<FacultyDto> faculties;
+    // private List<FacultyDto> faculties;
 }

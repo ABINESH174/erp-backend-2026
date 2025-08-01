@@ -1,7 +1,5 @@
 package erp.javaguides.erpbackend.dto.responseDto;
-
-import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
-import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
+// import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +16,13 @@ public class FacultyResponseDto {
     private String email;
     private String mobileNumber;
     private String discipline;
+    private String department;
     private String handlingBatch;
+    private List<StudentResponseDto> students;
 
-    private List<String> subjects;
-    private List<String> handlingSemesters;
-    private List<String> handlingDepartments;
-    private List<String> batches;
-    private List<StudentDto> students;
-    private List<FacultyDto> faculties;
+    // private List<String> subjects;
+    // private List<String> handlingSemesters;
+    // private List<String> handlingDepartments;
+    // private List<String> batches;
+    // private List<FacultyDto> faculties;
 }

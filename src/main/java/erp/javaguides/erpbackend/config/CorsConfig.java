@@ -10,10 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    @SuppressWarnings("null")
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // Allow requests from this origin
+                .allowedOrigins("http://localhost:3000","https://hoppscotch.io") // Allow requests from this origin
                 .allowedMethods("*") // Allow all HTTP methods
                 .allowedHeaders("*"); // Allow all headers
     }

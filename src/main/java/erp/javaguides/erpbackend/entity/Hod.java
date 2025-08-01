@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,15 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name="HOD")
-
-public class HOD {
+public class Hod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hodId;
 
-    @Column(length = 20)
+    @Column(length = 100)
     private String discipline;
+
+    @Column(length = 50)
+    private String department;
 
     @Column(nullable = false)
     private String firstName;
@@ -40,12 +44,30 @@ public class HOD {
     @OneToMany(mappedBy = "hod",cascade = CascadeType.ALL)
     private List<Faculty> faculties;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "principal_id")
     private Principal principal;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "officeBearer_id")
-    private OfficeBearer officeBearer;
+    @ManyToMany(mappedBy = "hods")
+    private Set<OfficeBearer> officeBearers = new HashSet<>();
+
+    public void addFaculty(Faculty faculty) {
+        if(faculties.isEmpty()){
+            faculties = new ArrayList<>();
+        }
+        this.faculties.add(faculty);
+        faculty.setHod(this);
+    }
+
+    public void removeFaculty(Faculty faculty) {
+        this.faculties.remove(faculty);
+        faculty.setHod(null);
+    }
+
+    public void addAllOfficeBearers(List<OfficeBearer> officeBearers) {
+        for(OfficeBearer officeBearer : officeBearers) {
+            officeBearer.addHod(this);
+        }
+    }
 
 }

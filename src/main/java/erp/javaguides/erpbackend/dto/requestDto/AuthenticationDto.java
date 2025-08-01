@@ -14,4 +14,11 @@ public class AuthenticationDto {
     private String userId;
     private String password;
     private String role;
+
+    public AuthenticationDto(String userId, String password, String role) {
+        this.userId=userId;
+        this.password=password;
+        this.role= role;
+    }
+
 }
