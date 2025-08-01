@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-251.27812.49">
+    <data-source name="erpdb@localhost" uuid="2a204921-8f27-49c7-bbd6-7b14e38a0a12">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <user-name>root</user-name>
+      <schema-mapping />
+      <load-sources>user_and_system_sources</load-sources>
+    </data-source>
+    <data-source name="mysql" uuid="7d4dc1f6-49d1-4545-96fb-465348dcf460">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <user-name>username</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>

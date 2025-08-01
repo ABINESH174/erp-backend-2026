@@ -216,8 +216,7 @@ public class BonafideServiceImpl implements BonafideService {
         }
     }
 
-    //email notification logic
-    @Override
+
     public Bonafide notifyNextApprover(Long bonafideId , String status , String registerNo) {
         Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId , registerNo).orElseThrow(() -> new ResourceNotFoundException(
                 "Bonafide not found with ID: " + bonafideId + " and Register No: " + registerNo));
@@ -256,6 +255,7 @@ public class BonafideServiceImpl implements BonafideService {
     }
     @Override
     public BonafideResponseDto updateObRejectedBonafide(Long bonafideId, String registerNo, BonafideStatus status, String rejectionMessage) {
+
         try {
             Bonafide bonafide = bonafideRepository.findByBonafideIdAndStudentRegisterNo(bonafideId, registerNo)
                     .orElseThrow(() -> new ResourceNotFoundException(

@@ -34,6 +34,7 @@ public class BonafideController {
     public ResponseEntity<ApiResponse> createBonafide(@ModelAttribute CreateBonafideRequestDto requestDto) throws ResourceNotFoundException{
         try {
             BonafideResponseDto createdBonafide = bonafideService.saveBonafide(requestDto);
+            System.out.println(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Bonafide created successfully",createdBonafide));
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,10 +114,12 @@ public class BonafideController {
         }
     }
 
+
     @PutMapping("/updateObRejectedBonafide")
     public ResponseEntity<ApiResponse> updateObRejectedBonafide(@RequestParam Long bonafideId, @RequestParam String registerNo, @RequestParam BonafideStatus status, @RequestParam String rejectionMessage) {
         try {
             BonafideResponseDto updatedBonafide = bonafideService.updateObRejectedBonafide(bonafideId, registerNo,  status, rejectionMessage);
+
             return ResponseEntity.ok(new ApiResponse("Bonafide rejected successfully", updatedBonafide));
         } catch (Exception e) {
             e.printStackTrace();
