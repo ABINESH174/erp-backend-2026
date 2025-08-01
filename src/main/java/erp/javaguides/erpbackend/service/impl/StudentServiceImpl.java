@@ -275,7 +275,8 @@ public class StudentServiceImpl implements StudentService {
                         student.getClassSection(),
                         student.getSemester(),
                         student.getBatch(),
-                        student.getCgpa()
+                        student.getCgpa(),
+                        student.getFaculty()
                 ))
                 .collect(Collectors.toList());
     }
@@ -298,7 +299,8 @@ public class StudentServiceImpl implements StudentService {
                         student.getClassSection(),
                         student.getSemester(),
                         student.getBatch(),
-                        student.getCgpa()
+                        student.getCgpa(),
+                        student.getFaculty()
                 ))
                 .collect(Collectors.toList());
     }

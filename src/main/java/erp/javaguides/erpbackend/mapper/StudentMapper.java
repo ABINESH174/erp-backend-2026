@@ -89,7 +89,8 @@ public class StudentMapper {
                 student.getRegulation(),
                 student.getCgpa(),
                 student.getIsGovtSchool(),
-                student.getStudentStatus()
+                student.getStudentStatus(),
+                student.getFaculty()
 
         );
     }
@@ -180,7 +181,8 @@ public class StudentMapper {
                 student.getClassSection(),
                 student.getSemester(),
                 student.getBatch(),
-                student.getCgpa()
+                student.getCgpa(),
+                student.getFaculty()
         );
     }
 }
