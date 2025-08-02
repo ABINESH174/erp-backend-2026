@@ -2,6 +2,7 @@ package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 // import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.NewPasswordRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
@@ -110,6 +111,28 @@ public class AuthenticationController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding authentication students from excel",null));
+        }
+    }
+    @GetMapping("/get-otp")
+    public ResponseEntity<ApiResponse> generateOTP(@RequestParam String userEmail) {
+        try {
+            authenticationService.generateForgotPasswordResetToken(userEmail);
+            return ResponseEntity.ok(new ApiResponse("OTP generated successfully", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error changing password", null));
+        }
+    }
+    @PutMapping("/set-password")
+    public ResponseEntity<ApiResponse> generateNewPassword(@RequestBody NewPasswordRequestDto newPasswordRequestDto) {
+        try {
+            authenticationService.generateResetPassword(newPasswordRequestDto.getEmail(), newPasswordRequestDto.getOtp(), newPasswordRequestDto.getNewPassword());
+            return ResponseEntity.ok(new ApiResponse("Password Changed Successfully",null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse("Invalid or Expired OTP", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error changing password", null));
         }
     }
 }

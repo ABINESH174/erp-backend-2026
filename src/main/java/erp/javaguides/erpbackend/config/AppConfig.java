@@ -9,8 +9,8 @@ import erp.javaguides.erpbackend.utility.UtilityService;
 @Configuration
 public class AppConfig {
     
-    @Bean
-    public UtilityService utilityService() {
-        return new UtilityService();
-    }
+//    @Bean
+//    public UtilityService utilityService() {
+//        return new UtilityService();
+//    }
 }

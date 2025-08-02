@@ -90,6 +90,6 @@ public class StudentDto {
     private Boolean isGovtSchool;
     private StudentStatus studentStatus;
 
-    private Faculty faculty;
+    private Long facultyId;
 
 }
