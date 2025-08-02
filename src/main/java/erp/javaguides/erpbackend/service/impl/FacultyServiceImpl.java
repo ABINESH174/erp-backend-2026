@@ -55,6 +55,9 @@ public class FacultyServiceImpl implements FacultyService {
 
             Faculty faculty = FacultyMapper.mapToFaculty(facultyRequestDto);
             hod.addFaculty(faculty);
+
+            utilityService.addEmailToAuthentication(faculty.getEmail(),faculty.getEmail());
+
             savedFaculty = facultyRepository.save(faculty);
         } catch (Exception e) {
             throw new Exception("Error creating faculty: " + e.getMessage());

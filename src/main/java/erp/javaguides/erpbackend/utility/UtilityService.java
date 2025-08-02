@@ -2,7 +2,10 @@ package erp.javaguides.erpbackend.utility;
 
 import java.util.List;
 
+import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.enums.Gender;
+import erp.javaguides.erpbackend.repository.AuthenticationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.enums.PursuingYear;
@@ -13,7 +16,11 @@ import java.time.format.DateTimeFormatter;
 // A general purpose file that contains methods that are required by the whole application anywhere...
 // Made a bean that can be injected anywhere in AppConfig file using the @Service annotation... 
 @Service
+@RequiredArgsConstructor
 public class UtilityService {
+
+    private final AuthenticationRepository authenticationRepository;
+
     public PursuingYear convertSemesterToYear(String semester) {
         return switch(semester){
             case "I","II"-> PursuingYear.FIRST;
@@ -68,6 +75,13 @@ public class UtilityService {
                 identifyGender[2] = "him/her";
         }
         return identifyGender;
+    }
+
+    public void addEmailToAuthentication(String userId, String email) {
+        Authentication authentication = authenticationRepository.findByUserId(userId);
+
+        authentication.setEmail(email);
+        authenticationRepository.save(authentication);
     }
     
 }
