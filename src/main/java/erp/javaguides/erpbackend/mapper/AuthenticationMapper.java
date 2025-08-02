@@ -20,6 +20,7 @@ public class AuthenticationMapper {
                 authenticationDto.getUserId(),
                 authenticationDto.getPassword(),
                 authenticationDto.getRole()
+
         );
     }
 }

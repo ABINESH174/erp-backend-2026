@@ -2,6 +2,7 @@ package erp.javaguides.erpbackend.service.impl;
 
 import java.util.List;
 
+import erp.javaguides.erpbackend.utility.UtilityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class PrincipalServiceImpl implements PrincipalService {
 
     private final PrincipalRepository principalRepository;
     private final BonafideRepository bonafideRepository;
+    private final UtilityService utilityService;
 
     @Override
     public Principal getPrincipalById(Long principalId) {
@@ -31,6 +33,7 @@ public class PrincipalServiceImpl implements PrincipalService {
     @Transactional
     @Override
     public Principal savePrincipal(Principal principal) {
+        utilityService.addEmailToAuthentication(principal.getEmail(),principal.getEmail());
         return principalRepository.save(principal);
     }
 

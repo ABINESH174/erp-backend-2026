@@ -36,6 +36,6 @@ public class StudentResponseDto {
 
     private String cgpa;
 
-    private Faculty faculty;
+    private Long facultyId;
 
 }

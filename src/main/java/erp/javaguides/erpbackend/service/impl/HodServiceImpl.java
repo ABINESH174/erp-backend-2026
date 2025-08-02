@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import erp.javaguides.erpbackend.utility.UtilityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,8 @@ public class HodServiceImpl implements HodService {
     private final PrincipalService principalService;
 
     private final OfficeBearerRepository officeBearerRepository;
+
+    private final UtilityService utilityService;
     
 
     @Transactional
@@ -51,6 +54,8 @@ public class HodServiceImpl implements HodService {
         principal.addHod(hod);
 
         hod.addAllOfficeBearers(officeBearerRepository.findAll());
+
+        utilityService.addEmailToAuthentication(hod.getEmail(),hod.getEmail());
         
         Hod savedHod = hodRepository.save(hod);
         return HodMapper.toHodResponseDto(savedHod);

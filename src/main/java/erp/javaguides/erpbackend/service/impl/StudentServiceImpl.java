@@ -51,6 +51,9 @@ public class StudentServiceImpl implements StudentService {
                 throw new Exception("Register Number already exists");
             }
 
+            // Add email to authentication table
+            utilityService.addEmailToAuthentication(studentDto.getRegisterNo(),studentDto.getEmailid());
+
             String firstName = studentDto.getFirstName();
             String registerNo = studentDto.getRegisterNo();
 
@@ -276,7 +279,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa(),
-                        student.getFaculty()
+                        student.getFaculty().getFacultyId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -300,7 +303,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa(),
-                        student.getFaculty()
+                        student.getFaculty().getFacultyId()
                 ))
                 .collect(Collectors.toList());
     }

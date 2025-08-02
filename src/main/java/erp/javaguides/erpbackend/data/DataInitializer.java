@@ -61,23 +61,27 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     private void createHods() {
         if (hodService.getAllHods().isEmpty()){
             HodRequestDto hodCse = new HodRequestDto("Hodcse","Cse","duraiyan100@gmail.com","7878878788","Computer Science and Engineering", "Computer Science and Engineering", this.principalEmail );
+            createAuthentication(hodCse.getEmail(), "123456", "HOD");
             HodResponseDto createdHodCse = hodService.createHod(hodCse);
-            createAuthentication(createdHodCse.getEmail(), "123456", "HOD");
+
 
             HodRequestDto hodEce = new HodRequestDto("HodEce", "ece", "ecehod@gmail.com","9898989890","Electronics and Communication Engineering", "Electronics and Communication Engineering", this.principalEmail);
+            createAuthentication(hodEce.getEmail(), "123456", "HOD");
             HodResponseDto createdHodEce = hodService.createHod(hodEce);
-            createAuthentication(createdHodEce.getEmail(), "123456", "HOD");
+
 
             HodRequestDto cfa = new HodRequestDto("CFA","cfa", "dhanushdhanush3732@gmail.com", "9696969696", "Science and Humanities", "Science and Humanities", this.principalEmail);
+            createAuthentication(cfa.getEmail(), "123456", "HOD");
             HodResponseDto createdCfa = hodService.createHod(cfa);
-            createAuthentication(createdCfa.getEmail(), "123456", "HOD");
+
         }
     }
 
     private void createOfficeBearer() throws Exception {
         OfficeBearer bonafideOb = new OfficeBearer("BonafideOB","abineshsubramanian8@gmail.com","Bonafide");
+        createAuthentication(bonafideOb.getEmail(), "123456", "OB");
         OfficeBearer createdOb = officeBearerService.saveOfficeBearer(bonafideOb);
-        createAuthentication(createdOb.getEmail(), "123456", "OB");
+
     }
 
     private void authenticateStudentAndFaculty() {

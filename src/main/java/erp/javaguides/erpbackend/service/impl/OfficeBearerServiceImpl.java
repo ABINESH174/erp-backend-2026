@@ -5,6 +5,7 @@ import erp.javaguides.erpbackend.entity.OfficeBearer;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.repository.HodRepository;
 import erp.javaguides.erpbackend.repository.OfficeBearerRepository;
+import erp.javaguides.erpbackend.utility.UtilityService;
 import org.springframework.stereotype.Service;
 
 import erp.javaguides.erpbackend.service.OfficeBearerService;
@@ -21,6 +22,8 @@ public class OfficeBearerServiceImpl implements OfficeBearerService{
 
     private final HodRepository hodRepository;
 
+    private final UtilityService utilityService;
+
     @Override
     public OfficeBearer saveOfficeBearer(OfficeBearer officeBearer) throws Exception {
         Optional<OfficeBearer> optionalOfficeBearer= officeBearerRepository.findByEmail(officeBearer.getEmail());
@@ -32,6 +35,8 @@ public class OfficeBearerServiceImpl implements OfficeBearerService{
         for (Hod hod : hods) {
             officeBearer.addHod(hod); // Add each Hod to the OfficeBearer
         }
+
+        utilityService.addEmailToAuthentication(officeBearer.getEmail(),officeBearer.getEmail());
 
         return officeBearerRepository.save(officeBearer);
     }
