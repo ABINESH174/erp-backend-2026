@@ -1,14 +1,22 @@
 package erp.javaguides.erpbackend.service.impl;
 
+import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
+import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
+import erp.javaguides.erpbackend.jwt.JwtUtil;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,31 +26,34 @@ import java.util.Random;
 
 @Service
 @AllArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
     private final AuthenticationRepository authenticationRepository;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final JwtUtil jwtUtil;
 
     @Override
     public AuthenticationDto createAuthentication(AuthenticationDto authenticationDto) {
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
+        if(authenticationDto.getRole().name().equals("ADMIN")) {
+            authentication.setEmail("logapriyan2411@gmail.com");
+        }
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
         Authentication savedAuthentication = authenticationRepository.save(authentication);
         return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
-    @Override
-    public Authentication authenticate(AuthenticationDto authenticationDto) {
-        Authentication empty=new Authentication();
-        Authentication authentication = authenticationRepository.findByUserId(authenticationDto.getUserId());
-        boolean isMatched;
-        if (authentication != null) {
-            isMatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
-            if(isMatched){
-               return authentication;
-            }
-        }
-        return empty;
-    }
+//    public Authentication authenticate(AuthenticationDto authenticationDto) {
+//        Authentication empty=new Authentication();
+//        Authentication authentication = authenticationRepository.findByUserId(authenticationDto.getUserId());
+//        boolean isMatched;
+//        if (authentication != null) {
+//            isMatched = passwordEncoder.matches(authenticationDto.getPassword(), authentication.getPassword());
+//            if(isMatched){
+//               return authentication;
+//            }
+//        }
+//        return empty;
+//    }
 
     private final JavaMailSender javaMailSender;
     @Override
@@ -77,4 +88,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationRepository.save(authentication);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Since Authentication class implements UserDetails, you can return it directly.
+        // The `findByEmail` method returns Optional<Authentication>, and Authentication is a UserDetails.
+        return authenticationRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + username));
+    }
 }

@@ -35,6 +35,7 @@ public class HodController {
             HodResponseDto createdHod = hodService.createHod(hodRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("HOD created successfully", createdHod));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating HOD", null));
         }
     }
