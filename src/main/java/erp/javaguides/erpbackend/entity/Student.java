@@ -219,6 +219,10 @@ public class Student {
     @JsonManagedReference
     private List<Bonafide> bonafides;
 
+    public Student(String registerNo) {
+        this.registerNo=registerNo;
+    }
+
     public void addBonafide(Bonafide bonafide){
         bonafide.setStudent(this);
         this.bonafides.add(bonafide);

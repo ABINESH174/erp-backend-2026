@@ -144,12 +144,12 @@ public class AuthenticationController {
 //        return new ResponseEntity<>("Invalid Register Number", HttpStatus.OK);
 //    }
 
-    @PostMapping("/upload-students")
-    public ResponseEntity<ApiResponse> addStudentAuthenticationFromExcel(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload-students/{facultyEmail}")
+    public ResponseEntity<ApiResponse> addStudentAuthenticationFromExcel(@PathVariable String facultyEmail, @RequestParam("file") MultipartFile file) {
         try {
             List<AuthenticationDto> authenticationDtos =  excelService.addStudentAuthenticationFromExcel(file.getInputStream());
             for(AuthenticationDto authenticationDto : authenticationDtos) {
-                AuthenticationDto authentication = authenticationService.createAuthentication(authenticationDto);
+                authenticationService.createAuthenticationAndStudent(facultyEmail, authenticationDto);
             }
             return ResponseEntity.ok(new ApiResponse("Authentication of students using excel is created successfully",null));
         } catch (Exception e) {
@@ -157,6 +157,20 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding authentication students from excel",null));
         }
     }
+
+    @PostMapping("/create/student/{facultyEmail}")
+    public ResponseEntity<ApiResponse> createAuthenticationAndStudent(@PathVariable String facultyEmail, @RequestBody AuthenticationDto authenticationDto) {
+        try {
+            authenticationService.createAuthenticationAndStudent(facultyEmail, authenticationDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Authentication and student created successfully", null));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating authentication and student", null));
+
+        }
+    }
+
     @GetMapping("/get-otp")
     public ResponseEntity<ApiResponse> generateOTP(@RequestParam String userEmail) {
         try {

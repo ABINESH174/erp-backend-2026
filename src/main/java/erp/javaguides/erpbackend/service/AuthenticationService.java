@@ -10,4 +10,6 @@ public interface AuthenticationService {
     void generateForgotPasswordResetToken(String email);
     void generateResetPassword(String email, String otp, String newPassword);
 
+    void createAuthenticationAndStudent(String facultyEmail, AuthenticationDto authenticationDto);
+
 }

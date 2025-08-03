@@ -4,10 +4,14 @@ import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
+import erp.javaguides.erpbackend.entity.Faculty;
+import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
+import erp.javaguides.erpbackend.exception.UserAlreadyExistsException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
+import erp.javaguides.erpbackend.repository.FacultyRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,6 +32,7 @@ import java.util.Random;
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
     private final AuthenticationRepository authenticationRepository;
+    private final FacultyRepository facultyRepository;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final JwtUtil jwtUtil;
 
@@ -86,6 +91,25 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         authentication.setForgotPasswordResetToken(null);
         authentication.setForgotPasswordResetTokenExpiry(null);
         authenticationRepository.save(authentication);
+    }
+
+    @Override
+    public void createAuthenticationAndStudent(String facultyEmail, AuthenticationDto authenticationDto) {
+        if(authenticationRepository.existsByUserId(authenticationDto.getUserId())) {
+            throw new UserAlreadyExistsException("User already exists with email"+authenticationDto.getUserId());
+        }
+        // create authentication
+        Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
+        authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        Authentication savedAuthentication = authenticationRepository.save(authentication);
+
+        // create student and assign faculty
+        Student student = new Student(savedAuthentication.getUserId());
+        Faculty faculty = facultyRepository.findByEmail(facultyEmail)
+                            .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
+        faculty.addStudent(student);
+
+        return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
     @Override
