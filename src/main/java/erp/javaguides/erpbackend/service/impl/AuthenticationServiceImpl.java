@@ -14,6 +14,8 @@ import erp.javaguides.erpbackend.repository.AuthenticationRepository;
 import erp.javaguides.erpbackend.repository.FacultyRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,9 +33,10 @@ import java.util.Random;
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     private final AuthenticationRepository authenticationRepository;
     private final FacultyRepository facultyRepository;
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -109,14 +112,16 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
                             .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
         faculty.addStudent(student);
 
-        return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Since Authentication class implements UserDetails, you can return it directly.
         // The `findByEmail` method returns Optional<Authentication>, and Authentication is a UserDetails.
-        return authenticationRepository.findByEmail(username)
+        log.info("The username of the user: "+ username);
+        UserDetails userDetails = authenticationRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + username));
+        log.info("The userDetails object : ",userDetails);
+        return userDetails;
     }
 }

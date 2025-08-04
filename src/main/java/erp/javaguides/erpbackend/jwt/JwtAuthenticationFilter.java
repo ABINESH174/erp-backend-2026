@@ -4,6 +4,7 @@ import erp.javaguides.erpbackend.service.AuthenticationService;
 import erp.javaguides.erpbackend.service.impl.AuthenticationServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,17 +36,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // This log message is crucial. If it doesn't appear, the filter is not being executed.
         logger.info("*** JWT Filter is running for request URI: {} ***", request.getRequestURI());
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
+//        final String authHeader = request.getHeader("Authorization");
+        String jwt;
+        String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        jwt = extractJwtFromCookies(request);
+        if (jwt == null) {
             logger.warn("No Authorization header found or it's not a Bearer token. Skipping JWT filter.");
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
         logger.info("Extracted JWT token: {}", jwt);
         userEmail = jwtUtil.extractUserName(jwt);
         logger.info("Extracted user email from JWT: {}", userEmail);
@@ -58,6 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 userDetails = this.authenticationService.loadUserByUsername(userEmail);
                 logger.info("User details successfully loaded for email: {}", userEmail);
                 logger.info("User authorities: {}", userDetails.getAuthorities());
+
                 if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) {
                     logger.info("JWT token is valid. Creating Authentication object...");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -67,6 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+
                     logger.info("Authentication successful. SecurityContext populated.");
                 } else {
                     logger.warn("JWT token is NOT valid for user: {}", userEmail);
@@ -78,5 +81,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.warn("User email is null or user is already authenticated. Skipping authentication.");
         }
         filterChain.doFilter(request,response);
+    }
+
+    //Extracts JWT token from HttpOnly cookie named "jwt".
+    private String extractJwtFromCookies(HttpServletRequest request) {
+        if(request.getCookies() != null) {
+            for(Cookie cookie : request.getCookies()) {
+                if("jwt".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

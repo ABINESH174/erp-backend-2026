@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.jwt;
 
+import erp.javaguides.erpbackend.enums.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -52,6 +53,7 @@ public class JwtUtil {
 
     public String generateTokenWithRole(String username , String role){
         Map<String , Object> claims = new HashMap<>();
+
         // Ensure the role starts with "ROLE_". If not, add it.
         String fullRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
         claims.put("role" , fullRole);

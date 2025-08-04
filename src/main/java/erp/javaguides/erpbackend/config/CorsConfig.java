@@ -16,7 +16,8 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000","https://hoppscotch.io") // Allow requests from this origin
                 .allowedMethods("*") // Allow all HTTP methods
-                .allowedHeaders("*"); // Allow all headers
+                .allowedHeaders("*") // Allow all headers
+                .allowCredentials(true); //Important for cookies
     }
 
     @Bean
@@ -24,3 +25,5 @@ public class CorsConfig implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 }
+
+

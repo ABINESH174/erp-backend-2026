@@ -16,6 +16,9 @@ import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
 import erp.javaguides.erpbackend.response.ApiResponse;
 import erp.javaguides.erpbackend.service.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -57,26 +61,44 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto authRequestDto) {
+    public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response) {
         try {
-            if(authenticationRepository.existsByUserId(authRequestDto.getEmail())) {
-            authRequestDto.setEmail(
-                    authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()
-            );
+            if(!(authenticationRepository.existsByUserId(authRequestDto.getEmail()))) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No User Found with UserId "+authRequestDto.getEmail(),null));
+            } else if (authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()==null) {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponse(
+                        "The User hasn't registered yet.",
+                        Map.of(
+                                "userId",
+                                authenticationRepository.findByUserId(authRequestDto.getEmail()).getUserId(),
+                                "role",
+                                authenticationRepository.findByUserId(authRequestDto.getEmail()).getRole().name())
+                        )
+                );
             } else {
-                throw new ResourceNotFoundException("No user found with userId :" + authRequestDto.getEmail());
-            }
-            authenticationManager.authenticate(
+                authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                                authRequestDto.getEmail(),
-                                authRequestDto.getPassword()
+                            authRequestDto.getEmail(),
+                            authRequestDto.getPassword()
                     )
-            );
-            Authentication authentication = (Authentication) userDetailsService.loadUserByUsername(authRequestDto.getEmail());
-            String jwtToken = jwtUtil.generateTokenWithRole(authentication.getUsername(),authentication.getRole().name());
+                );
+                Authentication authentication = (Authentication) userDetailsService.loadUserByUsername(authRequestDto.getEmail());
+                String jwtToken = jwtUtil.generateTokenWithRole(authentication.getUsername(),authentication.getRole().name());
 
-            return ResponseEntity.ok(new AuthResponseDto(jwtToken));
+                Cookie cookie = new Cookie("jwt", jwtToken);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setPath("/");
+                cookie.setMaxAge(3 * 24 * 60 * 60);
+                response.addCookie(cookie);
 
+                return ResponseEntity.ok(new ApiResponse("Login Successfull",null));
+//                if(!(authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()==null)) {
+////                    authRequestDto.setEmail(
+////                            authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()
+////                    );
+//                }
+            }
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -84,6 +106,54 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Expire
+
+        httpServletResponse.addCookie(cookie);
+
+        return ResponseEntity.ok(new ApiResponse("Logged out Successfully", null));
+    }
+
+    @GetMapping("/current-user")
+    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+        try {
+            // Extract JWT from cookie
+            String jwt = null;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("jwt".equals(cookie.getName())) {
+                        jwt = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            if (jwt == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token found");
+            }
+
+            // Extract email and role
+            String userId = jwtUtil.extractUserName(jwt);
+            String role = jwtUtil.extractRole(jwt);
+
+            return ResponseEntity.ok(
+                        new ApiResponse("Current user retrieved successfully", Map.of(
+                                "userId", userId,
+                                "role", role
+                        ))
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+    }
+
 //    public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
 //        Authentication authentication = authenticationService.authenticate(authenticationDto);
 //
