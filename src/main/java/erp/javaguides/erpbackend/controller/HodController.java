@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import erp.javaguides.erpbackend.dto.requestDto.HodRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.HodService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,6 +35,7 @@ public class HodController {
             HodResponseDto createdHod = hodService.createHod(hodRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("HOD created successfully", createdHod));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating HOD", null));
         }
     }

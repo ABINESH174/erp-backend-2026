@@ -90,7 +90,7 @@ public class StudentMapper {
                 student.getCgpa(),
                 student.getIsGovtSchool(),
                 student.getStudentStatus(),
-                student.getFaculty().getFacultyId()
+                (student.getFaculty()==null)? null:student.getFaculty().getFacultyId()
 
         );
     }
@@ -182,7 +182,7 @@ public class StudentMapper {
                 student.getSemester(),
                 student.getBatch(),
                 student.getCgpa(),
-                student.getFaculty().getFacultyId()
+                (student.getFaculty()==null)? null:student.getFaculty().getFacultyId()
         );
     }
 }

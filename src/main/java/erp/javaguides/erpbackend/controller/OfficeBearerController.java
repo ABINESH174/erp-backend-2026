@@ -1,7 +1,7 @@
 package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.entity.OfficeBearer;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

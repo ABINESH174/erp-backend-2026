@@ -6,9 +6,10 @@ import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.FacultyService;
 // import erp.javaguides.erpbackend.service.StudentService;
+import jakarta.annotation.security.PermitAll;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class FacultyController {
 
     // private final StudentService studentService;
 
+    @PermitAll
     @PostMapping("/post")
     public ResponseEntity<ApiResponse> createFaculty(@RequestBody FacultyRequestDto facultyDto) {
         try {
