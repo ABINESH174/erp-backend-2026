@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Principal;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.PrincipalService;
 
 

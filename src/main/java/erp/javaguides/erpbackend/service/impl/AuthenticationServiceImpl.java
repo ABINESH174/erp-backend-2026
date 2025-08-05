@@ -116,12 +116,23 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        if(authenticationRepository.findByEmail(username).isEmpty()) {
+            UserDetails userDetailsForStudentByRegisterNo = authenticationRepository.findByUserId(username);
+            if(userDetailsForStudentByRegisterNo==null) {
+                throw new UsernameNotFoundException("No user found with the given userId" + username);
+            } else {
+                log.info("The userDetails object : \n User id: "+userDetailsForStudentByRegisterNo.getUsername()+"Password"+ userDetailsForStudentByRegisterNo.getPassword()+"role"+ userDetailsForStudentByRegisterNo.getAuthorities());
+                return userDetailsForStudentByRegisterNo;
+            }
+        }
+
         // Since Authentication class implements UserDetails, you can return it directly.
         // The `findByEmail` method returns Optional<Authentication>, and Authentication is a UserDetails.
         log.info("The username of the user: "+ username);
-        UserDetails userDetails = authenticationRepository.findByEmail(username)
+        UserDetails userDetailsForOtherEntitiesByEmail = authenticationRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + username));
-        log.info("The userDetails object : ",userDetails);
-        return userDetails;
+        log.info("The userDetails object : \n User id: "+userDetailsForOtherEntitiesByEmail.getUsername()+"Password"+ userDetailsForOtherEntitiesByEmail.getPassword()+"role"+ userDetailsForOtherEntitiesByEmail.getAuthorities());
+        return userDetailsForOtherEntitiesByEmail;
     }
 }

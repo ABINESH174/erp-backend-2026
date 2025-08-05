@@ -3,7 +3,7 @@ package erp.javaguides.erpbackend.controller;
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
 import erp.javaguides.erpbackend.enums.PursuingYear;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

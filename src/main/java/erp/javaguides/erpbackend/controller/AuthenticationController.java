@@ -4,33 +4,35 @@ import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 // import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
 import erp.javaguides.erpbackend.dto.requestDto.NewPasswordRequestDto;
-import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
-import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
-import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
-import erp.javaguides.erpbackend.entity.Authentication;
-import erp.javaguides.erpbackend.entity.OfficeBearer;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
-import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.*;
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @CrossOrigin
 @AllArgsConstructor
 @RestController
@@ -40,13 +42,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final AuthenticationManager authenticationManager;
     private final AuthenticationRepository authenticationRepository;
-    private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-    private final StudentService studentService;
-    private  final FacultyService facultyService;
-    private final HodService hodService;
-    private final OfficeBearerService officeBearerService;
-
+    private final PasswordEncoder passwordEncoder;
     private final ExcelService excelService;
 
     @PostMapping("/create")
@@ -63,36 +60,74 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response) {
         try {
-            if(!(authenticationRepository.existsByUserId(authRequestDto.getEmail()))) {
+            erp.javaguides.erpbackend.entity.Authentication authVerification = authenticationRepository.findByUserId(authRequestDto.getEmail());
+
+            if(authVerification==null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No User Found with UserId "+authRequestDto.getEmail(),null));
-            } else if (authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()==null) {
+            } else if (authVerification.getEmail()==null) {
+
+                if(!passwordEncoder.matches(authRequestDto.getPassword(),authVerification.getPassword())) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Bad credentials; Password Incorrect",null));
+                }
+
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponse(
                         "The User hasn't registered yet.",
                         Map.of(
                                 "userId",
-                                authenticationRepository.findByUserId(authRequestDto.getEmail()).getUserId(),
+                                authVerification.getUserId(),
                                 "role",
-                                authenticationRepository.findByUserId(authRequestDto.getEmail()).getRole().name())
+                                authVerification.getRole().name())
                         )
                 );
             } else {
-                authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authRequestDto.getEmail(),
-                            authRequestDto.getPassword()
-                    )
-                );
-                Authentication authentication = (Authentication) userDetailsService.loadUserByUsername(authRequestDto.getEmail());
-                String jwtToken = jwtUtil.generateTokenWithRole(authentication.getUsername(),authentication.getRole().name());
 
-                Cookie cookie = new Cookie("jwt", jwtToken);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(true);
-                cookie.setPath("/");
-                cookie.setMaxAge(3 * 24 * 60 * 60);
-                response.addCookie(cookie);
+//                Cookie oldCookie = new Cookie("jwt",null);
+//                oldCookie.setPath("/");
+//                oldCookie.setMaxAge(0);
+//                response.addCookie(oldCookie);
 
-                return ResponseEntity.ok(new ApiResponse("Login Successfull",null));
+                org.springframework.security.core.Authentication authentication =
+                        authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword())
+                        );
+//                Authentication auth = (Authentication) userDetailsService.loadUserByUsername(authRequestDto.getEmail());
+
+                erp.javaguides.erpbackend.entity.Authentication auth =
+                        (erp.javaguides.erpbackend.entity.Authentication) authentication.getPrincipal();
+
+//                SecurityContextHolder.getContext().setAuthentication((org.springframework.security.core.Authentication) authentication);
+
+                String jwtToken = jwtUtil.generateTokenWithRole(auth.getUsername(),auth.getRole().name());
+
+
+
+
+
+                // Set new cookie with SameSite manually
+//                String cookieHeader = String.format(
+//                        "jwt=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Lax",
+//                        jwtToken,
+//                        3 * 24 * 60 * 60
+//                );
+//                response.setHeader("Set-Cookie", cookieHeader);
+
+
+
+
+//                Cookie newCookie = new Cookie("jwt", jwtToken);
+//                newCookie.setHttpOnly(true);
+//                newCookie.setSecure(true); // Set to false for local HTTP development
+//                newCookie.setPath("/");
+//                newCookie.setMaxAge(3 * 24 * 60 * 60);
+
+
+
+                // Manually add the SameSite attribute to the Set-Cookie header
+//                response.addHeader("Set-Cookie", String.format("%s; SameSite=Lax", newCookie.toString()));
+//
+//                response.addCookie(newCookie);
+
+                return ResponseEntity.ok(new AuthResponseDto(jwtToken));
 //                if(!(authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()==null)) {
 ////                    authRequestDto.setEmail(
 ////                            authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()
@@ -101,58 +136,72 @@ public class AuthenticationController {
             }
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (UsernameNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Bad credentials; Username or Password Icorrect",null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
-        Cookie cookie = new Cookie("jwt", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // Expire
+//    @PostMapping("/logout")
+//    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
+////        Cookie cookie = new Cookie("jwt", null);
+////        cookie.setHttpOnly(true);
+////        cookie.setSecure(true);
+////        cookie.setPath("/");
+////        cookie.setMaxAge(0); // Expire
+//
+//        // You should add SameSite attribute manually if you were doing so during login
+////        httpServletResponse.addHeader("Set-Cookie", String.format("%s; SameSite=Lax", cookie.toString()));
+////
+////        httpServletResponse.addCookie(cookie);
+//
+//        return ResponseEntity.ok(new ApiResponse("Logged out Successfully", null));
+//    }
 
-        httpServletResponse.addCookie(cookie);
-
-        return ResponseEntity.ok(new ApiResponse("Logged out Successfully", null));
-    }
-
-    @GetMapping("/current-user")
-    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
-        try {
-            // Extract JWT from cookie
-            String jwt = null;
-            if (request.getCookies() != null) {
-                for (Cookie cookie : request.getCookies()) {
-                    if ("jwt".equals(cookie.getName())) {
-                        jwt = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-
-            if (jwt == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token found");
-            }
-
-            // Extract email and role
-            String userId = jwtUtil.extractUserName(jwt);
-            String role = jwtUtil.extractRole(jwt);
-
-            return ResponseEntity.ok(
-                        new ApiResponse("Current user retrieved successfully", Map.of(
-                                "userId", userId,
-                                "role", role
-                        ))
-                    );
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-    }
+//    @GetMapping("/current-user")
+//    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+//        try {
+//            // Extract JWT from cookie
+//            String jwt = null;
+//            if (request.getCookies() != null) {
+//                for (Cookie cookie : request.getCookies()) {
+//                    if ("jwt".equals(cookie.getName())) {
+//                        jwt = cookie.getValue();
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            if (jwt == null) {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token found");
+//            }
+//
+//            // Extract email and role
+//            String userId = jwtUtil.extractUserName(jwt);
+//            String role = jwtUtil.extractRole(jwt);
+//
+//            System.out.println("👍👍👍👍👍👍👍👍👍👍👍Current UserId in authcontroller"+userId);
+//            System.out.println("👍👍👍👍👍👍👍👍👍👍👍👍Current role in authcontroller"+role);
+////            log.info("Current UserId in authcontroller"+userId);
+////            log.info("Current role in authcontroller"+role);
+//
+//            return ResponseEntity.ok(
+//                        new ApiResponse("Current user retrieved successfully", Map.of(
+//                                "userId", userId,
+//                                "role", role
+//                        ))
+//                    );
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+//        }
+//    }
 
 //    public ResponseEntity<String> authenticate(@RequestBody AuthenticationDto authenticationDto) {
 //        Authentication authentication = authenticationService.authenticate(authenticationDto);

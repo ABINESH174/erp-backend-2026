@@ -36,20 +36,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // This log message is crucial. If it doesn't appear, the filter is not being executed.
         logger.info("*** JWT Filter is running for request URI: {} ***", request.getRequestURI());
-//        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
         String jwt;
         String userEmail;
 
-        jwt = extractJwtFromCookies(request);
-        if (jwt == null) {
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
             logger.warn("No Authorization header found or it's not a Bearer token. Skipping JWT filter.");
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request,response);
             return;
         }
-
+        jwt = authHeader.substring(7);
         logger.info("Extracted JWT token: {}", jwt);
         userEmail = jwtUtil.extractUserName(jwt);
         logger.info("Extracted user email from JWT: {}", userEmail);
+
+
+//        //CHeck if token expired
+//        if(jwtUtil.isTokenExpired(jwt)) {
+//            Cookie expiredCookie = new Cookie("jwt", null);
+//            expiredCookie.setPath("/");
+//            expiredCookie.setHttpOnly(true);
+//            expiredCookie.setMaxAge(0); // delete
+//            response.addCookie(expiredCookie);
+//
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Token expired");
+//            return;
+//        }
+
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails;
@@ -84,14 +98,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     //Extracts JWT token from HttpOnly cookie named "jwt".
-    private String extractJwtFromCookies(HttpServletRequest request) {
-        if(request.getCookies() != null) {
-            for(Cookie cookie : request.getCookies()) {
-                if("jwt".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
+//    private String extractJwtFromCookies(HttpServletRequest request) {
+//        if(request.getCookies() != null) {
+//            for(Cookie cookie : request.getCookies()) {
+//                if("jwt".equals(cookie.getName())) {
+//                    logger.info("Extracted JWT token from cookie: {}", cookie.getValue());
+//                    return cookie.getValue();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 }

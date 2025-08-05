@@ -1,4 +1,4 @@
-package erp.javaguides.erpbackend.response;
+package erp.javaguides.erpbackend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

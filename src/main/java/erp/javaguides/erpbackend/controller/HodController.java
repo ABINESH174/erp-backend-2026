@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import erp.javaguides.erpbackend.dto.requestDto.HodRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.HodResponseDto;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.HodService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;

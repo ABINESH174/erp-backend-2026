@@ -41,11 +41,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("/api/authentication/**").permitAll()
+                        auth.requestMatchers("/api/authentication/**","/api/bonafide/**").permitAll()
                                 .requestMatchers("/api/principal/**").hasRole("PRINCIPAL")
                                 .requestMatchers("/api/office-bearer/**").hasAnyRole("PRINCIPAL", "OB")
                                 .requestMatchers("/api/hod/**").hasAnyRole("PRINCIPAL", "HOD")
                                 .requestMatchers(HttpMethod.POST, "/api/faculty/post").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/student").permitAll()
                                 .requestMatchers("/api/faculty/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY")
                                 .requestMatchers("/api/student/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY", "STUDENT")
                                 .requestMatchers("/api/**").hasRole("ADMIN")
@@ -61,10 +62,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true); //Required for cookies
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
         corsConfiguration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setAllowCredentials(true); //Required for cookies
+
 
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);

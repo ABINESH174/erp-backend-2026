@@ -6,7 +6,7 @@ import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.FacultyResponseDto;
 import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
-import erp.javaguides.erpbackend.response.ApiResponse;
+import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.FacultyService;
 // import erp.javaguides.erpbackend.service.StudentService;
 import jakarta.annotation.security.PermitAll;

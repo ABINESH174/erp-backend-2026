@@ -280,7 +280,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa(),
-                        student.getFaculty().getFacultyId()
+                        (student.getFaculty()==null)? null:student.getFaculty().getFacultyId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -304,7 +304,7 @@ public class StudentServiceImpl implements StudentService {
                         student.getSemester(),
                         student.getBatch(),
                         student.getCgpa(),
-                        student.getFaculty().getFacultyId()
+                        (student.getFaculty()==null)? null:student.getFaculty().getFacultyId()
                 ))
                 .collect(Collectors.toList());
     }

@@ -56,6 +56,9 @@ public class Authentication implements UserDetails {
 
     @Override
     public String getUsername() {
+        if(this.role.name().equals("STUDENT")) {
+            return this.userId;
+        }
         return this.email;
     }
 
