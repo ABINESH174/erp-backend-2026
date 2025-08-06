@@ -164,8 +164,8 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public List<FacultyResponseDto> getAllUnassignedFaculties() {
-        List<Faculty> faculties = facultyRepository.findByStudentsIsEmpty();
+    public List<FacultyResponseDto> getAllUnassignedFaculties(String discipline) {
+        List<Faculty> faculties = facultyRepository.findByDisciplineAndStudentsIsEmpty(discipline);
         return faculties.stream()
                 .map(FacultyMapper::mapToFacultyResponseDto)
                 .collect(Collectors.toList());
