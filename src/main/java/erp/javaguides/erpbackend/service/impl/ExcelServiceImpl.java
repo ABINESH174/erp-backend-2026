@@ -1,6 +1,7 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
+import erp.javaguides.erpbackend.enums.Role;
 import erp.javaguides.erpbackend.service.ExcelService;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,7 +28,7 @@ public class ExcelServiceImpl implements ExcelService {
                     AuthenticationDto authenticationDto = new AuthenticationDto(
                             String.valueOf((long) row.getCell(0).getNumericCellValue()),
                             String.valueOf((long) row.getCell(1).getNumericCellValue()),
-                            "STUDENT"
+                            Role.STUDENT
                     );
 
                     authenticationDtos.add(authenticationDto);

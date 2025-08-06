@@ -13,5 +13,7 @@ public interface FacultyRepository extends JpaRepository<Faculty,Long> {
 
     Optional<Faculty> findByDisciplineAndHandlingBatch(String discipline, String handlingBatch);
 
-    List<Faculty> findByStudentsIsEmpty();
+//    List<Faculty> findByStudentsIsEmpty();
+
+    List<Faculty> findByDisciplineAndStudentsIsEmpty(String discipline);
 }
