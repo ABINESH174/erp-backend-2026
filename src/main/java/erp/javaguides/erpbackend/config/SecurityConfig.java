@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/api/student").permitAll()
                                 .requestMatchers("/api/faculty/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY")
                                 .requestMatchers("/api/student/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY", "STUDENT")
+                                .requestMatchers("/api/email/**").hasAnyRole("STUDENT", "FACULTY", "HOD", "OB", "PRINCIPAL")
                                 .requestMatchers("/api/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )

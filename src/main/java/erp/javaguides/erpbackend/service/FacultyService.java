@@ -38,7 +38,7 @@ public interface FacultyService {
     List<BonafideResponseDto> getPendingBonafidesByFacultyId(Long facultyId);
 
     //hod neccessities
-    List<FacultyResponseDto> getAllUnassignedFaculties();
+    List<FacultyResponseDto> getAllUnassignedFaculties(String discipline);
 
     // Corrected assignFaculties() with static values like year, discipline and class section
     FacultyResponseDto assignFacultyUsingDisciplineYearAndClass(String facultyEmail, String discipline, PursuingYear year, String classSection);

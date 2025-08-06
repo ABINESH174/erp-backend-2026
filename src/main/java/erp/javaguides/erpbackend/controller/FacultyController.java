@@ -182,10 +182,10 @@ public class FacultyController {
         }
     }
 
-    @GetMapping("/unassigned-faculties")
-    public ResponseEntity<ApiResponse> getAllUnassignedFaculties() {
+    @GetMapping("/unassigned-faculties/{discipline}")
+    public ResponseEntity<ApiResponse> getAllUnassignedFaculties(@PathVariable String discipline) {
         try {
-            List<FacultyResponseDto> faculties = facultyService.getAllUnassignedFaculties();
+            List<FacultyResponseDto> faculties = facultyService.getAllUnassignedFaculties(discipline);
             if (faculties.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No unassigned faculties found", null));
             }
