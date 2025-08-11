@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import erp.javaguides.erpbackend.enums.*;
 import jakarta.persistence.*;
-// import jakarta.validation.constraints.Size;
 import lombok.*;
-// import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -27,10 +25,10 @@ public class Student {
     @Column(length = 20, unique = true)
     private String registerNo;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
     @Column(length = 20)
@@ -205,7 +203,7 @@ public class Student {
     @Column(length = 10)
     private String cgpa;
 
-    @Column(nullable = false)
+    @Column
     private Boolean isGovtSchool;
 
     private StudentStatus studentStatus;
