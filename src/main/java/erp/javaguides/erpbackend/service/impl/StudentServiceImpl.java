@@ -47,7 +47,7 @@ public class StudentServiceImpl implements StudentService {
                 throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
             }
             Optional<Student> optionalStudent = studentRepository.findByRegisterNo(studentDto.getRegisterNo());
-            if (optionalStudent.isPresent() && optionalStudent.get().getFirstName().isEmpty()) {
+            if (optionalStudent.isPresent() && !(optionalStudent.get().getFirstName() == null)) {
                 throw new Exception("Register Number already exists");
 //                updateStudent(studentDto.getRegisterNo(),studentDto);
             }
