@@ -1,8 +1,6 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
@@ -18,12 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +41,9 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
             authentication.setEmail("logapriyan2411@gmail.com");
         }
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        authentication.setFirstTimePasswordResetFlag(true);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
+
         return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
@@ -103,7 +100,9 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         }
         // create authentication
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
+
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        authentication.setFirstTimePasswordResetFlag(true);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
 
         // create student and assign faculty
@@ -134,5 +133,22 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + username));
         log.info("The userDetails object : \n User id: "+userDetailsForOtherEntitiesByEmail.getUsername()+"Password"+ userDetailsForOtherEntitiesByEmail.getPassword()+"role"+ userDetailsForOtherEntitiesByEmail.getAuthorities());
         return userDetailsForOtherEntitiesByEmail;
+    }
+
+    @Override
+    public void newPasswordAfterFirstTimeLogin(String userId, String newPassword) {
+
+        try {
+            Authentication authentication = authenticationRepository.findByUserId(userId);
+            if(authentication.isFirstTimePasswordResetFlag()) {
+                authentication.setPassword(passwordEncoder.encode(newPassword));
+                authentication.setFirstTimePasswordResetFlag(false);
+                authenticationRepository.save(authentication);
+            } else {
+                throw new RuntimeException("Password is already updated");
+            }
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User not found with userId: " + userId);
+        }
     }
 }

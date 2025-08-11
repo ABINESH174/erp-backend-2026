@@ -24,10 +24,10 @@ public class Hod {
     private Long hodId;
 
     @Column(length = 100)
-    private String discipline;
+    private String discipline;  // There are six disciplines in the application including 'Science and Humanities' for first year ( CFA ), didn't create a separate role for CFA since its similar to HOD
 
     @Column(length = 50)
-    private String department;
+    private String department;    // The department is now as same as the discipline in the application, but if the CFA is from a different dept (like maths, physics, chemistry, english ...), it will be for future integration.
 
     @Column(nullable = false)
     private String firstName;

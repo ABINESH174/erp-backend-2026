@@ -167,13 +167,13 @@ public class Student {
     private String programme;
 
     @Column(length = 50)
-    private String discipline;
+    private String discipline;    // The discipline is their core department or branch and will never change
 
     @Column(length = 50)
-    private String department;
+    private String department;    // The department is 'Science and Humanities' for first year students and there discipline for other years... (will be changed dynamically while switching from II semester)
 
     @Column(length = 1)
-    private String classSection; 
+    private String classSection;  // class section is a empty space(' ') for departments with no sections, ('A' or 'B') for mech and eee
 
     @Column(length = 50)
     private String admissionNumber;

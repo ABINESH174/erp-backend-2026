@@ -33,10 +33,10 @@ public class Faculty {
     private String mobileNumber;
 
     @Column(length = 50)
-    private String discipline;
+    private String discipline;   // For first year faculties the discipline is 'Science and Humanities' but for other dept faculties its their own dedicated department
 
     @Column(length = 50)
-    private String department;
+    private String department;   // For first year faculties department is their dedicated dept (like physics, chemistry, maths, english...) and its the same as discipline for other faculties
 
     @Column(length = 50)
     private String handlingBatch;
