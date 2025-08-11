@@ -18,4 +18,6 @@ public interface FacultyRepository extends JpaRepository<Faculty,Long> {
     List<Faculty> findByDisciplineAndStudentsIsEmpty(String discipline);
 
     List<Faculty> findByDepartmentNotInAndStudentsIsEmpty(List<String> coreDepartments);
+
+    Faculty findByFacultyId(Long facultyId);
 }
