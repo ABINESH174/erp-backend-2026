@@ -12,4 +12,7 @@ public interface AuthenticationService {
 
     void createAuthenticationAndStudent(String facultyEmail, AuthenticationDto authenticationDto);
 
+    void newPasswordAfterFirstTimeLogin(String userId, String newPassword);
+
+
 }

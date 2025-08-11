@@ -165,7 +165,18 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public List<FacultyResponseDto> getAllUnassignedFaculties(String discipline) {
-        List<Faculty> faculties = facultyRepository.findByDisciplineAndStudentsIsEmpty(discipline);
+        List<Faculty> faculties;
+        List<String> coreDepartments = List.of("Computer Science and Engineering",
+                "Civil Engineering",
+                "Electrical and Electronic Engineering",
+                "Electronics and Communication Engineering",
+                "Mechanical Engineering");
+
+        if(coreDepartments.contains(discipline)){
+             faculties = facultyRepository.findByDisciplineAndStudentsIsEmpty(discipline);
+        } else {
+            faculties = facultyRepository.findByDepartmentNotInAndStudentsIsEmpty(coreDepartments);
+        }
         return faculties.stream()
                 .map(FacultyMapper::mapToFacultyResponseDto)
                 .collect(Collectors.toList());
@@ -173,22 +184,22 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyResponseDto assignFacultyUsingDisciplineYearAndClass(String facultyEmail, String discipline, PursuingYear year, String classSection) {
-                Faculty faculty = facultyRepository.findByEmail(facultyEmail)
-                                        .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
+        Faculty faculty = facultyRepository.findByEmail(facultyEmail)
+                                .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
                 
-                List<Student> students = studentRepository.findByDisciplineAndSemesterInAndClassSection(discipline, utilityService.getListOfSemesterFromYear(year), classSection);
+        List<Student> students = studentRepository.findByDisciplineAndSemesterInAndClassSection(discipline, utilityService.getListOfSemesterFromYear(year), classSection);
 
-                if (students.isEmpty()) {
-                        throw new ResourceNotFoundException("No students found with discipline: " + discipline);
-                }
+        if (students.isEmpty()) {
+            throw new ResourceNotFoundException("No students found with discipline: " + discipline);
+        }
 
-                faculty.setHandlingBatch(students.getFirst().getBatch());
+        faculty.setHandlingBatch(students.getFirst().getBatch());
 
-                for(Student student : students) {
+        for(Student student : students) {
                     faculty.addStudent(student);
-                }
+        }
 
-                return FacultyMapper.mapToFacultyResponseDto(facultyRepository.save(faculty));
+        return FacultyMapper.mapToFacultyResponseDto(facultyRepository.save(faculty));
     }
 
 }

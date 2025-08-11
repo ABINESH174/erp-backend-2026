@@ -42,6 +42,8 @@ public class Authentication implements UserDetails {
 
     private LocalDateTime forgotPasswordResetTokenExpiry;
 
+    private boolean firstTimePasswordResetFlag;
+
     public Authentication(Long id, String userId, String password, Role role) {
         this.id=id;
         this.userId=userId;

@@ -1,8 +1,10 @@
 package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
+import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.enums.Role;
 import erp.javaguides.erpbackend.service.ExcelService;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -14,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExcelServiceImpl implements ExcelService {
+
     @Override
     public List<AuthenticationDto> addStudentAuthenticationFromExcel(InputStream is) {
             List<AuthenticationDto> authenticationDtos = new ArrayList<>();
@@ -24,13 +28,11 @@ public class ExcelServiceImpl implements ExcelService {
 
                 for (Row row : sheet) {
                     if (row.getRowNum() == 0) continue; // Skip header
-
                     AuthenticationDto authenticationDto = new AuthenticationDto(
                             String.valueOf((long) row.getCell(0).getNumericCellValue()),
                             String.valueOf((long) row.getCell(1).getNumericCellValue()),
                             Role.STUDENT
                     );
-
                     authenticationDtos.add(authenticationDto);
                 }
                 workbook.close();
