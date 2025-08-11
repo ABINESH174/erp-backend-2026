@@ -10,6 +10,7 @@ import erp.javaguides.erpbackend.jwt.JwtUtil;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
 import erp.javaguides.erpbackend.repository.FacultyRepository;
+import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     private final AuthenticationRepository authenticationRepository;
     private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -110,6 +112,8 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         Faculty faculty = facultyRepository.findByEmail(facultyEmail)
                             .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
         faculty.addStudent(student);
+
+        studentRepository.save(student);
 
     }
 
