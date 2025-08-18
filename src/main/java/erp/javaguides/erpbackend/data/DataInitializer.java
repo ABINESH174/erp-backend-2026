@@ -62,17 +62,17 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 
     private void createHods() {
         if (hodService.getAllHods().isEmpty()){
-            HodRequestDto hodCse = new HodRequestDto("Hodcse","Cse","duraiyan100@gmail.com","7878878788","Computer Science and Engineering", "Computer Science and Engineering", this.principalEmail );
+            HodRequestDto hodCse = new HodRequestDto("Hodcse","Cse","duraiyan100@gmail.com","7878878788","Computer Science and Engineering", "Computer Science and Engineering");
             createAuthentication(hodCse.getEmail(), "123456", Role.HOD);
             HodResponseDto createdHodCse = hodService.createHod(hodCse);
 
 
-            HodRequestDto hodEce = new HodRequestDto("HodEce", "ece", "ecehod@gmail.com","9898989890","Electronics and Communication Engineering", "Electronics and Communication Engineering", this.principalEmail);
+            HodRequestDto hodEce = new HodRequestDto("HodEce", "ece", "ecehod@gmail.com","9898989890","Electronics and Communication Engineering", "Electronics and Communication Engineering");
             createAuthentication(hodEce.getEmail(), "123456", Role.HOD);
             HodResponseDto createdHodEce = hodService.createHod(hodEce);
 
 
-            HodRequestDto cfa = new HodRequestDto("CFA","cfa", "dhanushdhanush3732@gmail.com", "9696969696", "Science and Humanities", "Science and Humanities", this.principalEmail);
+            HodRequestDto cfa = new HodRequestDto("CFA","cfa", "dhanushdhanush3732@gmail.com", "9696969696", "Science and Humanities", "Science and Humanities");
             createAuthentication(cfa.getEmail(), "123456", Role.HOD);
             HodResponseDto createdCfa = hodService.createHod(cfa);
 

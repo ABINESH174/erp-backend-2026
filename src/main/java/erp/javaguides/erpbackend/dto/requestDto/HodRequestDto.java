@@ -15,6 +15,6 @@ public class HodRequestDto {
     private String department;
 
     // Hard code
-    private String principalEmail;
+//    private String principalEmail;
     
 }
