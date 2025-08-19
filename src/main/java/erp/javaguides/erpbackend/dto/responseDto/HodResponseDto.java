@@ -12,6 +12,7 @@ public class HodResponseDto {
     private String lastName;
     private String email;
     private String mobileNumber;
+    private String aadharNumber;
     private String discipline;
     private String department;
 

@@ -46,9 +46,9 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentDto>> getAllStudents(){
+    public ResponseEntity<ApiResponse> getAllStudents(){
         List<StudentDto> students=studentService.getAllStudents();
-        return ResponseEntity.ok(students);
+        return ResponseEntity.ok(new ApiResponse("Sccessfully All Students Retreived", students));
     }
 
     @PutMapping("update/{registerNo}")

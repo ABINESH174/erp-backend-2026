@@ -61,7 +61,7 @@ public class SecurityConfig {
                                 // 2. Specific role-based API access
                                 .requestMatchers("/api/principal/**").hasAnyRole("PRINCIPAL","ADMIN")
                                 .requestMatchers("/api/office-bearer/**").hasAnyRole("PRINCIPAL", "OB","ADMIN")
-                                .requestMatchers("/api/hod/**").hasAnyRole("PRINCIPAL", "HOD","ADMIN")
+                                .requestMatchers("/api/hod/**","/api/authentication/create").hasAnyRole("PRINCIPAL", "HOD","ADMIN")
                                 .requestMatchers("/api/faculty/**", "/api/authentication/upload-students/**", "/api/authentication/create/student/**")
                                     .hasAnyRole("PRINCIPAL", "HOD", "FACULTY","ADMIN")
                                 .requestMatchers("/api/student/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY", "STUDENT","ADMIN")

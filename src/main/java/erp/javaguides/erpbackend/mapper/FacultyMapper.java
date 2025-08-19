@@ -17,6 +17,7 @@ public class FacultyMapper {
                 faculty.getLastName(),
                 faculty.getEmail(),
                 faculty.getMobileNumber(),
+                faculty.getAadharNumber(),
                 faculty.getDiscipline(),
                 faculty.getHandlingBatch(),
                 faculty.getSubjects(),
@@ -32,6 +33,7 @@ public class FacultyMapper {
                 facultyDto.getLastName(),
                 facultyDto.getEmail(),
                 facultyDto.getMobileNumber(),
+                facultyDto.getAadharNumber(),
                 facultyDto.getDiscipline(),
                 facultyDto.getHandlingBatch(),
                 facultyDto.getSubjects(),
@@ -58,6 +60,7 @@ public class FacultyMapper {
                 faculty.getLastName(),
                 faculty.getEmail(),
                 faculty.getMobileNumber(),
+                faculty.getAadharNumber(),
                 faculty.getDiscipline(),
                 faculty.getDepartment(),
                 faculty.getHandlingBatch(),
@@ -70,6 +73,7 @@ public class FacultyMapper {
             facultyRequestDto.getLastName(),
             facultyRequestDto.getEmail(),
             facultyRequestDto.getMobileNumber(),
+                facultyRequestDto.getAadharNumber(),
             facultyRequestDto.getDiscipline(),
             facultyRequestDto.getDepartment()
         );

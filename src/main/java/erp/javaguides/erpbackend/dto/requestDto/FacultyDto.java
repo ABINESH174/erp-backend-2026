@@ -16,6 +16,7 @@ public class FacultyDto {
     private String lastName;
     private String email;
     private String mobileNumber;
+    private String aadharNumber;
     private String discipline;
 
     // Dynamic field, it must be assigned by the hod

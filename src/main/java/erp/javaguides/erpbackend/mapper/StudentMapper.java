@@ -70,6 +70,8 @@ public class StudentMapper {
                 student.getEmisNumber(),
                 student.getFirstGraduate(),
                 student.getSpecialCategory(),
+                student.getAadharCardFilePath(),
+                null,
                 null,
                 null,
                 null,
