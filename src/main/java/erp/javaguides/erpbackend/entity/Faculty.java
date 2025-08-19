@@ -29,8 +29,11 @@ public class Faculty {
 
     private String email;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String mobileNumber;
+
+    @Column(length = 12)
+    private String aadharNumber;
 
     @Column(length = 50)
     private String discipline;   // For first year faculties the discipline is 'Science and Humanities' but for other dept faculties its their own dedicated department
@@ -68,11 +71,12 @@ public class Faculty {
         this.students.remove(student);
     }
 
-    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline, String handlingBatch, List<String> subjects, List<String> handlingSemesters, List<String> handlingDepartments, List<String> batches) {
+    public Faculty(String firstName, String lastName, String email, String mobileNumber,String aadharNumber, String discipline, String handlingBatch, List<String> subjects, List<String> handlingSemesters, List<String> handlingDepartments, List<String> batches) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.mobileNumber = mobileNumber;
+        this.aadharNumber = aadharNumber;
         this.discipline = discipline;
         this.handlingBatch = handlingBatch;
         this.subjects = subjects;
@@ -82,11 +86,12 @@ public class Faculty {
     }
 
 
-    public Faculty(String firstName, String lastName, String email, String mobileNumber, String discipline, String department) {
+    public Faculty(String firstName, String lastName, String email, String mobileNumber,String aadharNumber, String discipline, String department) {
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
         this.mobileNumber=mobileNumber;
+        this.aadharNumber=aadharNumber;
         this.discipline=discipline;
         this.department=department;
     }

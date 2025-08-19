@@ -161,6 +161,9 @@ public class Student {
     @Column(length = 150)
     private String specialCategoryFilePath;
 
+    @Column
+    private String aadharCardFilePath;
+
     @Column(length = 100)
     private String programme;
 

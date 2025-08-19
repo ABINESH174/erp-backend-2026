@@ -4,6 +4,7 @@ import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.enums.AuthenticationStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.exception.UserAlreadyExistsException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
@@ -51,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         }
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
         authentication.setFirstTimePasswordResetFlag(true);
+        authentication.setAuthenticationStatus(AuthenticationStatus.ACTIVE);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
 
         return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
@@ -112,6 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
 
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
         authentication.setFirstTimePasswordResetFlag(true);
+        authentication.setAuthenticationStatus(AuthenticationStatus.ACTIVE);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
 
         // create student and assign faculty

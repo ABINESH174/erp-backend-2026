@@ -26,6 +26,7 @@ public class HodMapper {
             hodResponseDto.setLastName(hod.getLastName());
             hodResponseDto.setEmail(hod.getEmail());
             hodResponseDto.setMobileNumber(hod.getMobileNumber());
+            hodResponseDto.setAadharNumber(hod.getAadharNumber());
             hodResponseDto.setDiscipline(hod.getDiscipline());
             hodResponseDto.setDepartment(hod.getDepartment());
             return hodResponseDto;
@@ -37,6 +38,7 @@ public class HodMapper {
             hod.setLastName(hodRequestDto.getLastName());
             hod.setEmail(hodRequestDto.getEmail());
             hod.setMobileNumber(hodRequestDto.getMobileNumber());
+            hod.setAadharNumber(hodRequestDto.getAadharNumber());
             hod.setDiscipline(hodRequestDto.getDiscipline());
             hod.setDepartment(hodRequestDto.getDepartment());
             return hod;
