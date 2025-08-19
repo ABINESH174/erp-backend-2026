@@ -13,8 +13,10 @@ import erp.javaguides.erpbackend.repository.FacultyRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +29,12 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
+
+    @Value("${admin.email}")
+    private String adminMail;
+
     private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     private final AuthenticationRepository authenticationRepository;
     private final FacultyRepository facultyRepository;
@@ -40,7 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     public AuthenticationDto createAuthentication(AuthenticationDto authenticationDto) {
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
         if(authenticationDto.getRole().name().equals("ADMIN")) {
-            authentication.setEmail("logapriyan2411@gmail.com");
+            authentication.setEmail(adminMail);
+            authentication.setFirstTimePasswordResetFlag(false);
         }
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
         authentication.setFirstTimePasswordResetFlag(true);
