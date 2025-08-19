@@ -65,6 +65,8 @@ public class AuthenticationController {
 
             if(authVerification==null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No User Found with UserId "+authRequestDto.getEmail(),null));
+            } else if (!authVerification.isUserActive()){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("User Expired",null));
             } else if (authVerification.getEmail()==null) {
                 // For a student and faculty who havent registered yet will have their email empty, they'll have to be registered first.
                 if(!passwordEncoder.matches(authRequestDto.getPassword(),authVerification.getPassword())) {

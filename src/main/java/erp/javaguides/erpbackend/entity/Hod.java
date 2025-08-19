@@ -36,8 +36,11 @@ public class Hod {
 
     private String email;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String mobileNumber;
+
+    @Column(length = 12)
+    private String aadharNumber;
 
     private List<String> subjects = new ArrayList<>();
 

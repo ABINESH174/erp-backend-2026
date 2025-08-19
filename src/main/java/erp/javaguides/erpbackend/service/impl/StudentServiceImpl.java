@@ -92,6 +92,8 @@ public class StudentServiceImpl implements StudentService {
                     base64ToMultipartFile(studentDto.getHsc2YearFile(), "hsc2file")));
             student.setDiplomaFilePath(saveFile(firstName, userFolderPath, "diplomafile",
                     base64ToMultipartFile(studentDto.getDiplomaFile(), "diplomafile")));
+            student.setAadharCardFilePath(saveFile(firstName,userFolderPath,"aadharCardFile",
+                    base64ToMultipartFile(studentDto.getAadharCardFile(),"aadharCardFile")));
 
 
 

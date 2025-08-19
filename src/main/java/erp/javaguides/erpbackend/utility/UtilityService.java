@@ -83,5 +83,16 @@ public class UtilityService {
         authentication.setEmail(email);
         authenticationRepository.save(authentication);
     }
+
+    public String mapDepartmentAbbreviation(String discipline) {
+        return switch (discipline) {
+            case "Computer Science and Engineering" -> "CSE";
+            case "Civil Engineering" -> "CIVIL";
+            case "Mechanical Engineering" -> "MECH";
+            case "Electrical and Electronics Engineering" -> "EEE";
+            case "Electronics and communication Engineering" -> "ECE";
+            default -> "";
+        };
+    }
     
 }
