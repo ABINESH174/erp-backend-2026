@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.entity;
 
+import erp.javaguides.erpbackend.enums.AuthenticationStatus;
 import erp.javaguides.erpbackend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,11 @@ public class Authentication implements UserDetails {
 
     private LocalDateTime forgotPasswordResetTokenExpiry;
 
+    private boolean firstTimePasswordResetFlag;
+
+    @Enumerated(EnumType.STRING)
+    private AuthenticationStatus authenticationStatus;
+
     public Authentication(Long id, String userId, String password, Role role) {
         this.id=id;
         this.userId=userId;
@@ -80,5 +86,9 @@ public class Authentication implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isUserActive() {
+        return this.authenticationStatus.equals(AuthenticationStatus.ACTIVE);
     }
 }

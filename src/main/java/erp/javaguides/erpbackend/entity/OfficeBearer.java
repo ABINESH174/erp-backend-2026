@@ -27,6 +27,12 @@ public class OfficeBearer {
 
     private String handlingPurpose;
 
+    @Column(length = 10)
+    private String mobileNumber;
+
+    @Column(length = 12)
+    private String aadharNumber;
+
     // Many-to-many relationship with HOD
     // @JoinTable defines the join table and its columns
     // This is the owning side of the relationship (the one that manages the join table)

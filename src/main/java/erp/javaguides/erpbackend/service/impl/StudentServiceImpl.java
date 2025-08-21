@@ -2,11 +2,13 @@ package erp.javaguides.erpbackend.service.impl;
 
 import erp.javaguides.erpbackend.dto.requestDto.StudentDto;
 import erp.javaguides.erpbackend.dto.responseDto.StudentResponseDto;
+import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.PursuingYear;
 import erp.javaguides.erpbackend.exception.InternalServerErrorException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.StudentMapper;
+import erp.javaguides.erpbackend.repository.FacultyRepository;
 import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.StudentService;
 import erp.javaguides.erpbackend.utility.UtilityService;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final FacultyRepository facultyRepository;
 
     private final UtilityService utilityService;
 
@@ -47,7 +50,8 @@ public class StudentServiceImpl implements StudentService {
                 throw new IllegalArgumentException("StudentDto or Register Number cannot be null");
             }
             Optional<Student> optionalStudent = studentRepository.findByRegisterNo(studentDto.getRegisterNo());
-            if (optionalStudent.isPresent() && optionalStudent.get().getFirstName().isEmpty()) {
+
+            if (optionalStudent.isPresent() && !(optionalStudent.get().getFirstName() == null)) {
                 throw new Exception("Register Number already exists");
 //                updateStudent(studentDto.getRegisterNo(),studentDto);
             }
@@ -64,6 +68,10 @@ public class StudentServiceImpl implements StudentService {
 
             // Map StudentDto to Student object
             Student student = StudentMapper.mapToStudentWithFilesDto(studentDto);
+
+            if (!(optionalStudent.get().getFaculty().getFacultyId() == null)) {
+                student.setFaculty(facultyRepository.findByFacultyId(optionalStudent.get().getFaculty().getFacultyId()));
+            }
 
             // Convert Base64 strings to MultipartFile and save files
             student.setCommunityCertificatePath(saveFile(firstName, userFolderPath, "communityCertificate",
@@ -84,6 +92,10 @@ public class StudentServiceImpl implements StudentService {
                     base64ToMultipartFile(studentDto.getHsc2YearFile(), "hsc2file")));
             student.setDiplomaFilePath(saveFile(firstName, userFolderPath, "diplomafile",
                     base64ToMultipartFile(studentDto.getDiplomaFile(), "diplomafile")));
+            student.setAadharCardFilePath(saveFile(firstName,userFolderPath,"aadharCardFile",
+                    base64ToMultipartFile(studentDto.getAadharCardFile(),"aadharCardFile")));
+
+
 
             // Save the Student object
             student = studentRepository.save(student);

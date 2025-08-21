@@ -30,6 +30,9 @@ public class Principal {
     @Column(length = 15)
     private String mobileNumber;
 
+    @Column(length = 12)
+    private String aadharNumber;
+
     @OneToMany(mappedBy = "principal",cascade = CascadeType.ALL)
     private List<Hod> hods;
 

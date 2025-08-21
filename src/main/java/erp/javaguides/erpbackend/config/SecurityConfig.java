@@ -40,17 +40,37 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("/api/authentication/**","/api/bonafide/**").permitAll()
-                                .requestMatchers("/api/principal/**").hasRole("PRINCIPAL")
-                                .requestMatchers("/api/office-bearer/**").hasAnyRole("PRINCIPAL", "OB")
-                                .requestMatchers("/api/hod/**").hasAnyRole("PRINCIPAL", "HOD")
-                                .requestMatchers(HttpMethod.POST, "/api/faculty/post").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/student").permitAll()
-                                .requestMatchers("/api/faculty/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY")
-                                .requestMatchers("/api/student/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY", "STUDENT")
-                                .requestMatchers("/api/email/**").hasAnyRole("STUDENT", "FACULTY", "HOD", "OB", "PRINCIPAL")
+                .authorizeHttpRequests((auth) -> auth
+                                // 1. Public endpoints (first)
+                                .requestMatchers(
+                                        "/api/authentication/authenticate",
+                                        "/api/authentication/set-password",
+                                        "/api/authentication/new-password",
+                                        "/api/authentication/get-otp",
+                                        "/api/bonafide/**"
+                                ).permitAll()
+
+                                .requestMatchers(HttpMethod.POST,
+                                        "/api/faculty/post",
+                                        "/api/student",
+                                        "/api/hod/create",
+                                        "/api/office-bearer/create",
+                                        "/api/principal/create"
+                                ).permitAll()
+
+                                // 2. Specific role-based API access
+                                .requestMatchers("/api/principal/**").hasAnyRole("PRINCIPAL","ADMIN")
+                                .requestMatchers("/api/office-bearer/**").hasAnyRole("PRINCIPAL", "OB","ADMIN")
+                                .requestMatchers("/api/hod/**","/api/authentication/create").hasAnyRole("PRINCIPAL", "HOD","ADMIN")
+                                .requestMatchers("/api/faculty/**", "/api/authentication/upload-students/**", "/api/authentication/create/student/**")
+                                    .hasAnyRole("PRINCIPAL", "HOD", "FACULTY","ADMIN")
+                                .requestMatchers("/api/student/**").hasAnyRole("PRINCIPAL", "HOD", "FACULTY", "STUDENT","ADMIN")
+                                .requestMatchers("/api/email/**").hasAnyRole("STUDENT", "FACULTY", "HOD", "OB", "PRINCIPAL", "ADMIN") // Add ADMIN if needed
+
+                                // 3. Catch-all for all other /api/** routes: only ADMIN
                                 .requestMatchers("/api/**").hasRole("ADMIN")
+
+                                // 4. Everything else must be authenticated
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
@@ -64,7 +84,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true); //Required for cookies
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000","http://192.168.11.69:3000"));
         corsConfiguration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
 

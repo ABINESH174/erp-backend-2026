@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import erp.javaguides.erpbackend.enums.*;
 import jakarta.persistence.*;
-// import jakarta.validation.constraints.Size;
 import lombok.*;
-// import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -27,10 +25,10 @@ public class Student {
     @Column(length = 20, unique = true)
     private String registerNo;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
     @Column(length = 20)
@@ -163,17 +161,20 @@ public class Student {
     @Column(length = 150)
     private String specialCategoryFilePath;
 
+    @Column
+    private String aadharCardFilePath;
+
     @Column(length = 100)
     private String programme;
 
     @Column(length = 50)
-    private String discipline;
+    private String discipline;    // The discipline is their core department or branch and will never change
 
     @Column(length = 50)
-    private String department;
+    private String department;    // The department is 'Science and Humanities' for first year students and there discipline for other years... (will be changed dynamically while switching from II semester)
 
     @Column(length = 1)
-    private String classSection; 
+    private String classSection;  // class section is a empty space(' ') for departments with no sections, ('A' or 'B') for mech and eee
 
     @Column(length = 50)
     private String admissionNumber;
@@ -205,7 +206,7 @@ public class Student {
     @Column(length = 10)
     private String cgpa;
 
-    @Column(nullable = false)
+    @Column
     private Boolean isGovtSchool;
 
     private StudentStatus studentStatus;

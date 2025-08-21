@@ -1,29 +1,28 @@
 package erp.javaguides.erpbackend.service.impl;
 
-import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
-import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
 import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
+import erp.javaguides.erpbackend.enums.AuthenticationStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.exception.UserAlreadyExistsException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
 import erp.javaguides.erpbackend.mapper.AuthenticationMapper;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
 import erp.javaguides.erpbackend.repository.FacultyRepository;
+import erp.javaguides.erpbackend.repository.StudentRepository;
 import erp.javaguides.erpbackend.service.AuthenticationService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +30,16 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
+
+    @Value("${admin.email}")
+    private String adminMail;
+
     private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     private final AuthenticationRepository authenticationRepository;
     private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -43,10 +47,14 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     public AuthenticationDto createAuthentication(AuthenticationDto authenticationDto) {
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
         if(authenticationDto.getRole().name().equals("ADMIN")) {
-            authentication.setEmail("logapriyan2411@gmail.com");
+            authentication.setEmail(adminMail);
+            authentication.setFirstTimePasswordResetFlag(false);
         }
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        authentication.setFirstTimePasswordResetFlag(true);
+        authentication.setAuthenticationStatus(AuthenticationStatus.ACTIVE);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
+
         return AuthenticationMapper.mapToAuthenticationDto(savedAuthentication);
     }
 
@@ -103,7 +111,10 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         }
         // create authentication
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
+
         authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        authentication.setFirstTimePasswordResetFlag(true);
+        authentication.setAuthenticationStatus(AuthenticationStatus.ACTIVE);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
 
         // create student and assign faculty
@@ -111,6 +122,8 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         Faculty faculty = facultyRepository.findByEmail(facultyEmail)
                             .orElseThrow(()->new ResourceNotFoundException("Faculty not found with email :"+ facultyEmail));
         faculty.addStudent(student);
+
+        studentRepository.save(student);
 
     }
 
@@ -134,5 +147,22 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + username));
         log.info("The userDetails object : \n User id: "+userDetailsForOtherEntitiesByEmail.getUsername()+"Password"+ userDetailsForOtherEntitiesByEmail.getPassword()+"role"+ userDetailsForOtherEntitiesByEmail.getAuthorities());
         return userDetailsForOtherEntitiesByEmail;
+    }
+
+    @Override
+    public void newPasswordAfterFirstTimeLogin(String userId, String newPassword) {
+
+        try {
+            Authentication authentication = authenticationRepository.findByUserId(userId);
+            if(authentication.isFirstTimePasswordResetFlag()) {
+                authentication.setPassword(passwordEncoder.encode(newPassword));
+                authentication.setFirstTimePasswordResetFlag(false);
+                authenticationRepository.save(authentication);
+            } else {
+                throw new RuntimeException("Password is already updated");
+            }
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User not found with userId: " + userId);
+        }
     }
 }

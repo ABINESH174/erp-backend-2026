@@ -759,7 +759,7 @@ public class BonafideServiceImpl implements BonafideService {
     private String generateBonafideCertificateNumber(Long bonafideId , String discipline){
         String idWithZero = "0" + bonafideId;
         int currentYear = LocalDate.now().getYear();
-        return idWithZero + "/" + discipline + "/" + currentYear;
+        return idWithZero + "/" + utilityService.mapDepartmentAbbreviation(discipline) + "/" + currentYear;
     }
 
     @Override

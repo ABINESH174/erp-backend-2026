@@ -3,6 +3,7 @@ package erp.javaguides.erpbackend.controller;
 import erp.javaguides.erpbackend.dto.requestDto.AuthRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 // import erp.javaguides.erpbackend.dto.requestDto.FacultyDto;
+import erp.javaguides.erpbackend.dto.requestDto.NewPasswordAfterLoginFirstTimeRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.NewPasswordRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
@@ -64,8 +65,10 @@ public class AuthenticationController {
 
             if(authVerification==null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No User Found with UserId "+authRequestDto.getEmail(),null));
+            } else if (!authVerification.isUserActive()){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("User Expired",null));
             } else if (authVerification.getEmail()==null) {
-
+                // For a student and faculty who havent registered yet will have their email empty, they'll have to be registered first.
                 if(!passwordEncoder.matches(authRequestDto.getPassword(),authVerification.getPassword())) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Bad credentials; Password Incorrect",null));
                 }
@@ -98,9 +101,7 @@ public class AuthenticationController {
 //                SecurityContextHolder.getContext().setAuthentication((org.springframework.security.core.Authentication) authentication);
 
                 String jwtToken = jwtUtil.generateTokenWithRole(auth.getUsername(),auth.getRole().name());
-
-
-
+                boolean flag = auth.isFirstTimePasswordResetFlag();
 
 
                 // Set new cookie with SameSite manually
@@ -127,7 +128,7 @@ public class AuthenticationController {
 //
 //                response.addCookie(newCookie);
 
-                return ResponseEntity.ok(new AuthResponseDto(jwtToken));
+                return ResponseEntity.ok(new AuthResponseDto(jwtToken, flag));
 //                if(!(authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()==null)) {
 ////                    authRequestDto.setEmail(
 ////                            authenticationRepository.findByUserId(authRequestDto.getEmail()).getEmail()
@@ -139,7 +140,9 @@ public class AuthenticationController {
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
-        } catch (BadCredentialsException e) {
+        }
+
+        catch (BadCredentialsException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Bad credentials; Username or Password Icorrect",null));
         } catch (Exception e) {
@@ -270,7 +273,7 @@ public class AuthenticationController {
             for(AuthenticationDto authenticationDto : authenticationDtos) {
                 authenticationService.createAuthenticationAndStudent(facultyEmail, authenticationDto);
             }
-            return ResponseEntity.ok(new ApiResponse("Authentication of students using excel is created successfully",null));
+            return ResponseEntity.ok(new ApiResponse("Authentication of students using excel by faculty is created successfully",null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding authentication students from excel",null));
@@ -310,6 +313,18 @@ public class AuthenticationController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error changing password", null));
+        }
+    }
+
+    @PutMapping("/new-password")
+    public ResponseEntity<ApiResponse> newPasswordAfterFirstTimeAuthentication(@RequestBody NewPasswordAfterLoginFirstTimeRequestDto loginFirstTimeRequestDto) {
+        try {
+            authenticationService.newPasswordAfterFirstTimeLogin(loginFirstTimeRequestDto.getUserId(), loginFirstTimeRequestDto.getNewPassword());
+            return ResponseEntity.ok(new ApiResponse("Password Updated Successfully",null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User not found with userId: " + loginFirstTimeRequestDto.getUserId(), null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse("update password failed",null));
         }
     }
 }

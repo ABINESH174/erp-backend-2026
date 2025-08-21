@@ -71,8 +71,10 @@ public class StudentDto {
     private String specialCategory;
     private String firstGraduateFile;
     private String specialCategoryFile;
+    private String aadharCardFile;
     private byte[] firstGraduateFileContent;
     private byte[] specialCategoryFileContent;
+    private byte[] aadharCardFileContent;
     private String programme;
     private String discipline;
     private String department;

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import erp.javaguides.erpbackend.entity.Authentication;
+import erp.javaguides.erpbackend.enums.Role;
+import erp.javaguides.erpbackend.repository.*;
 import erp.javaguides.erpbackend.utility.UtilityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +21,6 @@ import erp.javaguides.erpbackend.enums.BonafideStatus;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
 import erp.javaguides.erpbackend.mapper.HodMapper;
-import erp.javaguides.erpbackend.repository.BonafideRepository;
-import erp.javaguides.erpbackend.repository.HodRepository;
-import erp.javaguides.erpbackend.repository.OfficeBearerRepository;
 import erp.javaguides.erpbackend.service.HodService;
 import erp.javaguides.erpbackend.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,8 @@ public class HodServiceImpl implements HodService {
 
     private final OfficeBearerRepository officeBearerRepository;
 
+    private final AuthenticationRepository authenticationRepository;
+
     private final UtilityService utilityService;
     
 
@@ -48,9 +50,13 @@ public class HodServiceImpl implements HodService {
             throw new IllegalArgumentException("HOD with this email already exists.");
         }
 
+        Authentication principalAuthentication = authenticationRepository.findByRole(Role.PRINCIPAL);
+
+        hodRequestDto.setDepartment(hodRequestDto.getDiscipline());
+
         Hod hod = HodMapper.toHod(hodRequestDto);
 
-        Principal principal = principalService.getPrincipalByEmail(hodRequestDto.getPrincipalEmail());
+        Principal principal = principalService.getPrincipalByEmail(principalAuthentication.getEmail());
         principal.addHod(hod);
 
         hod.addAllOfficeBearers(officeBearerRepository.findAll());
