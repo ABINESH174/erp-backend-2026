@@ -49,6 +49,9 @@ public class OfficeBearerServiceImpl implements OfficeBearerService{
         return officeBearer;
     }
 
-
+    @Override
+    public List<OfficeBearer> getAllOfficeBearers() {
+        return officeBearerRepository.findAll();
+    }
     
 }

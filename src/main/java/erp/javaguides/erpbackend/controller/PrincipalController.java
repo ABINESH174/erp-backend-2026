@@ -67,4 +67,18 @@ public class PrincipalController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse> getAllprincipals() {
+        try {
+            List<Principal> allPrincipal = principalService.getAllPrincipals();
+            if (allPrincipal.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Principal Found", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("All Principals Retrived Successfully", allPrincipal));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error Fetching Principal", null));
+        }
+    }
+
 }
