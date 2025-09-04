@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import erp.javaguides.erpbackend.service.OfficeBearerService;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/office-bearer")
@@ -24,6 +26,20 @@ public class OfficeBearerController {
             return ResponseEntity.ok(new ApiResponse("Office Bearer created successfully",savedOfficeBearer));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating office Bearer",null));
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse> getAllOfficeBearers() {
+        try {
+            List<OfficeBearer> allOfficeBearers = officeBearerService.getAllOfficeBearers();
+            if(allOfficeBearers.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No Office Bearer Found",null));
+            }
+            return ResponseEntity.ok(new ApiResponse("All Office Bearer Retrived Successfully", allOfficeBearers));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error Fetching Office Bearers",null));
         }
     }
     

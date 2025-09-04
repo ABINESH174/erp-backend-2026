@@ -6,6 +6,8 @@ import erp.javaguides.erpbackend.dto.requestDto.AuthenticationDto;
 import erp.javaguides.erpbackend.dto.requestDto.NewPasswordAfterLoginFirstTimeRequestDto;
 import erp.javaguides.erpbackend.dto.requestDto.NewPasswordRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.AuthResponseDto;
+import erp.javaguides.erpbackend.exception.OtpExpiredException;
+import erp.javaguides.erpbackend.exception.OtpInvalidException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
 import erp.javaguides.erpbackend.repository.AuthenticationRepository;
@@ -308,8 +310,10 @@ public class AuthenticationController {
         try {
             authenticationService.generateResetPassword(newPasswordRequestDto.getEmail(), newPasswordRequestDto.getOtp(), newPasswordRequestDto.getNewPassword());
             return ResponseEntity.ok(new ApiResponse("Password Changed Successfully",null));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse("Invalid or Expired OTP", null));
+        } catch (OtpExpiredException e) { // Status code - 412
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new ApiResponse("Expired OTP", null));
+        } catch (OtpInvalidException e) { // Status code - 406
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse("Invalid OTP", null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error changing password", null));

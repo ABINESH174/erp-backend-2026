@@ -13,4 +13,6 @@ public interface PrincipalService {
 
     // Bonafide neccessities
     List<BonafideResponseDto> getOfficeBearersApprovedBonafides();
+
+    List<Principal> getAllPrincipals();
 }

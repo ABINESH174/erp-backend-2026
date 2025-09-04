@@ -5,6 +5,8 @@ import erp.javaguides.erpbackend.entity.Authentication;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.AuthenticationStatus;
+import erp.javaguides.erpbackend.exception.OtpExpiredException;
+import erp.javaguides.erpbackend.exception.OtpInvalidException;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.exception.UserAlreadyExistsException;
 import erp.javaguides.erpbackend.jwt.JwtUtil;
@@ -46,12 +48,12 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     @Override
     public AuthenticationDto createAuthentication(AuthenticationDto authenticationDto) {
         Authentication authentication = AuthenticationMapper.mapToAuthentication(authenticationDto);
+        authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
+        authentication.setFirstTimePasswordResetFlag(true);
         if(authenticationDto.getRole().name().equals("ADMIN")) {
             authentication.setEmail(adminMail);
             authentication.setFirstTimePasswordResetFlag(false);
         }
-        authentication.setPassword(passwordEncoder.encode(authentication.getPassword()));
-        authentication.setFirstTimePasswordResetFlag(true);
         authentication.setAuthenticationStatus(AuthenticationStatus.ACTIVE);
         Authentication savedAuthentication = authenticationRepository.save(authentication);
 
@@ -93,10 +95,10 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
         if(authentication.getForgotPasswordResetToken() == null || !authentication.getForgotPasswordResetToken().equals(otp)) {
             System.out.println(otp);
             System.out.println(authentication.getForgotPasswordResetToken());
-            throw new RuntimeException("Invalid OTP");
+            throw new OtpInvalidException("Invalid OTP");
         }
         if(LocalDateTime.now().isAfter(authentication.getForgotPasswordResetTokenExpiry())) {
-            throw new RuntimeException("OTP Expired");
+            throw new OtpExpiredException("OTP Expired");
         }
         authentication.setPassword(passwordEncoder.encode(newPassword));
         authentication.setForgotPasswordResetToken(null);

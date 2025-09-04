@@ -69,8 +69,10 @@ public class StudentServiceImpl implements StudentService {
             // Map StudentDto to Student object
             Student student = StudentMapper.mapToStudentWithFilesDto(studentDto);
 
-            if (!(optionalStudent.get().getFaculty().getFacultyId() == null)) {
-                student.setFaculty(facultyRepository.findByFacultyId(optionalStudent.get().getFaculty().getFacultyId()));
+            if (optionalStudent.isPresent() && optionalStudent.get().getFaculty() != null) {
+                if (!(optionalStudent.get().getFaculty().getFacultyId() == null)) {
+                    student.setFaculty(facultyRepository.findByFacultyId(optionalStudent.get().getFaculty().getFacultyId()));
+                }
             }
 
             // Convert Base64 strings to MultipartFile and save files

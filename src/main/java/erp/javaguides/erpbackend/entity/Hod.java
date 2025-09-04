@@ -1,5 +1,8 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,9 +52,11 @@ public class Hod {
 
     @ManyToOne
     @JoinColumn(name = "principal_id")
+    @JsonIgnore
     private Principal principal;
 
     @ManyToMany(mappedBy = "hods")
+    @JsonIgnore
     private Set<OfficeBearer> officeBearers = new HashSet<>();
 
     public void addFaculty(Faculty faculty) {
