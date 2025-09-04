@@ -23,6 +23,7 @@ public class StudentDto {
     private String aadharNumber;
     private String bloodGroup;
     private String nationality;
+    private String state;
     private String religion;
     private String community;
     private String caste;

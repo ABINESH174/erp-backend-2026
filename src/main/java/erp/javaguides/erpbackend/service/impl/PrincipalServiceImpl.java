@@ -52,4 +52,9 @@ public class PrincipalServiceImpl implements PrincipalService {
                 .toList();
     }
 
+    @Override
+    public List<Principal> getAllPrincipals() {
+        return principalRepository.findAll();
+    }
+
 }

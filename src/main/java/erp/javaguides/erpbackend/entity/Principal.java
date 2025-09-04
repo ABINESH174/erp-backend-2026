@@ -1,5 +1,8 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +37,7 @@ public class Principal {
     private String aadharNumber;
 
     @OneToMany(mappedBy = "principal",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Hod> hods;
 
     public void addHod(Hod hod){
