@@ -23,8 +23,10 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facultyId;
 
+    @Column(length = 100)
     private String firstName;
 
+    @Column(length = 50)
     private String lastName;
 
     private String email;
@@ -41,7 +43,7 @@ public class Faculty {
     @Column(length = 50)
     private String department;   // For first year faculties department is their dedicated dept (like physics, chemistry, maths, english...) and its the same as discipline for other faculties
 
-    @Column(length = 50)
+    @Column(length = 20)
     private String handlingBatch;
 
     private List<String> subjects = new ArrayList<>();

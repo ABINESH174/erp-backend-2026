@@ -32,9 +32,10 @@ public class Hod {
     @Column(length = 50)
     private String department;    // The department is now as same as the discipline in the application, but if the CFA is from a different dept (like maths, physics, chemistry, english ...), it will be for future integration.
 
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String firstName;
 
+    @Column(length = 50)
     private String lastName;
 
     private String email;

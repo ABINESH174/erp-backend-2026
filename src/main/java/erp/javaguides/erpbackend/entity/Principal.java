@@ -24,8 +24,10 @@ public class Principal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long principalId;
 
+    @Column(length = 100)
     private String firstName;
 
+    @Column(length = 50)
     private String lastName;
 
     private String email;
