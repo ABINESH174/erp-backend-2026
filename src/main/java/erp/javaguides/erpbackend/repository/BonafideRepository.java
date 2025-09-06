@@ -6,6 +6,7 @@ import erp.javaguides.erpbackend.enums.BonafideStatus;
 import java.util.List;
 import java.util.Optional;
 
+import erp.javaguides.erpbackend.enums.BonafideType;
 import org.springframework.data.jpa.repository.JpaRepository;
 // import org.springframework.data.jpa.repository.Query;
 // import org.springframework.data.repository.query.Param;
@@ -30,5 +31,9 @@ public interface BonafideRepository extends JpaRepository<Bonafide, Long> {
     // previos bonafide query
     List<Bonafide> findByBonafideStatusInAndStudentFacultyFacultyId(List<BonafideStatus> bonafideStatusList, Long facultyId);
     List<Bonafide> findByBonafideStatusInAndStudentFacultyHodHodId(List<BonafideStatus> bonafideStatusList, Long hodId);
+
+    List<Bonafide> findByBonafideType(BonafideType bonafideType);
+
+    List<Bonafide> findByBonafideStatusAndBonafideType(BonafideStatus bonafideStatus, BonafideType bonafideType);
 }
 

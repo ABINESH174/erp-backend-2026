@@ -23,10 +23,12 @@ public class OfficeBearer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long obId;
 
+    @Column(length = 100)
     private String name;
 
     private String email;
 
+    @Column(length = 50)
     private String handlingPurpose;
 
     @Column(length = 10)

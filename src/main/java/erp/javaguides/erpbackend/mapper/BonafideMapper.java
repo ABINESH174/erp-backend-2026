@@ -22,6 +22,7 @@ public class BonafideMapper {
                 bonafide.getPurpose(),
                 bonafide.getBonafideStatus(),
                 bonafide.getDate(),
+                bonafide.getBonafideType(),
                 bonafide.getAcademicYear(),
                 bonafide.getCompanyName(),
                 bonafide.getBankNameForEducationalLoan(),
@@ -46,6 +47,7 @@ public class BonafideMapper {
                 bonafideDto.getPurpose(),
                 bonafideDto.getBonafideStatus(),
                 UtilityService.yearMonthDayToDayMonthYear(bonafideDto.getDate()),
+                bonafideDto.getBonafideType(),
                 bonafideDto.getAcademicYear(),
                 bonafideDto.getCompanyName(),
                 bonafideDto.getBankNameForEducationalLoan()

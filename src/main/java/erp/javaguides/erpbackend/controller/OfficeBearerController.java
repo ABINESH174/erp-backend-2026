@@ -2,6 +2,7 @@ package erp.javaguides.erpbackend.controller;
 
 import erp.javaguides.erpbackend.entity.OfficeBearer;
 import erp.javaguides.erpbackend.dto.ApiResponse;
+import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,19 @@ public class OfficeBearerController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error Fetching Office Bearers",null));
+        }
+    }
+
+    @GetMapping("/get/email")
+    public ResponseEntity<ApiResponse> getOfficeBearerByEmail(@RequestParam String email) {
+        try {
+            OfficeBearer officeBearer = officeBearerService.getOfficeBearerByEmail(email);
+            return ResponseEntity.ok(new ApiResponse("Office Bearer Retrieved successfully",officeBearer));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No office bearer found with the given email",null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error retrieving office bearer",null));
         }
     }
     
