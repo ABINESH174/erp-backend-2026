@@ -61,9 +61,10 @@ public class HodServiceImpl implements HodService {
 
         hod.addAllOfficeBearers(officeBearerRepository.findAll());
 
-        utilityService.addEmailToAuthentication(hod.getEmail(),hod.getEmail());
-        
         Hod savedHod = hodRepository.save(hod);
+
+        utilityService.addEmailToAuthentication(hod.getEmail(),hod.getEmail());
+
         return HodMapper.toHodResponseDto(savedHod);
     }
 

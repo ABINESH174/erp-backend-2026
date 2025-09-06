@@ -1,5 +1,6 @@
 package erp.javaguides.erpbackend.dto.requestDto;
 
+import erp.javaguides.erpbackend.enums.BonafideType;
 import org.springframework.web.multipart.MultipartFile;
 
 import erp.javaguides.erpbackend.enums.BonafideStatus;
@@ -14,6 +15,7 @@ public class CreateBonafideRequestDto {
     private String registerNo;
     
     private String date;
+    private BonafideType bonafideType;
     private String academicYear;
     private String purpose;
     private BonafideStatus bonafideStatus;

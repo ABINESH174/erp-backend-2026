@@ -26,10 +26,10 @@ public class Authentication implements UserDetails {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100,unique = true)
+    @Column(unique = true)
     private String userId;
 
-    @Column(length = 255)
+    @Column
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -39,6 +39,7 @@ public class Authentication implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    @Column(length = 10)
     private String forgotPasswordResetToken;
 
     private LocalDateTime forgotPasswordResetTokenExpiry;

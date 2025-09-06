@@ -25,10 +25,10 @@ public class Student {
     @Column(length = 20, unique = true)
     private String registerNo;
 
-    @Column
+    @Column(length = 100)
     private String firstName;
 
-    @Column
+    @Column(length = 50)
     private String lastName;
 
     @Column(length = 20)
@@ -44,43 +44,46 @@ public class Student {
     @Column(length = 10)
     private String bloodGroup;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String nationality;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String state;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String Religion;
 
     @Column(length = 10)
     private String community;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String caste;
 
+    @Column(length = 100)
     private String fatherName;
 
     @Column(length = 50)
     private String fatherOccupation;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String fatherMobileNumber;
 
+    @Column(length = 100)
     private String motherName;
 
     @Column(length = 50)
     private String motherOccupation;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String motherMobileNumber;
 
+    @Column(length = 100)
     private String guardianName;
 
     @Column(length = 50)
     private String guardianOccupation;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String guardianMobileNumber;
 
     @Column(length = 50)
@@ -93,13 +96,13 @@ public class Student {
     @Column(length = 50)
     private MaritalStatus maritalStatus;
 
-    @Column(length = 150)
+    @Column
     private String communityCertificatePath;
 
-    @Column(length = 150)
+    @Column
     private String profilePhotoPath;
 
-    @Column(length = 15)
+    @Column(length = 10)
     private String mobileNumber;
 
     private String emailId;
@@ -121,13 +124,13 @@ public class Student {
     @Column(length = 100)
     private String ifscCode;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String bankBranchName;
 
     @Column(length = 50)
     private String bankAccountNumber;
 
-    @Column(length = 150)
+    @Column
     private String passbookPath;
 
     @Column(length = 10)
@@ -140,13 +143,13 @@ public class Student {
     private String hscSecondYearPercent;
     @Column(length = 10)
     private String diplomaPercent;
-    @Column(length = 150)
+    @Column
     private String sslcFilePath;
-    @Column(length = 150)
+    @Column
     private String hscFirstYearFilePath;
-    @Column(length = 150)
+    @Column
     private String hscSecondYearFilePath;
-    @Column(length = 150)
+    @Column
     private String diplomaFilePath;
 
     @Column(length = 50)
@@ -158,10 +161,10 @@ public class Student {
     @Column(length = 50)
     private String specialCategory;
 
-    @Column(length = 150)
+    @Column
     private String firstGraduateFilePath;
 
-    @Column(length = 150)
+    @Column
     private String specialCategoryFilePath;
 
     @Column
@@ -176,22 +179,22 @@ public class Student {
     @Column(length = 50)
     private String department;    // The department is 'Science and Humanities' for first year students and there discipline for other years... (will be changed dynamically while switching from II semester)
 
-    @Column(length = 1)
+    @Column(length = 5)
     private String classSection;  // class section is a empty space(' ') for departments with no sections, ('A' or 'B') for mech and eee
 
-    @Column(length = 50)
+    @Column(length = 20)
     private String admissionNumber;
 
-    @Column(length = 50)
+    @Column(length = 20)
     private String batch;
 
     @Column(length = 10)
     private String semester;
 
-    @Column(length = 50)
+    @Column(length = 20)
     private String abcId;
 
-    @Column(length = 50)
+    @Column(length = 20)
     private String umisId;
 
     @Column(length = 20)

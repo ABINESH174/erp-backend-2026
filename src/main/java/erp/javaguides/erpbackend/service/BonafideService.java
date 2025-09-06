@@ -7,6 +7,7 @@ import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.entity.Bonafide;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.BonafideType;
 
 public interface BonafideService {
     BonafideResponseDto saveBonafide(CreateBonafideRequestDto bonafideDto) throws  Exception;
@@ -14,6 +15,11 @@ public interface BonafideService {
     BonafideResponseDto getBonafideByIdAndRegisterNo(Long bonafideId, String registerNo);
     List<BonafideResponseDto> getAllBonafidesByRegisterNo(String registerNo);
     List<BonafideResponseDto> getAllBonafidesByRegisterNoAndBonafideStatus(String registerNo, String status);
+
+    List<BonafideResponseDto> getBonafidesByBonafideType(BonafideType bonafideType);
+
+    List<BonafideResponseDto> getBonafidesByBonafideStatusAndBonafideType(BonafideStatus bonafideStatus, BonafideType bonafideType);
+
     List<BonafideResponseDto> getAllBonafides();
     BonafideResponseDto updateBonafideWithBonafideStatus(Long bonafideId, String registerNo, String status);
     void deleteBonafide(Long bonafideId, String registerNo);
