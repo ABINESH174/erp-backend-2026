@@ -506,8 +506,8 @@ public class BonafideServiceImpl implements BonafideService {
         document.setMargins(50, 50, 50, 50);
 
         // Logos
-        ImageData leftLogo = ImageDataFactory.create("src/main/resources/Images/TN_GOVERN.png");
-        ImageData rightLogo = ImageDataFactory.create("src/main/resources/Images/acgcetlogo.png");
+        ImageData leftLogo = ImageDataFactory.create(getClass().getResource("/Images/TN_GOVERN.png"));
+        ImageData rightLogo = ImageDataFactory.create(getClass().getResource("/Images/acgcetlogo.png"));
         Image leftImage = new Image(leftLogo).scaleToFit(70, 70);
         Image rightImage = new Image(rightLogo).scaleToFit(70, 70);
 
