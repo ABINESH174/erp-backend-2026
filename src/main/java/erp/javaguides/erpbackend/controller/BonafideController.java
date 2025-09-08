@@ -4,6 +4,7 @@ import erp.javaguides.erpbackend.dto.requestDto.CreateBonafideRequestDto;
 import erp.javaguides.erpbackend.dto.responseDto.ApplicableBonafideResponseDto;
 import erp.javaguides.erpbackend.dto.responseDto.BonafideResponseDto;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.BonafideType;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.dto.ApiResponse;
 import erp.javaguides.erpbackend.service.BonafideService;
@@ -87,6 +88,32 @@ public class BonafideController {
             }
             return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully", bonafideResponseDtos));
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
+        }
+    }
+
+    @GetMapping("/get/type")
+    public ResponseEntity<ApiResponse> getBonafidesByBonafideType(@RequestParam BonafideType bonafideType) {
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getBonafidesByBonafideType(bonafideType);
+            return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully",bonafideResponseDtos));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No bonafides found for the given bonafide type", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
+        }
+    }
+
+    @GetMapping("/get/status/type")
+    public ResponseEntity<ApiResponse> getBonafidesByBonafideStatusAndBonafideType(@RequestParam BonafideStatus bonafideStatus, @RequestParam BonafideType bonafideType) {
+        try {
+            List<BonafideResponseDto> bonafideResponseDtos = bonafideService.getBonafidesByBonafideStatusAndBonafideType(bonafideStatus, bonafideType);
+            return ResponseEntity.ok(new ApiResponse("Bonafides retrieved successfully",bonafideResponseDtos));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("No bonafides found for the given bonafide type", null));
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve Bonafides", null));
         }
     }

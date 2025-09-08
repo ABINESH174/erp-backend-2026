@@ -56,8 +56,7 @@ public class StudentServiceImpl implements StudentService {
 //                updateStudent(studentDto.getRegisterNo(),studentDto);
             }
 
-            // Add email to authentication table
-            utilityService.addEmailToAuthentication(studentDto.getRegisterNo(),studentDto.getEmailid());
+
 
             String firstName = studentDto.getFirstName();
             String registerNo = studentDto.getRegisterNo();
@@ -69,8 +68,10 @@ public class StudentServiceImpl implements StudentService {
             // Map StudentDto to Student object
             Student student = StudentMapper.mapToStudentWithFilesDto(studentDto);
 
-            if (!(optionalStudent.get().getFaculty().getFacultyId() == null)) {
-                student.setFaculty(facultyRepository.findByFacultyId(optionalStudent.get().getFaculty().getFacultyId()));
+            if (optionalStudent.isPresent() && optionalStudent.get().getFaculty() != null) {
+                if (!(optionalStudent.get().getFaculty().getFacultyId() == null)) {
+                    student.setFaculty(facultyRepository.findByFacultyId(optionalStudent.get().getFaculty().getFacultyId()));
+                }
             }
 
             // Convert Base64 strings to MultipartFile and save files
@@ -99,6 +100,9 @@ public class StudentServiceImpl implements StudentService {
 
             // Save the Student object
             student = studentRepository.save(student);
+
+            // Add email to authentication table
+            utilityService.addEmailToAuthentication(studentDto.getRegisterNo(),studentDto.getEmailid());
 
             return "Student created successfully with RegisterNo: " + student.getRegisterNo();
         } catch (IllegalArgumentException ex) {

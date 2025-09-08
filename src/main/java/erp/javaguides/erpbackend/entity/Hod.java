@@ -1,5 +1,8 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +32,10 @@ public class Hod {
     @Column(length = 50)
     private String department;    // The department is now as same as the discipline in the application, but if the CFA is from a different dept (like maths, physics, chemistry, english ...), it will be for future integration.
 
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String firstName;
 
+    @Column(length = 50)
     private String lastName;
 
     private String email;
@@ -49,9 +53,11 @@ public class Hod {
 
     @ManyToOne
     @JoinColumn(name = "principal_id")
+    @JsonIgnore
     private Principal principal;
 
     @ManyToMany(mappedBy = "hods")
+    @JsonIgnore
     private Set<OfficeBearer> officeBearers = new HashSet<>();
 
     public void addFaculty(Faculty faculty) {

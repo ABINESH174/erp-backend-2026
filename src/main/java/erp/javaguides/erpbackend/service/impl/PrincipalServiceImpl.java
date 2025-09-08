@@ -34,6 +34,7 @@ public class PrincipalServiceImpl implements PrincipalService {
     @Override
     public Principal savePrincipal(Principal principal) {
         utilityService.addEmailToAuthentication(principal.getEmail(),principal.getEmail());
+        // Must check dynamically if another principal in db is active... before saving (future feature)
         return principalRepository.save(principal);
     }
 
@@ -50,6 +51,11 @@ public class PrincipalServiceImpl implements PrincipalService {
                 .stream()
                 .map(BonafideMapper::mapToBonafideResponseDto)
                 .toList();
+    }
+
+    @Override
+    public List<Principal> getAllPrincipals() {
+        return principalRepository.findAll();
     }
 
 }

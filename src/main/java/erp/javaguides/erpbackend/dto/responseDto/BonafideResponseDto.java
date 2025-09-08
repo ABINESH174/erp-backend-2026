@@ -2,6 +2,7 @@ package erp.javaguides.erpbackend.dto.responseDto;
 
 
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.BonafideType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class BonafideResponseDto {
     private String purpose;
     private BonafideStatus bonafideStatus;
     private String date;
+    private BonafideType bonafideType;
     private String academicYear;
 
     private String companyName;

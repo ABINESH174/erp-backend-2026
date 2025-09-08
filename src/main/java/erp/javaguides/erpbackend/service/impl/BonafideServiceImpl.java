@@ -18,6 +18,8 @@ import erp.javaguides.erpbackend.entity.Bonafide;
 import erp.javaguides.erpbackend.entity.Faculty;
 import erp.javaguides.erpbackend.entity.Student;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.BonafideType;
+import erp.javaguides.erpbackend.enums.BonafideValidity;
 import erp.javaguides.erpbackend.enums.Gender;
 import erp.javaguides.erpbackend.exception.ResourceNotFoundException;
 import erp.javaguides.erpbackend.mapper.BonafideMapper;
@@ -78,6 +80,8 @@ public class BonafideServiceImpl implements BonafideService {
         // System.out.println("\n\nStudent: " + student.getFirstName() + " with Register No: " + student.getRegisterNo());
 
         Bonafide bonafide = BonafideMapper.mapToBonafide(requestDto);
+
+        bonafide.setBonafideValidity(BonafideValidity.BONAFIDE_VALIDITY_ACTIVE); // Make the newly Created Bonafide an Active validity.
 
         // bonafide.setStudent(student);
         student.addBonafide(bonafide); // Add the bonafide to the student's list of bonafides
@@ -185,6 +189,27 @@ public class BonafideServiceImpl implements BonafideService {
         }
     }
 
+    @Override
+    public List<BonafideResponseDto> getBonafidesByBonafideType(BonafideType bonafideType) {
+        List<Bonafide> bonafides = bonafideRepository.findByBonafideType(bonafideType);
+        if(bonafides.isEmpty()) {
+            throw new ResourceNotFoundException("No bonafides found with the given bonafide type");
+        }
+        return bonafides.stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
+
+    @Override
+    public List<BonafideResponseDto> getBonafidesByBonafideStatusAndBonafideType(BonafideStatus bonafideStatus, BonafideType bonafideType) {
+        List<Bonafide> bonafides = bonafideRepository.findByBonafideStatusAndBonafideType(bonafideStatus,bonafideType);
+        if(bonafides.isEmpty()) {
+            throw new ResourceNotFoundException("No bonafides found with the given bonafide type");
+        }
+        return bonafides.stream()
+                .map(BonafideMapper::mapToBonafideResponseDto)
+                .toList();
+    }
 
     @Override
     public List<BonafideResponseDto> getAllBonafides() {
@@ -481,8 +506,8 @@ public class BonafideServiceImpl implements BonafideService {
         document.setMargins(50, 50, 50, 50);
 
         // Logos
-        ImageData leftLogo = ImageDataFactory.create("src/main/resources/Images/TN_GOVERN.png");
-        ImageData rightLogo = ImageDataFactory.create("src/main/resources/Images/acgcetlogo.png");
+        ImageData leftLogo = ImageDataFactory.create(getClass().getResource("/Images/TN_GOVERN.png"));
+        ImageData rightLogo = ImageDataFactory.create(getClass().getResource("/Images/acgcetlogo.png"));
         Image leftImage = new Image(leftLogo).scaleToFit(70, 70);
         Image rightImage = new Image(rightLogo).scaleToFit(70, 70);
 

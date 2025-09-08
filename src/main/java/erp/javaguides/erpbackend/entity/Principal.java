@@ -1,5 +1,8 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +24,10 @@ public class Principal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long principalId;
 
+    @Column(length = 100)
     private String firstName;
 
+    @Column(length = 50)
     private String lastName;
 
     private String email;
@@ -34,6 +39,7 @@ public class Principal {
     private String aadharNumber;
 
     @OneToMany(mappedBy = "principal",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Hod> hods;
 
     public void addHod(Hod hod){

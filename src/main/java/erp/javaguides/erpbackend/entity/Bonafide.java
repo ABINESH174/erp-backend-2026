@@ -2,6 +2,8 @@ package erp.javaguides.erpbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import erp.javaguides.erpbackend.enums.BonafideStatus;
+import erp.javaguides.erpbackend.enums.BonafideType;
+import erp.javaguides.erpbackend.enums.BonafideValidity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 // import jakarta.validation.constraints.NotEmpty;
@@ -34,40 +36,52 @@ public class Bonafide {
 
     private String date;
 
+    // Bonafides can have two types 'B' and 'S', B-type bonafides are handled for some monetory benefits for students
+    // S-type bonafides does not involve any monetory benefits like bus pass, internship...
+    // These two are also considered as two of the many purposes dedicated for office bearers
+    @Enumerated(value = EnumType.STRING)
+    private BonafideType bonafideType;
+
+    @Column(length = 20)
     private String academicYear;
 
+    @Column(length = 100)
     private String companyName;
 
+    @Enumerated(value = EnumType.STRING)
+    private BonafideValidity bonafideValidity;
+
     //    @Column(name = "loan_bank_name")
+    @Column(length = 100)
     private String bankNameForEducationalLoan;
 
     private String rejectionMessage;
 
-    @Column(length = 150)
+    @Column
     private String welfareIdFilePath;
 
-    @Column(length = 150)
+    @Column
     private String smartCardFilePath;
 
-    @Column(length = 150)
+    @Column
     private String studentIdCardFilePath;
 
-    @Column(length = 150)
+    @Column
     private String provisionalAllotmentFilePath;
 
-    @Column(length = 150)
+    @Column
     private String aadharCardFilePath;
 
-    @Column(length = 150)
+    @Column
     private String centralCommunityCertificateFilePath;
 
-    @Column(length = 150)
+    @Column
     private String collegeFeeReceiptFilePath;
 
-    @Column(length = 150)
+    @Column
     private String labourWelfareFilePath;
 
-    @Column(length = 150)
+    @Column
     private String generatedBonafideFilePath;
 
     @ManyToOne(fetch=FetchType.LAZY, optional = false)
@@ -76,10 +90,11 @@ public class Bonafide {
     private Student student;
 
 
-    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date, String academicYear , String companyName , String bankNameForEducationalLoan) {
+    public Bonafide(String purpose, BonafideStatus bonafideStatus, String date, BonafideType bonafideType, String academicYear , String companyName , String bankNameForEducationalLoan) {
         this.purpose = purpose;
         this.bonafideStatus = bonafideStatus;
         this.date = date;
+        this.bonafideType = bonafideType;
         this.academicYear = academicYear;
         this.companyName = companyName;
         this.bankNameForEducationalLoan = bankNameForEducationalLoan;

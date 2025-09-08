@@ -1,5 +1,7 @@
 package erp.javaguides.erpbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,10 +23,12 @@ public class OfficeBearer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long obId;
 
+    @Column(length = 100)
     private String name;
 
     private String email;
 
+    @Column(length = 50)
     private String handlingPurpose;
 
     @Column(length = 10)
@@ -42,6 +46,7 @@ public class OfficeBearer {
         joinColumns = @JoinColumn(name = "ob_id"), // Column in join table referring to OB (this entity)
         inverseJoinColumns = @JoinColumn(name = "hod_id") // Column in join table referring to HOD (the other entity)
     )
+    @JsonIgnore
     private Set<Hod> hods = new HashSet<>();
 
     //Helper method to add a HOD to the OfficeBearer
